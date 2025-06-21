@@ -1,0 +1,46 @@
+{
+  "weapons": [
+    {
+      "weaponName": "맨주먹",
+      "damage": 0.0,
+      "range": 0,
+      "durability": 100
+    },
+    {
+      "weaponName": "야구방망이",
+      "damage": 4.0,
+      "range": 1,
+      "durability": 5
+    },
+    {
+      "weaponName": "빠루",
+      "damage": 6.0,
+      "range": 1,
+      "durability": 11
+    },
+    {
+      "weaponName": "사시미",
+      "damage": 7.0,
+      "range": 0,
+      "durability": 6
+    },
+    {
+      "weaponName": "망치",
+      "damage": 5.0,
+      "range": 0,
+      "durability": 10
+    },
+    {
+      "weaponName": "오함마",
+      "damage": 10.0,
+      "range": 2,
+      "durability": 15
+    },
+    {
+      "weaponName": "일본도",
+      "damage": 16.0,
+      "range": 2,
+      "durability": 5
+    }
+  ]
+}
