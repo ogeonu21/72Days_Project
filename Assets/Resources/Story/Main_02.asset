@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37a2d8db8bbb12d449002f9bc9da31ad, type: 3}
+  m_Name: Main_02
+  m_EditorClassIdentifier: 
+  dialogueText: "\uAC74\uBB3C\uC774 \uD754\uB4E4\uB9B0\uB2E4.\n\uB2F9\uC2E0\uC740
+    \uAE30\uC808\uD558\uC600\uB2E4."
+  choices:
+  - choiceText: "2\uBC88 \uC120\uD0DD\uC9C0"
+    nextNode: {fileID: 0}
+    requiredFlag: 
+    setFlag: 
+  - choiceText: 
+    nextNode: {fileID: 0}
+    requiredFlag: 
+    setFlag: 
+  - choiceText: 
+    nextNode: {fileID: 0}
+    requiredFlag: 
+    setFlag: 
+  triggersCombat: 0
+  fallbackNode: {fileID: 0}
+  editorPosition: {x: 781.6008, y: 191.63757}
+  combatEnemyID: 

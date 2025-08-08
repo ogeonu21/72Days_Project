@@ -1,59 +1,26 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-[System.Serializable]
-public class StatusData
-{
-    public string type; //캐릭터 타입
-    public string name; //캐릭터 이름
-    public int str; //힘 스탯
-    public int dex; //민첩 스탯
-    public int hpState; //체력 스탯
-}
-
-[System.Serializable]
-public class CharacterDataCollection
-{
-    public List<StatusData> characters; // 캐릭터 리스트
-}
-
-[System.Serializable]
-public class StageEnemyName
-{
-    public string name;
-}
-
-[System.Serializable]
-public class StageDataCollection
-{
-    public List<StageEnemyName> stages;
-}
 
 public class GameManager : MonoBehaviour
 {
-    // 싱글톤 인스턴스
-    private static GameManager instance;
+    #region [변수 관리]
 
-    // 접근자 프로퍼티
-    public static GameManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                // GameManager를 찾아보고 없으면 생성한다.
-                instance = FindObjectOfType<GameManager>();
+    public static GameManager instance { get; private set; }
 
-                if (instance == null)
-                {
-                    GameObject gameManagerObject = new GameObject("GameManager");
-                    instance = gameManagerObject.AddComponent<GameManager>();
-                }
-            }
-            return instance;
-        }
-    }
+    // 게임 내의 다른 매니저들을 관리
+    public Player player;
+    public Enemy enemy;
+
+    public int survive_data; // 생존 날짜
+
+    //진행도 관리
+    public string currentNodeName; // 진행 저장용
+    private const string SaveKey = "CurrentNode";
+    #endregion
+
+    #region [initialization]
 
     // 중복 방지용 플래그
     private void Awake()
@@ -68,99 +35,55 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject); // 씬이 변경되어도 파괴되지 않게 설정
     }
 
-    // 게임 내의 다른 매니저들을 관리
-    public Player player;
-    public Enemy enemy;
-
-    //스테이지 정보
-    public StageDataCollection stageDatas;
-    public CharacterDataCollection characterDataCollection;
-
-    public int survive_data; // 생존 날짜ㅁ
-
     // 게임 로직 초기화
     private void Start()
     {
-        //new game을 눌렀다면, 초기화
-        InitializeManagers();
-        LoadStageData();
-        LoadStatusData();
-        
-
-
-        player.ReLoadObject();
-        enemy.ReLoadObject();
-
-        StartGame();
+        //이벤트 구독
+        player.OnDied += OnCharacterDied;
+        enemy.OnDied += OnCharacterDied;
     }
-    public void LoadStageData()
-    {
-        TextAsset jsonFile = Resources.Load<TextAsset>("StageData");
+    #endregion
 
-        if (jsonFile != null)
+
+    #region 진행 관리
+
+    //새로운 게임 시작
+    public void StartNewGame(string startNodeName)
+    {
+        currentNodeName = startNodeName;
+        SceneManager.LoadScene("GameWindow");
+    }
+
+    //기존 게임 불러오기
+    public void LoadGame()
+    {
+        currentNodeName = PlayerPrefs.GetString(SaveKey, "StartNode");
+        SceneManager.LoadScene("GameWindow");
+    }
+
+    //진행도 저장
+    public void SaveProgress(string nodeName)
+    {
+        currentNodeName = nodeName;
+        PlayerPrefs.SetString(SaveKey, nodeName);
+        PlayerPrefs.Save();
+    }
+    #endregion
+
+    #region [이벤트 관리]
+    private void OnCharacterDied(Character character)
+    {
+        if (character is Player)
         {
-            // JSON 파일을 CharacterDataCollection 객체로 파싱
-            stageDatas = JsonUtility.FromJson<StageDataCollection>(jsonFile.text);   
+            Debug.Log("플레이어 사망");
+            //게임 오버 UI, 재시작, 엔딩 크레딧 등등.
         }
-        else
+        else if (character is Enemy)
         {
-            Debug.LogError("CharacterStatus.json file not found in Resources.");
+            Debug.Log("적 사망");
+            //보상, 다음 스테이지 이동.
         }
     }
 
-    public void LoadStatusData()
-    {
-        TextAsset jsonFile = Resources.Load<TextAsset>("CharacterStatus");
-
-        if (jsonFile != null)
-        {
-            // JSON 파일을 CharacterDataCollection 객체로 파싱
-            characterDataCollection = JsonUtility.FromJson<CharacterDataCollection>(jsonFile.text);
-        }
-        else
-        {
-            Debug.LogError("CharacterStatus.json file not found in Resources.");
-        }
-    }
-
-    // 다른 매니저들 초기화
-    private void InitializeManagers()
-    {
-       
-    }
-
-    public int currentStageNumber = 0;
-
-    // 예시: 게임을 시작하는 함수
-    public void LoadNewGame()
-    {
-        //듀토리얼 스테이지 실행
-
-    }
-
-    public void StartGame()
-    {
-        BattleManager.Instance.battleStart();
-        // 게임 시작 로직 추가
-    }
-    public void nextStage()
-    {
-        enemy.ReLoadObject();
-        StartGame();
-    }
-
-    // 예시: 게임 종료 함수
-    public void EndGame()
-    {
-        Debug.Log("Game ended");
-        // 게임 종료 로직 추가
-    }
-}
-
-class StageControll
-{
-    public void stage()
-    {
-
-    }
+    #endregion
 }
