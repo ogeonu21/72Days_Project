@@ -15,19 +15,22 @@ MonoBehaviour:
   dialogueText: "\uAC74\uBB3C\uC774 \uD754\uB4E4\uB9B0\uB2E4.\n\uB2F9\uC2E0\uC740
     \uAE30\uC808\uD558\uC600\uB2E4."
   choices:
-  - choiceText: "2\uBC88 \uC120\uD0DD\uC9C0"
-    nextNode: {fileID: 0}
+  - choiceText: "\uC790\uC0B4\uD55C\uB2E4"
+    nextNode: {fileID: 11400000, guid: 208f2f6b5f537ae4a9be0d5461013a72, type: 2}
     requiredFlag: 
     setFlag: 
+    triggersCombat: 0
+    combatEnemyID: 
   - choiceText: 
     nextNode: {fileID: 0}
     requiredFlag: 
     setFlag: 
+    triggersCombat: 0
+    combatEnemyID: 
   - choiceText: 
     nextNode: {fileID: 0}
     requiredFlag: 
     setFlag: 
-  triggersCombat: 0
-  fallbackNode: {fileID: 0}
-  editorPosition: {x: 781.6008, y: 191.63757}
-  combatEnemyID: 
+    triggersCombat: 0
+    combatEnemyID: 
+  editorPosition: {x: 561.6008, y: 133.13757}

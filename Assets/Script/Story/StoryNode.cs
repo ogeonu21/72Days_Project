@@ -11,15 +11,8 @@ public class StoryNode : ScriptableObject
 
     public List<Choice> choices = new List<Choice>();
 
-    //전투 트리거의 여부
-    public bool triggersCombat;
-    //전투 후 이어질 노드
-    public StoryNode fallbackNode;
-
     //Editor 내부 위치
     public Vector2 editorPosition;
-
-    public string combatEnemyID;
 }
 
 [System.Serializable]
@@ -31,7 +24,12 @@ public class Choice
     public StoryNode nextNode;
 
     //상태 플래그
+    [Header("상태 플래그 / 추후 추가 예정")]
     public string requiredFlag;
     public string setFlag;
 
+    //전투 트리거의 여부
+    [Header("전투 여부 / 전투 대상 ID")]
+    public bool triggersCombat;
+    public string combatEnemyID;
 }

@@ -26,8 +26,15 @@ public class StoryNodeEditor : Editor
 
             choice.choiceText = EditorGUILayout.TextField("Choice Text", choice.choiceText);
             choice.nextNode = (StoryNode)EditorGUILayout.ObjectField("Next Node", choice.nextNode, typeof(StoryNode), false);
+
+            //선택지 조건 표기. 지금 당장은 필요 없는 기능.
             choice.requiredFlag = EditorGUILayout.TextField("Required Flag", choice.requiredFlag);
             choice.setFlag = EditorGUILayout.TextField("Set Flag", choice.setFlag);
+
+            //
+            EditorGUILayout.LabelField("Combat Settings", EditorStyles.boldLabel);
+            choice.triggersCombat = EditorGUILayout.Toggle("Triggers Combat", choice.triggersCombat);
+            choice.combatEnemyID = EditorGUILayout.TextField("CombatEnemyID", choice.combatEnemyID);
 
             //선택지 제거
             if (GUILayout.Button("Remove Choice")) node.choices.RemoveAt(i);
@@ -40,13 +47,6 @@ public class StoryNodeEditor : Editor
         {
             node.choices.Add(new Choice());
         }
-
-        //공간 나누기
-        EditorGUILayout.Space();
-
-        EditorGUILayout.LabelField("Combat Settings", EditorStyles.boldLabel);
-        node.triggersCombat = EditorGUILayout.Toggle("Triggers Combat", node.triggersCombat);
-        node.fallbackNode = (StoryNode)EditorGUILayout.ObjectField("Fallback Node", node.fallbackNode, typeof(StoryNode), false);
 
         serializedObject.ApplyModifiedProperties();
 

@@ -11,7 +11,7 @@ public class StoryGraphEditor : EditorWindow
     private StoryNode selectedNode;
     private Vector2 contextClickPos;
 
-    private static readonly Vector2 NodeSize = new(280, 290);
+    private static readonly Vector2 NodeSize = new(280, 300);
     private Rect canvasRect = new Rect(0, 0, 5000, 5000);
     private StoryNode draggingOutputNode;
     private int draggingChoiceIndex = -1;
@@ -25,6 +25,8 @@ public class StoryGraphEditor : EditorWindow
     {
         DrawMiniMap();
         HandleInput(Event.current);
+
+        // ScrollView 시작
         scrollPos = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), scrollPos, canvasRect);
 
         DrawConnections();
@@ -45,25 +47,49 @@ public class StoryGraphEditor : EditorWindow
             ExpandCanvasToFit(rect);
         }
         EndWindows();
+
+        // ScrollView 끝
         GUI.EndScrollView();
 
         DrawPendingConnection(Event.current);
+
+        // Save All 버튼 추가 (ScrollView 외부에 위치)
+        GUILayout.BeginArea(new Rect(position.width - 110, position.height - 30, 100, 20));
+        GUI.backgroundColor = Color.green;
+        if (GUILayout.Button("Save All"))
+        {
+            SaveAll();
+        }
+        GUI.backgroundColor = Color.white;
+        GUILayout.EndArea();
 
         if (GUI.changed) Repaint();
     }
 
     private void DrawNodeWindow(int id, StoryNode node)
     {
+        // 이전 이름을 저장해 둡니다.
+        string oldName = node.name;
+
+        // 변경사항 감지를 시작합니다.
         EditorGUI.BeginChangeCheck();
 
+        // 노드 이름 수정 필드
         node.name = EditorGUILayout.TextField("Node", node.name);
-        node.triggersCombat = EditorGUILayout.Toggle("Combat", node.triggersCombat);
 
-        if (node.triggersCombat)
+        // 이름 변경이 감지되면 파일 이름을 변경합니다.
+        if (oldName != node.name)
         {
-            node.combatEnemyID = EditorGUILayout.TextField("Enemy ID", node.combatEnemyID);
+            string assetPath = AssetDatabase.GetAssetPath(node);
+            string newPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(assetPath), node.name + ".asset");
+            AssetDatabase.RenameAsset(assetPath, node.name);
+
+            // 이름 변경 후, 에디터에 변경 사항을 알립니다.
+            EditorUtility.SetDirty(node);
+            AssetDatabase.SaveAssets(); // 변경 사항을 즉시 저장합니다.
         }
 
+        // 다이얼로그 텍스트 수정
         node.dialogueText = EditorGUILayout.TextArea(node.dialogueText, GUILayout.Height(40));
 
         if (node.choices == null) node.choices = new();
@@ -73,28 +99,32 @@ public class StoryGraphEditor : EditorWindow
         {
             EditorGUILayout.BeginHorizontal();
             node.choices[i].choiceText = EditorGUILayout.TextField($"Choice {i + 1}", node.choices[i].choiceText);
-            GUILayout.Space(10);
-            Rect portRect = GUILayoutUtility.GetRect(60, 20);
-            // (Link 버튼 제거됨)
 
+            // 다음 노드 연결 필드
+            node.choices[i].nextNode = (StoryNode)EditorGUILayout.ObjectField(node.choices[i].nextNode, typeof(StoryNode), false);
             EditorGUILayout.EndHorizontal();
 
-            node.choices[i].nextNode = (StoryNode)EditorGUILayout.ObjectField("→", node.choices[i].nextNode, typeof(StoryNode), false);
+            node.choices[i].triggersCombat = EditorGUILayout.Toggle("Combat", node.choices[i].triggersCombat);
+
+            if (node.choices[i].triggersCombat)
+            {
+                node.choices[i].combatEnemyID = EditorGUILayout.TextField("Enemy ID", node.choices[i].combatEnemyID);
+            }
         }
 
-        // Delete 버튼 전
         GUILayout.Space(10);
         GUI.backgroundColor = Color.red;
         if (GUILayout.Button("Delete Node"))
         {
-        DeleteNode(node);
-        return;
+            DeleteNode(node);
+            return;
         }
         GUI.backgroundColor = Color.white;
 
+        // 이름 변경 외 다른 필드가 변경되었는지 확인하고 저장합니다.
         if (EditorGUI.EndChangeCheck())
         {
-        EditorUtility.SetDirty(node);
+            EditorUtility.SetDirty(node);
         }
 
         GUI.DragWindow();

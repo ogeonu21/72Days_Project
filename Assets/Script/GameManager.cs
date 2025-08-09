@@ -1,13 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingleTon<GameManager>
 {
     #region [변수 관리]
-
-    public static GameManager instance { get; private set; }
 
     // 게임 내의 다른 매니저들을 관리
     public Player player;
@@ -18,22 +17,15 @@ public class GameManager : MonoBehaviour
     //진행도 관리
     public string currentNodeName; // 진행 저장용
     private const string SaveKey = "CurrentNode";
+
+
+    //event 관리
+    public event Action<GameState> OnGameStateChanged;
+
+    private GameState _currentState;
     #endregion
 
     #region [initialization]
-
-    // 중복 방지용 플래그
-    private void Awake()
-    {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject); // 기존 인스턴스가 있을 경우 파괴
-            return;
-        }
-
-        instance = this;
-        DontDestroyOnLoad(gameObject); // 씬이 변경되어도 파괴되지 않게 설정
-    }
 
     // 게임 로직 초기화
     private void Start()
@@ -52,6 +44,7 @@ public class GameManager : MonoBehaviour
     {
         currentNodeName = startNodeName;
         SceneManager.LoadScene("GameWindow");
+        StoryManager.Instance.StartNewProgress(currentNodeName);
     }
 
     //기존 게임 불러오기
@@ -59,9 +52,11 @@ public class GameManager : MonoBehaviour
     {
         currentNodeName = PlayerPrefs.GetString(SaveKey, "StartNode");
         SceneManager.LoadScene("GameWindow");
+        StoryManager.Instance.LoadProgress();
     }
 
     //진행도 저장
+    //SaveManger로 옮겨야해.
     public void SaveProgress(string nodeName)
     {
         currentNodeName = nodeName;
@@ -83,6 +78,12 @@ public class GameManager : MonoBehaviour
             Debug.Log("적 사망");
             //보상, 다음 스테이지 이동.
         }
+    }
+
+    public void UpdateGameState(GameState newState)
+    {
+        _currentState = newState;
+        OnGameStateChanged?.Invoke(newState);
     }
 
     #endregion
