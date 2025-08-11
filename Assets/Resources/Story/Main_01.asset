@@ -26,10 +26,10 @@ MonoBehaviour:
     setFlag: 
     triggersCombat: 0
     combatEnemyID: 
-  - choiceText: 1
-    nextNode: {fileID: 0}
+  - choiceText: Testing CombatNode
+    nextNode: {fileID: 11400000, guid: aa3bee0ff67a18d448e59acc030788c9, type: 2}
     requiredFlag: 
     setFlag: 
-    triggersCombat: 0
-    combatEnemyID: 
+    triggersCombat: 1
+    combatEnemyID: E_000
   editorPosition: {x: 107.33032, y: 178.87396}

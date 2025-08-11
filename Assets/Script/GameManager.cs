@@ -8,21 +8,13 @@ public class GameManager : SingleTon<GameManager>
 {
     #region [변수 관리]
 
-    // 게임 내의 다른 매니저들을 관리
-    public Player player;
-    public Enemy enemy;
-
     public int survive_data; // 생존 날짜
 
     //진행도 관리
     public string currentNodeName; // 진행 저장용
     private const string SaveKey = "CurrentNode";
 
-
-    //event 관리
-    public event Action<GameState> OnGameStateChanged;
-
-    private GameState _currentState;
+    private GameState currentState;
     #endregion
 
     #region [initialization]
@@ -30,10 +22,13 @@ public class GameManager : SingleTon<GameManager>
     // 게임 로직 초기화
     private void Start()
     {
-        //이벤트 구독
-        player.OnDied += OnCharacterDied;
-        enemy.OnDied += OnCharacterDied;
     }
+    #endregion
+
+    #region [이벤트 관리]
+    //GameStateChanged를 Notify할 Event
+    public event Action<GameState> OnGameStateChanged;
+
     #endregion
 
 
@@ -44,6 +39,7 @@ public class GameManager : SingleTon<GameManager>
     {
         currentNodeName = startNodeName;
         SceneManager.LoadScene("GameWindow");
+        //SaveManger에서 불러오고 시작.
         StoryManager.Instance.StartNewProgress(currentNodeName);
     }
 
@@ -52,6 +48,8 @@ public class GameManager : SingleTon<GameManager>
     {
         currentNodeName = PlayerPrefs.GetString(SaveKey, "StartNode");
         SceneManager.LoadScene("GameWindow");
+
+        //SaveManger에서 불러오고 시작.
         StoryManager.Instance.LoadProgress();
     }
 
@@ -65,26 +63,19 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [이벤트 관리]
-    private void OnCharacterDied(Character character)
-    {
-        if (character is Player)
-        {
-            Debug.Log("플레이어 사망");
-            //게임 오버 UI, 재시작, 엔딩 크레딧 등등.
-        }
-        else if (character is Enemy)
-        {
-            Debug.Log("적 사망");
-            //보상, 다음 스테이지 이동.
-        }
-    }
+    #region [GameState 관리]
 
+    //게임 State 관리
     public void UpdateGameState(GameState newState)
     {
-        _currentState = newState;
+        currentState = newState;
         OnGameStateChanged?.Invoke(newState);
     }
+    #endregion
+
+    #region [이벤트 관리]
+   
+
 
     #endregion
 }
