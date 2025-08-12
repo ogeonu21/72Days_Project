@@ -48,8 +48,9 @@ public class Character : MonoBehaviour
     public int MaxHP => derived.maxHP;
     public int AttackPower => derived.attackPower;
     public float DodgeRate => derived.dodgeRate;
+    public float AccuracyRate => derived.accuracyRate;
     public int AttackRange => derived.attackRange;
-
+    
     public bool IsDead => currentHP <= 0;
 
     //Enemy를 읽기 위해 파싱값을 받아서 캐릭터 스테이터스를 적용하는 함수.

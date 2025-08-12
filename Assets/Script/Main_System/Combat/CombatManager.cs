@@ -7,6 +7,48 @@ using System;
 
 public class CombatManager : SingleTon<CombatManager>
 {
+    #region [변수 그룹]
+    private StoryManager storyManager;
+
+
+    public Enemy enemy;
+    public Player player;
+
+    private bool combatActive;
+    #endregion
+
+    private new void Awake()
+    {
+        base.Awake();
+        storyManager = StoryManager.Instance;
+        storyManager.OnCombatNodeStart += LoadData;
+
+    }
+
+    private void LoadData(Choice node)
+    {
+        string enemyID = node.combatEnemyID;
+        var enemyData = Resources.Load<EnemyDefinition>($"NPCStats/{enemyID}");
+        if (enemyData != null)
+        {
+            enemy?.InitializeFromDefinition(enemyData);
+        }
+        else
+        {
+            Debug.LogWarning($"{enemyID} : EnemyDefinition UnFound");
+        }
+        
+    }
+
+    public void StartCombat()
+    {
+        if (!combatActive)
+        {
+            //UIUpdate
+        }
+    }
+
+
     //private bool 전투활성화여부
 
     /*public void StartCombat(){

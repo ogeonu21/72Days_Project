@@ -7,6 +7,7 @@ public class StoryManager : SingleTon<StoryManager>
     #region 변수그룹
     //노드 변경 감지 이벤트 Action뒤에 <>에는 OnNodeChanged 이벤트를 발생시키면서 매개변수로 전달할 데이터 타입을 는다.
     public event Action<StoryNode> OnStoryNodeChanged;
+    public event Action<Choice> OnCombatNodeStart;
 
     private StoryNode currentNode;
 
@@ -39,6 +40,7 @@ public class StoryManager : SingleTon<StoryManager>
         }
     }
 
+    #region [Progress Manage]
     public void StartNewProgress(string startNodeName)
     {
         //SaveManager에서 불러와야하나?
@@ -76,6 +78,8 @@ public class StoryManager : SingleTon<StoryManager>
         PlayerPrefs.SetString("CurrentStoryNode", node.name);
         PlayerPrefs.Save();
     }
+    #endregion
+
 
     public void Choose(int index)
     {
@@ -84,6 +88,7 @@ public class StoryManager : SingleTon<StoryManager>
             if (currentNode.choices[index].triggersCombat)
             {
                 //전투 시작!
+                OnCombatNodeStart?.Invoke(currentNode.choices[index]);
                 gameManager.UpdateGameState(GameState.Combat);
                 //여기서 문제는 위의 함수가 전부 실행된 이후에 실행이 되냐 아니냐의 문제인데.
                 //만약 전투 시작이 끝나고나서 실행된다면 그대로 GoToNode()를 실행.
