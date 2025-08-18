@@ -9,42 +9,30 @@ public class StoryManager : SingleTon<StoryManager>
     public event Action<StoryNode> OnStoryNodeChanged;
     public event Action<Choice> OnCombatNodeStart;
 
-    private StoryNode currentNode;
+    public StoryNode currentNode;
 
 
     //Manager instance
     private GameManager gameManager;
+    private CombatManager combatManager;
     #endregion
 
-    private new void Awake()
+    protected override void Awake()
     {
         base.Awake();
 
         //[이벤트 구독]
         gameManager = GameManager.Instance;
-        gameManager.OnGameStateChanged += OnApplyUpdateState;
+        combatManager = CombatManager.Instance;
+        combatManager.OnStoryNodeStart += GoToNode;
 
     }
 
-    private void OnApplyUpdateState(GameState state)
-    {
-        switch (state)
-        {
-            case GameState.Story:
-                
-                //GameState가 Story로 진입.
-                //전환을 받고 data를 로드 후에 goto해야함.
-                break;
-            default:
-                break;
-        }
-    }
 
     #region [Progress Manage]
-    public void StartNewProgress(string startNodeName)
+    public void StartNewProgress()
     {
-        //SaveManager에서 불러와야하나?
-        //*** 개선필요!!!!
+        string startNodeName = "Main_01";
         var node = Resources.Load<StoryNode>($"Story/{startNodeName}");
         //Reset PlayerData 함수가 필요. 새로 게임을 시작하면 기존 데이터를 지워야하니까. Json파일을 써야함.
 
@@ -58,26 +46,18 @@ public class StoryManager : SingleTon<StoryManager>
         }
     }
 
-    public void LoadProgress()
+    public void LoadProgress(StoryNode node)
     {
-        //음 아니네 이거는 상관 없겠다. PlayerPrefs로 저장하고 있구나.
-        string nodeName = PlayerPrefs.GetString("CurrentStoryNode", "Start");
-        var node = Resources.Load<StoryNode>($"Story/{nodeName}");
         if (node != null)
         {
             GoToNode(node);
         }
         else
         {
-            Debug.LogError($"저장된 노드 '{nodeName}'를 찾을 수 없습니다.");
+            Debug.LogError($"저장된 노드를 찾을 수 없습니다.");
         }
     }
 
-    public void SaveProgress(StoryNode node)
-    {
-        PlayerPrefs.SetString("CurrentStoryNode", node.name);
-        PlayerPrefs.Save();
-    }
     #endregion
 
 
@@ -113,7 +93,7 @@ public class StoryManager : SingleTon<StoryManager>
     {
         currentNode = node;
         OnStoryNodeChanged?.Invoke(node);
-        SaveProgress(node);
+        gameManager.SaveGame();
     }
 
     public StoryNode GetCurrentNode()

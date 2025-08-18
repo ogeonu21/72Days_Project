@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using TMPro;
 
 public class ReadOnlyAttribute : PropertyAttribute { }
 
@@ -18,6 +20,13 @@ public class Character : MonoBehaviour
     public string ID;
     public string characterName;
 
+    #region [UI Component]
+    [Header("UI Components")]
+    public Slider hpSlider;
+    public TMP_Text hpText;
+    public TMP_Text nameText;
+    #endregion
+
     #region [Stats]
     [Header("Base Stats")]
     public BaseStats baseStats;
@@ -31,14 +40,13 @@ public class Character : MonoBehaviour
     public int rangeBonus = 0;
 
     [Header("Derived Stats")]
-    [SerializeField, ReadOnly] private DerivedStats derived;
-    [SerializeField, ReadOnly] private int currentHP;
+    [SerializeField, ReadOnly] protected DerivedStats derived;
+    [SerializeField, ReadOnly] protected int currentHP;
     #endregion
 
     #region [Events]
     public event Action onDied;
     public event Action onStatsChanged; //Stats이 변경되었을때 작동
-    public event Action<int> onDamaged;
     public event Action<int, int> onHPChanged; //(currentHP, maxHP)
     
     #endregion
@@ -54,31 +62,16 @@ public class Character : MonoBehaviour
     public bool IsDead => currentHP <= 0;
 
     //Enemy를 읽기 위해 파싱값을 받아서 캐릭터 스테이터스를 적용하는 함수.
-    public void InitializeFromDefinition(EnemyDefinition def)
-    {
-        if (def == null) return;
 
-        ID = string.IsNullOrWhiteSpace(def.id) ? ID : def.id;
-        characterName = string.IsNullOrWhiteSpace(def.displayName) ? characterName : def.displayName;
-
-        baseStats = def.baseStats;
-        attackBonus = def.attackBonus;
-        hpBonus = def.hpBonus;
-        dodgeBonus = def.dodgeBonus;
-        rangeBonus = def.rangeBonus;
-
-        UpdateStats();
-        SetCurrentHPToMaxAndNotify();
-    }
+    //이거는 Enemy에 있어야하지 않을까.
+    
 
     //자식 클래스에서는 event를 발생시킬 수 없기에, 별도의 함수가 필요.
-    protected void SetCurrentHPToMaxAndNotify()
+    protected void SetCurrentHPAndNotify(int currentHP)
     {
-        currentHP = MaxHP;
-        onHPChanged?.Invoke(currentHP, MaxHP);
+        this.currentHP = currentHP;
+        UpdateHP_UI();
     }
-
-
     #endregion
 
     #region [State Update Function]
@@ -96,11 +89,9 @@ public class Character : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         if (IsDead) return;
-
-
         currentHP = Mathf.Max(0, currentHP - amount);
-        onDamaged?.Invoke(amount);
-        onHPChanged?.Invoke(currentHP, MaxHP);
+
+        UpdateHP_UI();
 
         if (currentHP <= 0)
         {
@@ -113,7 +104,8 @@ public class Character : MonoBehaviour
     {
         if (IsDead) return;
         currentHP = Mathf.Min(MaxHP, currentHP + Mathf.Max(0, amount));
-        onHPChanged?.Invoke(currentHP, MaxHP);
+
+        UpdateHP_UI();
     }
 
     protected virtual void Die()
@@ -125,7 +117,21 @@ public class Character : MonoBehaviour
 
     #endregion
 
-    
+    #region [UI Update]
+    private void UpdateHP_UI()
+    {
+        nameText.text = characterName;
+
+        if (hpSlider != null && MaxHP > 0)
+        {
+            hpSlider.value = (float)currentHP / MaxHP;
+        }
+        if (hpText != null)
+        {
+            hpText.text = $"{currentHP} / {MaxHP}";
+        }
+    }
+    #endregion
 
 
 

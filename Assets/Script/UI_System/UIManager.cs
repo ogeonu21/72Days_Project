@@ -1,25 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : SingleTon<UIManager>
 {
+    #region [변수 그룹]
     [SerializeField]
-    private StoryUIController storyUI;
+    private GameObject storyUI;
     [SerializeField]
-    private CombatUIController combatUI;
-
+    private GameObject combatUI;
 
     private GameManager gameManager;
 
+    private Player player; 
+    private Enemy enemy;
+
+
+    #endregion
+
+    #region [initialize]
     new void Awake()
     {
         base.Awake();
         gameManager = GameManager.Instance;
-        gameManager.OnGameStateChanged += UpdateUI;
+        CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
+
     }
 
+    private void OnEnable()
+    {
+        GameManager.Instance.OnGameStateChanged += UpdateUI;
+    }
+
+    private void UpdateCharacter(Player player, Enemy enemy)
+    {
+        this.enemy = enemy;
+        this.player = player;
+    }
+
+    #endregion
 
     private void UpdateUI(GameState state)
     {
@@ -38,21 +58,24 @@ public class UIManager : SingleTon<UIManager>
 
     private void OnStoryUI()
     {
-        if (!storyUI.gameObject.activeSelf)
+        if (!storyUI.activeSelf)
         {
-            storyUI.gameObject.SetActive(true);
-            combatUI.gameObject.SetActive(false);
+            storyUI.SetActive(true);
+            combatUI.SetActive(false);
+
+            enemy.gameObject.SetActive(false);
         }
             
     }
 
     private void OnCombatUI()
     {
-        if (!combatUI.gameObject.activeSelf)
+        if (!combatUI.activeSelf)
         {
-            storyUI.gameObject.SetActive(false);
-            combatUI.gameObject.SetActive(true);
+            storyUI.SetActive(false);
+            combatUI.SetActive(true);
 
+            enemy.gameObject.SetActive(true);
             //여기서는 Enemy HP Bar만 활성화 하는 식으로 만들어야해.
         }
             
@@ -61,4 +84,5 @@ public class UIManager : SingleTon<UIManager>
     {
         gameManager.UpdateGameState(GameState.Story);
     }
+
 }

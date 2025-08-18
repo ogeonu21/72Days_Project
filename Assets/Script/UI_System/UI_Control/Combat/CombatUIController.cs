@@ -1,20 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class CombatUIController : MonoBehaviour
 {
-
+    #region [변수 그룹]
     public TMP_Text combatText;
-    public GameObject Character_Board;
     public GameObject attackButtons;
     public Image blood_Effect;
 
-    private StoryManager storyManager;
-    //private CombatManager combatManager;
-    public Player player;
-    public Enemy enemy;
+    private CombatManager combatManager;
 
+    #endregion
+    //private CombatManager combatManager;
+
+    private void Awake()
+    {
+        combatManager = CombatManager.Instance;
+        combatManager.CombatUIUpdate += UpdateCombatUI;
+        combatManager.onTextUpdate += UpdateCombatText;
+    }
     
     void Start()
     {
@@ -22,18 +29,18 @@ public class CombatUIController : MonoBehaviour
         //CombatManger에서 CombatTextChanged라는 이벤트를 구독, UpdateCombatUI를 실행해야함.
 
         //이거는 아무래도 UI쪽에서 건드려야겠다.
-        player.onHPChanged += UpdateHPUI;
-        enemy.onHPChanged += UpdateHPUI;
-    }
-
-    public void UpdateCombatUI(Choice node)
-    {
-        Debug.Log("Detected Event!");
         
     }
 
-    public void UpdateHPUI(int currentHP, int maxHP)
+    public void UpdateCombatUI(Character target)
     {
-        
+       
+
     }
+
+    IEnumerator UpdateCombatText(string text)
+    {
+        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(combatText, text, 0.05f));
+    }
+
 }

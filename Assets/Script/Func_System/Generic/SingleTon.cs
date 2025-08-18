@@ -28,7 +28,7 @@ public class SingleTon<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    public void Awake()
+    protected virtual void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }

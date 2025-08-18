@@ -1,0 +1,72 @@
+using System;
+using UnityEngine;
+using System.IO;
+using System.Text;
+
+public class SaveManager : SingleTon<SaveManager>
+{
+    private string savePath;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        savePath = Path.Combine(Application.persistentDataPath, "savedata.json");
+    }
+
+    public void SaveData(SaveData data)
+    {
+        string json = JsonUtility.ToJson(data, true);
+        string encodedJson = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+
+        try
+        {
+            File.WriteAllText(savePath, encodedJson);
+            Debug.Log($"게임 데이터 저장 성공 : {savePath}");
+        }
+        catch(System.Exception e)
+        {
+            Debug.LogError($"게임 데이터 저장 실패 : {e.Message}");
+        }
+    }
+
+    public SaveData LoadData()
+    {
+        if (!File.Exists(savePath))
+        {
+            Debug.LogWarning("저장된 파일이 없습니다. 새로운 SaveData를 생성합니다.");
+            return new SaveData();
+        }
+
+        try
+        {
+            string encodedJson = File.ReadAllText(savePath);
+            string json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
+
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            Debug.Log($"게임 데이터를 불러왔습니다 : {savePath}");
+            return data;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"게임 데이터 불러오기 실패하였습니다. 새로운 SaveData를 생성합니다. : {e.Message}");
+            return new SaveData();
+        }
+    }
+}
+
+[System.Serializable]
+public class SaveData
+{
+    public PlayerData playerData; //플레이어 데이터
+    public StoryNode currentNode; //현재 진행중인 Node;
+    // item Data
+    public GameState currentState;
+    // 진행도 관련한 스택. 선행, 악행 등의 스택.
+
+    public SaveData()
+    {
+        playerData = new PlayerData();
+        currentNode = new StoryNode();
+        currentState = GameState.Main;
+    }
+}

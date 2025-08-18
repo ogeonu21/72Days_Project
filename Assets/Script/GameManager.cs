@@ -8,20 +8,23 @@ public class GameManager : SingleTon<GameManager>
 {
     #region [변수 관리]
 
-    public int survive_data; // 생존 날짜
+    [Header("플레이어 정보")]
+    public PlayerData playerData;
 
-    //진행도 관리
+    [Header("게임 상태 정보")]
+    public int survive_data; // 생존 날짜
+    private GameState currentState;
+    //아래 두 줄은 삭제 예정.
     public string currentNodeName; // 진행 저장용
     private const string SaveKey = "CurrentNode";
 
-    private GameState currentState;
     #endregion
 
     #region [initialization]
-
-    // 게임 로직 초기화
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
+        playerData = new PlayerData();
     }
     #endregion
 
@@ -29,38 +32,88 @@ public class GameManager : SingleTon<GameManager>
     //GameStateChanged를 Notify할 Event
     public event Action<GameState> OnGameStateChanged;
 
+    //SceneLoaded
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     #endregion
 
 
-    #region 진행 관리
+    #region [진행 관리]
 
     //새로운 게임 시작
-    public void StartNewGame(string startNodeName)
+    public void StartNewGame()
     {
-        currentNodeName = startNodeName;
+        UpdateGameState(GameState.Start);
         SceneManager.LoadScene("GameWindow");
-        //SaveManger에서 불러오고 시작.
-        StoryManager.Instance.StartNewProgress(currentNodeName);
+        
     }
 
-    //기존 게임 불러오기
     public void LoadGame()
     {
-        currentNodeName = PlayerPrefs.GetString(SaveKey, "StartNode");
+        UpdateGameState(GameState.Load);
         SceneManager.LoadScene("GameWindow");
-
-        //SaveManger에서 불러오고 시작.
-        StoryManager.Instance.LoadProgress();
+        
+        
     }
 
-    //진행도 저장
-    //SaveManger로 옮겨야해.
-    public void SaveProgress(string nodeName)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        currentNodeName = nodeName;
-        PlayerPrefs.SetString(SaveKey, nodeName);
-        PlayerPrefs.Save();
+        if (scene.name == "GameWindow")
+        {
+            if (currentState == GameState.Start)
+            {
+                Debug.Log("새로운 세계를 시작하기 위해 핵을 떨구는 중입니다...");
+                //코루틴을 이용한 로딩바 추가도 가능.
+
+                //새로운 Data 생성.
+                playerData = new PlayerData();
+                UpdateGameState(GameState.Story);
+                CharacterManager.Instance.SpawnCharacter(playerData, 0);
+
+
+                StoryManager.Instance.StartNewProgress();
+            }
+            else if (currentState == GameState.Load)
+            {
+                Debug.Log("저장된 세계를 불러오는 중입니다...");
+
+                //저장된 Data 로드
+                SaveData data = SaveManager.Instance.LoadData();
+
+                this.playerData = data.playerData;
+                this.currentState = data.currentState;
+                UpdateGameState(this.currentState);
+
+
+                //근데!!! 여기서 만약에 Player가 죽어있다? 그러면 new GAme을 다시 시작하도록 해야함.
+                CharacterManager.Instance.SpawnCharacter(playerData, 1);
+
+                StoryManager.Instance.LoadProgress(data.currentNode);
+            }
+        }
     }
+
+    public void SaveGame()
+    {
+        this.playerData = CharacterManager.Instance.currentPlayer.GetCurrentData();
+        SaveData data = new SaveData();
+
+        data.playerData = this.playerData;
+        data.currentNode = StoryManager.Instance.currentNode;
+        data.currentState = this.currentState;
+
+        SaveManager.Instance.SaveData(data);
+    }
+
+    
     #endregion
 
     #region [GameState 관리]
