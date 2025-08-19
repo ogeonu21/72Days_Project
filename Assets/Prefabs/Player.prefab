@@ -417,6 +417,7 @@ MonoBehaviour:
     accuracyRate: 0
     attackRange: 0
   currentHP: 0
+  EffectTurn: 0
 --- !u!1 &9145290632674153617
 GameObject:
   m_ObjectHideFlags: 0

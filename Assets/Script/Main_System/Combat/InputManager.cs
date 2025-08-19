@@ -22,16 +22,12 @@ public class InputManager : MonoBehaviour
 
         if (combatManager.onAttackTurn)
         {
-            
             AreaData data = AreaDataDB.GetArea(name, out data);
             combatManager.GetInput(data);
         }
         else
         {
             Debug.Log("아직 당신의 턴이 아닙니다.");
-        }
-        
+        }   
     }
-
-
 }

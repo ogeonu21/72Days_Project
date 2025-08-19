@@ -8,47 +8,52 @@ using TMPro;
 
 public class ReadOnlyAttribute : PropertyAttribute { }
 
-/// <summary>
-/// 캐릭터 공통 베이스: 플레이어/적 공용
-/// - BaseStats 입력 → DerivedStats 자동 계산
-/// - 데미지, 회피 판정, 공격, 사거리 체크 등 기본 전투 유틸 포함
-/// </summary>
-/// 
-
 public class Character : MonoBehaviour
 {
+    [Header("캐릭터 아이디")]
     public string ID;
     public string characterName;
 
     #region [UI Component]
-    [Header("UI Components")]
+    [Header("UI 요소")]
     public Slider hpSlider;
     public TMP_Text hpText;
     public TMP_Text nameText;
     #endregion
 
     #region [Stats]
-    [Header("Base Stats")]
+    [Header("기본 스탯")]
     public BaseStats baseStats;
-    //이거는 캐릭터 ID를 통해서 읽어와야해.
 
-    [Header("Tuning (보정치)")]
+    [Header("보정치")]
     [Tooltip("장비/버프 보정치")]
     public int attackBonus = 0;
     public int hpBonus = 0;
     public float dodgeBonus = 0.0f;
     public int rangeBonus = 0;
 
-    [Header("Derived Stats")]
+    [Header("세부 스탯")]
     [SerializeField, ReadOnly] protected DerivedStats derived;
     [SerializeField, ReadOnly] protected int currentHP;
     #endregion
 
+    //제작 필요.
+    #region [Effect]
+    //머리는 뭐가 없어.
+    //다리는? 2턴간 회피율 감소로 바꾸자. 15%;
+    //팔은 2턴간 공격 감소. 10%, 6;
+    //몸은? 출혈. 10%, 3;
+
+    private float tempDodgeRate;
+    private int tempAttackPower;
+
+    private int[] EffectTurn = new int[4];
+    //기존 회피율 등등이 필요함.
+    #endregion
+
     #region [Events]
     public event Action onDied;
-    public event Action onStatsChanged; //Stats이 변경되었을때 작동
-    public event Action<int, int> onHPChanged; //(currentHP, maxHP)
-    
+    public event Action onStatsChanged; //Stats이 변경되었을때 작동 -> 아직은 연결된 곳 없음.
     #endregion
 
     #region [initialize]
@@ -60,13 +65,8 @@ public class Character : MonoBehaviour
     public int AttackRange => derived.attackRange;
     
     public bool IsDead => currentHP <= 0;
-
-    //Enemy를 읽기 위해 파싱값을 받아서 캐릭터 스테이터스를 적용하는 함수.
-
-    //이거는 Enemy에 있어야하지 않을까.
     
 
-    //자식 클래스에서는 event를 발생시킬 수 없기에, 별도의 함수가 필요.
     protected void SetCurrentHPAndNotify(int currentHP)
     {
         this.currentHP = currentHP;
@@ -80,12 +80,15 @@ public class Character : MonoBehaviour
     public void UpdateStats()
     {
         derived = new DerivedStats(baseStats.str, baseStats.dex, baseStats.con, attackBonus, hpBonus, dodgeBonus, rangeBonus);
+        tempAttackPower = AttackPower;
+        tempDodgeRate = DodgeRate;
         onStatsChanged?.Invoke();
         //UpdateUI추가 필요.
     }
+    #endregion
 
+    #region [Combat Function]
 
-    //Damage적용
     public virtual void TakeDamage(int amount)
     {
         if (IsDead) return;
@@ -114,11 +117,73 @@ public class Character : MonoBehaviour
         // 필요시 애니/이펙트/비활성화 등
         // gameObject.SetActive(false);
     }
+    #endregion
 
+    #region [Effect Function]
+
+    public void CountEffect()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (EffectTurn[i] > 0)
+            {
+                EffectTurn[i]--;
+
+                switch (i)
+                {
+                    case 0:
+                        if (EffectTurn[0] == 0)
+                        {
+                            derived.attackPower = tempAttackPower;
+                        }
+                        break;
+                    case 1:
+                        if (EffectTurn[1] == 0)
+                        {
+                            derived.dodgeRate = tempDodgeRate;
+                        }
+                        break;
+                    case 2:
+                        TakeDamage(3);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                continue;
+            }
+            
+        }
+        
+    }
+
+    public void TakeEffect(AreaData data)
+    {
+        switch (data.label)
+        {
+            case "팔":
+                derived.attackPower = Mathf.Max(0, tempAttackPower-5);
+                EffectTurn[0] = 3;
+                break;
+            case "다리":
+                derived.dodgeRate = Mathf.Max(0, tempDodgeRate - 0.05f);
+                EffectTurn[1] = 3;
+                break;
+            case "몸":
+                EffectTurn[2] = 2;
+                break;
+            default:
+                break;
+        }
+
+        //이펙트 효과 적용 필요.
+    }
     #endregion
 
     #region [UI Update]
-    private void UpdateHP_UI()
+    protected void UpdateHP_UI()
     {
         nameText.text = characterName;
 

@@ -14,15 +14,20 @@ public class PlayerData
 
     // 현재 상태
     public int currentHP;
+    public int exp;
+    public int lv;
 
     public PlayerData()
     {
         id = "Player";
         displayName = "플레이어";
-        baseStats = new BaseStats(0, 0, 0);
-        attackBonus = 0;
+        baseStats = new BaseStats(0, 0, 30);
+        attackBonus = 100;
         hpBonus = 0;
         dodgeBonus = 0f;
         rangeBonus = 0;
+
+        exp = 0;
+        lv = 1;
     }
 }

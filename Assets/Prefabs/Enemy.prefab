@@ -586,3 +586,11 @@ MonoBehaviour:
     accuracyRate: 0
     attackRange: 0
   currentHP: 0
+  EffectTurn: 0
+  attackButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

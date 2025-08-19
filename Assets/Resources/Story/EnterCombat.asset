@@ -15,12 +15,12 @@ MonoBehaviour:
   dialogueText: "\uC801\uACFC\uC758 \uC804\uD22C\uAC00 \uB05D\uB0AC\uB2E4. \uD14C\uC2A4\uD2B8\uB97C
     \uC885\uB8CC\uD55C\uB2E4."
   choices:
-  - choiceText: 
-    nextNode: {fileID: 0}
+  - choiceText: "\uB2E4\uC74C \uC804\uD22C"
+    nextNode: {fileID: 11400000, guid: 876fd57d875ac2140b31c8ae90d1f154, type: 2}
     requiredFlag: 
     setFlag: 
-    triggersCombat: 0
-    combatEnemyID: 
+    triggersCombat: 1
+    combatEnemyID: E_001
   - choiceText: 
     nextNode: {fileID: 0}
     requiredFlag: 

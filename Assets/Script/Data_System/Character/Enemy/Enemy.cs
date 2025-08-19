@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : Character
@@ -16,8 +14,14 @@ public class Enemy : Character
         hpBonus = def.hpBonus;
         dodgeBonus = def.dodgeBonus;
         rangeBonus = def.rangeBonus;
-
+        
         UpdateStats();
         SetCurrentHPAndNotify(MaxHP);
+    }
+
+    public int GetExpReward()
+    {
+        int x = Mathf.RoundToInt((baseStats.str + baseStats.dex + baseStats.con) / 3);
+        return  Mathf.RoundToInt(Mathf.Pow(x + 10, 2) / 12 + 2 * (x - 9) + 19);
     }
 }

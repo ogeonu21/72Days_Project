@@ -1,15 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class Player : Character
 {
-    //각각의 글자, HP, 이름 등의 연결이 필요함.
+    private const float BASE_EXP = 12.1f;
+    private const float EXP_GROWTH_RATE = 1.33f;
 
-    //데이터 리셋이 필요해.
-    // Start is called before the first frame update
+    private int exp;
+    public int lv;
+    //public event Action OnPlayerLvUp;
+
+    #region [Initialize]
     public void InitializeFromData(PlayerData data)
     {
         if (data == null) return;
@@ -22,6 +23,9 @@ public class Player : Character
         hpBonus = data.hpBonus;
         dodgeBonus = data.dodgeBonus;
         rangeBonus = data.rangeBonus;
+
+        exp = data.exp;
+        lv = data.lv;
 
         UpdateStats();
         SetCurrentHPAndNotify(MaxHP);
@@ -39,36 +43,89 @@ public class Player : Character
         hpBonus = data.hpBonus;
         dodgeBonus = data.dodgeBonus;
         rangeBonus = data.rangeBonus;
+        exp = data.exp;
+        lv = data.lv;
 
         UpdateStats();
         SetCurrentHPAndNotify(data.currentHP);
     }
+    #endregion
 
+    #region [Data]
     public PlayerData GetCurrentData()
     {
         PlayerData data = new PlayerData();
 
-        // 1. 현재 객체가 보관하고 있던 baseStats와 보너스 값들을 그대로 전달
         data.baseStats = this.baseStats;
         data.attackBonus = this.attackBonus;
         data.hpBonus = this.hpBonus;
         data.dodgeBonus = this.dodgeBonus;
         data.rangeBonus = this.rangeBonus;
-
-        // 2. Character의 기본 정보 전달
         data.displayName = this.characterName;
-
-        // 3. 현재 상태 값 전달
         data.currentHP = this.currentHP;
+        data.exp = this.exp;
+        data.lv = this.lv;
 
         return data;
     }
+    #endregion
 
-    // Update is called once per frame
-    public void UpdateData(Player newPlayer)
+    #region [Override]
+    public override void TakeDamage(int amount)
     {
+        if (IsDead) return;
+        currentHP = Mathf.Max(0, currentHP - amount);
 
-        UpdateStats();
+        GameEvent.OnTakeDamage(currentHP, MaxHP);
+        UpdateHP_UI();
+
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+        //Player의 경우에는 입은 데미지에 따라 피격이펙트.
     }
+    #endregion
+
+    #region [LV Control]
+    public void GetExp(int exp)
+    {
+        this.exp += exp;
+        UpdateLv();
+    }
+
+    private void UpdateLv()
+    {
+        int requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
+        if (exp >= requiredExpForLvUP)
+        {
+            exp -= requiredExpForLvUP;
+            lv++;
+            //OnPlayerLvUp?.Invoke();
+            //지금은 임시로 스탯 하나 올리기.
+            int i = UnityEngine.Random.Range(1, 4);
+            switch (i)
+            {
+                case 1:
+                    baseStats.str++;
+                    Debug.Log("힘증가");
+                    UpdateStats();
+                    break;
+                case 2:
+                    baseStats.dex++;
+                    Debug.Log("민첩증가");
+                    UpdateStats();
+                    break;
+                case 3:
+                    baseStats.con++;
+                    Debug.Log("건강증가");
+                    UpdateStats();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    #endregion
 }
 

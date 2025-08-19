@@ -6,17 +6,18 @@ using TMPro;
 public class UIManager : SingleTon<UIManager>
 {
     #region [변수 그룹]
+    //Object
     [SerializeField]
     private GameObject storyUI;
     [SerializeField]
     private GameObject combatUI;
 
+    //Manager
     private GameManager gameManager;
 
+    //Instance
     private Player player; 
     private Enemy enemy;
-
-
     #endregion
 
     #region [initialize]
@@ -24,23 +25,18 @@ public class UIManager : SingleTon<UIManager>
     {
         base.Awake();
         gameManager = GameManager.Instance;
-        CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
-
-    }
-
-    private void OnEnable()
-    {
         GameManager.Instance.OnGameStateChanged += UpdateUI;
+        CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
     }
-
+    
     private void UpdateCharacter(Player player, Enemy enemy)
     {
         this.enemy = enemy;
         this.player = player;
     }
-
     #endregion
 
+    #region [Node UI Control]
     private void UpdateUI(GameState state)
     {
         switch (state)
@@ -80,9 +76,6 @@ public class UIManager : SingleTon<UIManager>
         }
             
     }
-    public void TestSTate()
-    {
-        gameManager.UpdateGameState(GameState.Story);
-    }
+    #endregion
 
 }
