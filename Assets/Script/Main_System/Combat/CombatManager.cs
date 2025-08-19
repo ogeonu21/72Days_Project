@@ -3,13 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
-public enum WhoAttack
-{
-    PlayerAttack,
-    EnemyAttack
-}
-
 public class CombatManager : SingleTon<CombatManager>
 {
     #region [변수 그룹]
@@ -34,7 +27,7 @@ public class CombatManager : SingleTon<CombatManager>
     public bool combatActive;
     //플레이어가 입력을 할 수 있냐 없냐.
     public bool onAttackTurn;
-    public int combatTurn;
+    private AreaData playerInputData;
 
     [Header("CombatResult")]
     private StoryNode nextNode; 
@@ -75,9 +68,8 @@ public class CombatManager : SingleTon<CombatManager>
     #region [Input Field]
     public void GetInput(AreaData data)
     {
+        this.playerInputData = data;
         onAttackTurn = false;
-
-        StartCoroutine(CombatLoopStart(data));
     }
     #endregion
 
@@ -86,9 +78,8 @@ public class CombatManager : SingleTon<CombatManager>
     {
         player.onDied += CombatNodeStop;
         enemy.onDied += CombatNodeStop;
-        combatTurn = 0;
 
-        combatLoop = StartCoroutine(LoadCombatNode(node));
+        StartCoroutine(LoadCombatNode(node));
     }
 
     private IEnumerator LoadCombatNode(Choice node)
@@ -110,62 +101,49 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return onTextUpdate?.Invoke(enemy.characterName + "가 당신에게 싸움을 걸었다. \n 준비하라.");
 
-        yield return new WaitForSeconds(0.5f);
-
-        yield return onTextUpdate?.Invoke("무슨 행동을 할 것인가?");
+        yield return StartCoroutine(WaitForClick.WaitClick());
 
         onAttackTurn = true;
         combatActive = true;
 
+        StartCoroutine(CombatLoopStart());
+
         yield return null;
     }
 
-    private IEnumerator CombatLoopStart(AreaData data)
+    private IEnumerator CombatLoopStart()
     {
-        where[0] = data;
-        where[1] = GetEnemyAttack();
-        who[0] = (Character)player;
-        who[1] = (Character)enemy;
+        who[0] = player;
+        who[1] = enemy;
 
         int index = GetFirst();
 
-        who[0].CountEffect();
-        who[1].CountEffect();
-        CombatUIUpdate?.Invoke(player, enemy);
-
-        if (combatActive)
+        while (combatActive)
         {
-            //첫번째 공격자의 공격
-            yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], where[index], index));
-        }
+            who[0].CountEffect();
+            who[1].CountEffect();
+            CombatUIUpdate?.Invoke(player, enemy);
 
-        CombatUIUpdate?.Invoke(player, enemy);
+            if (index == 0)
+            {
+                yield return onTextUpdate?.Invoke("무슨 행동을 할 것인가?");
+                onAttackTurn = true;
 
-        if (combatActive)
-        {
-            //두번째 공격자의 공격.
+                yield return new WaitUntil(() => onAttackTurn == false);
+            }
+
+            AreaData attackData = (index == 0) ? playerInputData : GetEnemyAttack();
+            yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
+
             index = (index + 1) % 2;
-            yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], where[index], index));
+
+            if (!combatActive)
+            {
+                yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
+                yield break;
+            }
+
         }
-        else
-        {
-            //종료 조건 확인
-            yield return StartCoroutine(CombatNodeEnd());
-            yield break;
-        }
-
-        //종료 조건 확인
-        if (!combatActive)
-        {
-            yield return StartCoroutine(CombatNodeEnd());
-            yield break;
-        }
-
-        CombatUIUpdate?.Invoke(player, enemy);
-
-        yield return onTextUpdate?.Invoke("무슨 행동을 할 것인가?");
-
-        onAttackTurn = true;
     }
 
     private void CombatNodeStop()
@@ -173,9 +151,13 @@ public class CombatManager : SingleTon<CombatManager>
         combatActive = false;
     }
 
-    private IEnumerator CombatNodeEnd()
+    private IEnumerator CombatNodeEnd(Character take)
     {
         //Event로 바로 작동하는 것이 아닐, onDied가 발생하면 combatActive만 끄는 식으로.
+        string logMessage = $"{take.characterName}이 사망하였다. 전투가 종료되었다.";
+        yield return onTextUpdate?.Invoke(logMessage);
+
+        yield return StartCoroutine(WaitForClick.WaitClick());
 
         yield return StartCoroutine(GetReward());
         //새로운 코루틴 시작. 보상 코루틴
@@ -219,49 +201,44 @@ public class CombatManager : SingleTon<CombatManager>
     private IEnumerator AttackTurn(Character who, Character take, AreaData where, int index)
     {
         int damage = Mathf.RoundToInt(who.AttackPower * where.damageMultiplier);
-        if (Roll(where.hitRate - take.DodgeRate + who.AccuracyRate))
+        bool isHit = Roll(where.hitRate - take.DodgeRate + who.AccuracyRate);
+        string logMessage;
+
+        if (isHit)
         {
-            if (damage <= 0 && Roll(where.effectRate))
-            {
-                take.TakeDamage(damage);
+            take.TakeDamage(damage);
+            logMessage = $"{who.characterName}은 {take.characterName}의 {where.label}을 공격하여 {damage}의 피해를 입혔다.";
+
+            if (damage > 0 && Roll(where.effectRate))
+            {   
                 take.TakeEffect(where);
-
-                yield return onTextUpdate?.Invoke($"{who.characterName}은 {take.characterName}의 {where.label}을 공격하여 {damage}의 피해를 입혔다.");
-                yield return new WaitForSeconds(0.5f);
-
-                switch (where.label)
-                {
-                    case "팔":
-                        yield return onTextUpdate?.Invoke($"추가로, {take.characterName}는 팔에 부상을 입어 다음 두 턴간 공격이 5만큼 감소하였다.");
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    case "다리":
-                        yield return onTextUpdate?.Invoke($"추가로, {take.characterName}는 다리에 부상을 입어 다음 두 턴간 회피율이 5%만큼 감소하였다.");
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    case "몸":
-                        yield return onTextUpdate?.Invoke($"추가로, {take.characterName}는 복부에 부상을 입어 다음 두 턴간 3의 출혈 피해를 추가로 입는다.");
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    case "머리":
-                        break;
-                }
-                
-            }
-            else
-            {
-                take.TakeDamage(damage);
-                yield return onTextUpdate?.Invoke($"{who.characterName}은 {take.characterName}의 {where.label}을 공격하여 {damage}의 피해를 입혔다.");
-                yield return new WaitForSeconds(0.5f);
+                logMessage += "\n" + GetEffectMessage(where, take);
             }
         }
         else
         {
-            yield return onTextUpdate?.Invoke($"{who.characterName}은 {take.characterName}의 {where.label}을 공격하려 하였으나, 빗나갔다.");
-            yield return new WaitForSeconds(0.5f);
+            logMessage = $"{who.characterName}은 {take.characterName}의 {where.label}을 공격하려 하였으나, 빗나갔다.";
         }
-        
+
+        yield return onTextUpdate?.Invoke(logMessage);
+        yield return StartCoroutine(WaitForClick.WaitClick());
+
         yield return null;
+    }
+
+    private string GetEffectMessage(AreaData where, Character take)
+    {
+        switch (where.label)
+        {
+            case "팔":
+                return $"추가로, {take.characterName}는 팔에 부상을 입어 다음 두 턴간 공격이 5만큼 감소하였다.";
+            case "다리":
+                return $"추가로, {take.characterName}는 다리에 부상을 입어 다음 두 턴간 회피율이 5%만큼 감소하였다.";
+            case "몸":
+                return $"추가로, {take.characterName}는 복부에 부상을 입어 다음 두 턴간 3의 출혈 피해를 추가로 입는다.";
+            default:
+                return string.Empty;
+        }
     }
     #endregion
 
@@ -270,7 +247,7 @@ public class CombatManager : SingleTon<CombatManager>
     {
         player.GetExp(enemy.GetExpReward());
         yield return onTextUpdate?.Invoke($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다. 현재 당신의 Lv는 {player.lv}이다.");
-        yield return new WaitForSeconds(0.5f);  
+        yield return StartCoroutine(WaitForClick.WaitClick());
     }
     #endregion
 }
