@@ -58,7 +58,7 @@ public class SaveManager : SingleTon<SaveManager>
 public class SaveData
 {
     public PlayerData playerData; //플레이어 데이터
-    public StoryNode currentNode; //현재 진행중인 Node;
+    public Node currentNode; //현재 진행중인 Node;
     // item Data
     public GameState currentState;
     // 진행도 관련한 스택. 선행, 악행 등의 스택.
@@ -66,7 +66,7 @@ public class SaveData
     public SaveData()
     {
         playerData = new PlayerData();
-        currentNode = new StoryNode();
+        currentNode = ScriptableObject.CreateInstance<Node>();
         currentState = GameState.Main;
     }
 }

@@ -23,17 +23,20 @@ public class CombatUIController : MonoBehaviour
     #region [initialize]
     private void Awake()
     {
-        combatManager = CombatManager.Instance;
-        combatManager.CombatUIUpdate += UpdateCombatUI;
-        combatManager.onTextUpdate += UpdateCombatText;
+        
     }
 
     private void OnEnable()
     {
+        combatManager = CombatManager.Instance;
+        combatManager.CombatUIUpdate += UpdateCombatUI;
+        combatManager.onTextUpdate += UpdateCombatText;
         GameEvent.OnTakeDamageEffect += HandleTakeDamageEffect;
     }
     private void OnDisable()
     {
+        combatManager.CombatUIUpdate -= UpdateCombatUI;
+        combatManager.onTextUpdate -= UpdateCombatText;
         GameEvent.OnTakeDamageEffect -= HandleTakeDamageEffect;
     }
     #endregion
@@ -106,17 +109,17 @@ public class CombatUIController : MonoBehaviour
             {
                 case 0:
                 case 1:
-                    dodgeRateText[i].text = (AreaDataDB.GetArea("迫",out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100 + "%";
+                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("迫",out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
                     break;
                 case 2:
                 case 3:
-                    dodgeRateText[i].text = (AreaDataDB.GetArea("促府", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100 + "%";
+                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("促府", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
                     break;
                 case 4:
-                    dodgeRateText[i].text = (AreaDataDB.GetArea("个", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100 + "%";
+                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("个", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
                     break;
                 case 5:
-                    dodgeRateText[i].text = (AreaDataDB.GetArea("赣府", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100 + "%";
+                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("赣府", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
                     break;
                 default:
                     break;

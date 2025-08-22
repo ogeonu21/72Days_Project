@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,23 +7,48 @@ using TMPro;
 public class StoryUIController : MonoBehaviour
 {
     public TMP_Text dialogueText;
-    public Button[] choiceButtons; // 버튼 3개를 배열로 미리 연결
-    private StoryManager storyManager;
+    public Button[] choiceButtons;
 
     private void Awake()
     {
-        storyManager = StoryManager.Instance;
-        storyManager.OnStoryNodeChanged += UpdateStoryUIWrapper;
     }
 
-    public void UpdateStoryUIWrapper(StoryNode node)
+    private void OnEable()
     {
-            StartCoroutine(UpdateStoryUI(node));
+        UpdateStoryUI(NodeManager.Instance.currentNode);
     }
 
-    public IEnumerator UpdateStoryUI(StoryNode node)
+    public void UpdateStoryUI(Node node)
     {
-        // 모든 버튼 비활성화
+        if (node.nodeType == NodeType.StoryNode)
+        {
+            StartCoroutine(UpdateStoryNode(node as StoryNode));
+        }
+        else if (node.nodeType == NodeType.MainStoryNode)
+        {
+            StartCoroutine(UpdateMainStoryNode(node as MainStoryNode));
+        }
+    }
+
+    public IEnumerator UpdateMainStoryNode(MainStoryNode node)
+    {
+        foreach (var btn in choiceButtons)
+        {
+            btn.gameObject.SetActive(false);
+            btn.onClick.RemoveAllListeners(); // 기존 리스너 제거
+        }
+
+        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(dialogueText, node.nodeMessage, 0.05f));
+
+        yield return StartCoroutine(WaitForClick.WaitClick());
+
+        //얘는 따로 MainStoryUIController나 그런거를 만들기가 힘드네.
+        NodeManager.Instance.GoToNode(node.nextNode);
+    }
+
+    public IEnumerator UpdateStoryNode(StoryNode node)
+    {
+
         foreach (var btn in choiceButtons)
         {
             btn.gameObject.SetActive(false);
@@ -30,23 +56,24 @@ public class StoryUIController : MonoBehaviour
         }
 
         //dialogue Text 출력.
-        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(dialogueText, node.dialogueText, 0.05f));
-
+        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(dialogueText, node.nodeMessage, 0.05f));
 
         if (node.choices != null && node.choices.Count > 0)
         {
-            for (int i = 0; i < node.choices.Count && i < choiceButtons.Length; i++)    
+            for (int i = 0; i < node.choices.Count && i < choiceButtons.Length; i++)
             {
-                if (node.choices[i].choiceText != "" || node.choices[i].nextNode != null) {
+                if (node.choices[i].choiceText != "" || node.choices[i].nextNode != null)
+                {
                     int index = i;
                     var choice = node.choices[i];
 
                     choiceButtons[i].gameObject.SetActive(true);
                     choiceButtons[i].GetComponentInChildren<TMP_Text>().text = choice.choiceText;
-                    choiceButtons[i].onClick.AddListener(() => storyManager.Choose(index));
+                    choiceButtons[i].onClick.AddListener(() => NodeManager.Instance.GoToNode(choice.nextNode));
                 }
             }
         }
         yield break;
     }
 }
+    

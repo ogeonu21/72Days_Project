@@ -8,9 +8,10 @@ public class UIManager : SingleTon<UIManager>
     #region [변수 그룹]
     //Object
     [SerializeField]
-    private GameObject storyUI;
+    private StoryUIController storyUI;
     [SerializeField]
-    private GameObject combatUI;
+    private CombatUIController combatUI;
+    //다른 Object들도 있어야 함.
 
     //Manager
     private GameManager gameManager;
@@ -24,8 +25,7 @@ public class UIManager : SingleTon<UIManager>
     new void Awake()
     {
         base.Awake();
-        gameManager = GameManager.Instance;
-        GameManager.Instance.OnGameStateChanged += UpdateUI;
+        GameEvent.OnNodeChanged += UpdateUI;
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
     }
     
@@ -37,44 +37,56 @@ public class UIManager : SingleTon<UIManager>
     #endregion
 
     #region [Node UI Control]
-    private void UpdateUI(GameState state)
+    private void UpdateUI(Node node)
     {
-        switch (state)
+        switch (node.nodeType)
         {
-            case GameState.Story:
-                OnStoryUI();
+            case NodeType.MainStoryNode:
+                OnStoryUI(node);
                 break;
-            case GameState.Combat:
-                OnCombatUI();
+            case NodeType.StoryNode:
+                OnStoryUI(node);
+                break;
+            case NodeType.CombatNode:
+                OnCombatUI(node);
+                break;
+            case NodeType.EventNode:
+                break;
+            case NodeType.EndingNode:
                 break;
             default:
                 break;
         }
     }
 
-    private void OnStoryUI()
+    private void OnStoryUI(Node node)
     {
-        if (!storyUI.activeSelf)
+        if (!storyUI.gameObject.activeSelf)
         {
-            storyUI.SetActive(true);
-            combatUI.SetActive(false);
+            storyUI.gameObject.SetActive(true);
+            combatUI.gameObject.SetActive(false);
 
             enemy.gameObject.SetActive(false);
         }
-            
+        else
+        {
+            storyUI.UpdateStoryUI(node);
+        }
+
     }
 
-    private void OnCombatUI()
+    private void OnCombatUI(Node node)
     {
-        if (!combatUI.activeSelf)
+        if (!combatUI.gameObject.activeSelf)
         {
-            storyUI.SetActive(false);
-            combatUI.SetActive(true);
+            storyUI.gameObject.SetActive(false);
+            combatUI.gameObject.SetActive(true);
 
             enemy.gameObject.SetActive(true);
             //여기서는 Enemy HP Bar만 활성화 하는 식으로 만들어야해.
         }
-            
+
+        CombatManager.Instance.CombatNodeStart(node);
     }
     #endregion
 

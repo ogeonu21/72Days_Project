@@ -486,6 +486,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 162766018}
+  - component: {fileID: 162766019}
   m_Layer: 0
   m_Name: CombatUI
   m_TagString: Untagged
@@ -516,6 +517,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &162766019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162766017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cc3aff98af04914e947d9575738791f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combatText: {fileID: 687755591}
+  attackButtons: {fileID: 1636104602}
+  blood_Effect: {fileID: 871380900}
+  dodgeRateText:
+  - {fileID: 629208198}
+  - {fileID: 1269922016}
+  - {fileID: 569430725}
+  - {fileID: 614658043}
+  - {fileID: 691159163}
+  - {fileID: 1370352950}
 --- !u!1 &198886545
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,7 +622,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combatActive: 0
   onAttackTurn: 0
-  combatTurn: 0
 --- !u!1 &442000843
 GameObject:
   m_ObjectHideFlags: 0
@@ -2458,8 +2480,6 @@ GameObject:
   - component: {fileID: 840680865}
   - component: {fileID: 840680864}
   - component: {fileID: 840680863}
-  - component: {fileID: 840680869}
-  - component: {fileID: 840680868}
   m_Layer: 5
   m_Name: UICanvas
   m_TagString: Untagged
@@ -2555,45 +2575,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &840680868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 840680862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3c629ac32f21694a8923ce52d66ac3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogueText: {fileID: 645024573}
-  choiceButtons:
-  - {fileID: 1272962668}
-  - {fileID: 590697950}
-  - {fileID: 672083431}
---- !u!114 &840680869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 840680862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cc3aff98af04914e947d9575738791f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  combatText: {fileID: 687755591}
-  attackButtons: {fileID: 0}
-  blood_Effect: {fileID: 871380900}
-  dodgeRateText:
-  - {fileID: 629208198}
-  - {fileID: 1269922016}
-  - {fileID: 569430725}
-  - {fileID: 614658043}
-  - {fileID: 691159163}
-  - {fileID: 1370352950}
 --- !u!1 &871380898
 GameObject:
   m_ObjectHideFlags: 0
@@ -2699,8 +2680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a675b47a1163541842523dfb913cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  storyUI: {fileID: 2130797514}
-  combatUI: {fileID: 162766017}
+  storyUI: {fileID: 2130797516}
+  combatUI: {fileID: 162766019}
 --- !u!4 &964507478
 Transform:
   m_ObjectHideFlags: 0
@@ -4079,6 +4060,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2130797515}
+  - component: {fileID: 2130797516}
   m_Layer: 0
   m_Name: StoryUI
   m_TagString: Untagged
@@ -4109,6 +4091,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2130797516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130797514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3c629ac32f21694a8923ce52d66ac3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueText: {fileID: 645024573}
+  choiceButtons:
+  - {fileID: 1272962668}
+  - {fileID: 590697950}
+  - {fileID: 672083431}
 --- !u!1 &2145489695
 GameObject:
   m_ObjectHideFlags: 0

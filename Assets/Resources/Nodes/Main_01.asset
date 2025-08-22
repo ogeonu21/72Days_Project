@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Main_01
+  m_EditorClassIdentifier: Assembly-CSharp::MainStoryNode
+  nodeType: 0
+  nodeName: Main_01
+  nodeMessage: "\uBA54\uC778 \uC2A4\uD1A0\uB9AC\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uD14C\uC2A4\uD130\uB294
+    \uC900\uBE44\uD558\uB77C."
+  surviveDate: 0
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}

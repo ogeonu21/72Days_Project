@@ -30,7 +30,8 @@ public class CombatManager : SingleTon<CombatManager>
     private AreaData playerInputData;
 
     [Header("CombatResult")]
-    private StoryNode nextNode; 
+    private Node successNode;
+    private Node failureNode;
     #endregion
 
     #region [이벤트 그룹]
@@ -38,7 +39,7 @@ public class CombatManager : SingleTon<CombatManager>
     public delegate IEnumerator CombatTextUpdate(string text);
     public event CombatTextUpdate onTextUpdate;
 
-    public event Action<StoryNode> OnStoryNodeStart;
+    public event Action<Node> OnStoryNodeStart;
     public event Action<Player, Enemy> CombatUIUpdate;
     #endregion
 
@@ -55,7 +56,7 @@ public class CombatManager : SingleTon<CombatManager>
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
 
         //Event 구독
-        storyManager.OnCombatNodeStart += CombatNodeStart;
+        //storyManager.OnCombatNodeStart += CombatNodeStart;
     }
 
     private void UpdateCharacter(Player player, Enemy enemy)
@@ -74,18 +75,20 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     #region [CombatControl]
-    private void CombatNodeStart(Choice node)
+    public void CombatNodeStart(Node node)
     {
-        player.onDied += CombatNodeStop;
-        enemy.onDied += CombatNodeStop;
-
-        StartCoroutine(LoadCombatNode(node));
+        if (node.nodeType == NodeType.CombatNode)
+        {
+            StartCoroutine(LoadCombatNode(node as CombatNode));
+        }
     }
 
-    private IEnumerator LoadCombatNode(Choice node)
+    private IEnumerator LoadCombatNode(CombatNode node)
     {
-        nextNode = node.nextNode;
+        successNode = node.successNode;
+        failureNode = node.failureNode;
         string enemyID = node.combatEnemyID;
+        
         var enemyData = Resources.Load<EnemyDefinition>($"NPCStats/{enemyID}");
 
         if (enemyData != null)
@@ -103,11 +106,14 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
+
+        player.onDied += CombatNodeStop;
+        enemy.onDied += CombatNodeStop;
         onAttackTurn = true;
         combatActive = true;
 
         StartCoroutine(CombatLoopStart());
-
+        
         yield return null;
     }
 
@@ -159,21 +165,23 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-        yield return StartCoroutine(GetReward());
-        //새로운 코루틴 시작. 보상 코루틴
+        combatActive = false;
+        onAttackTurn = false;
 
+        if (enemy.IsDead) yield return StartCoroutine(GetReward());
 
         gameManager.playerData = player.GetCurrentData();
         player.onDied -= CombatNodeStop;
         enemy.onDied -= CombatNodeStop;
 
-        combatActive = false;
-        onAttackTurn = false;
-
-        gameManager.UpdateGameState(GameState.Story);
-        OnStoryNodeStart?.Invoke(nextNode);
-
-        yield return null;
+        if (player.IsDead)
+        {
+            NodeManager.Instance.GoToNode(failureNode);
+        }
+        if (enemy.IsDead)
+        {
+            NodeManager.Instance.GoToNode(successNode);
+        }
     }
     #endregion
 

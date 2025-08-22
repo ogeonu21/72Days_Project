@@ -14,9 +14,7 @@ public class GameManager : SingleTon<GameManager>
     [Header("게임 상태 정보")]
     public int survive_data; // 생존 날짜
     private GameState currentState;
-    //아래 두 줄은 삭제 예정.
-    public string currentNodeName; // 진행 저장용
-    private const string SaveKey = "CurrentNode";
+
 
     #endregion
 
@@ -60,8 +58,6 @@ public class GameManager : SingleTon<GameManager>
     {
         UpdateGameState(GameState.Load);
         SceneManager.LoadScene("GameWindow");
-        
-        
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -77,9 +73,9 @@ public class GameManager : SingleTon<GameManager>
                 playerData = new PlayerData();
                 UpdateGameState(GameState.Story);
                 CharacterManager.Instance.SpawnCharacter(playerData, 0);
+                var node = Resources.Load<Node>($"Nodes/Main_01");
 
-
-                StoryManager.Instance.StartNewProgress();
+                NodeManager.Instance.GoToNode(node);
             }
             else if (currentState == GameState.Load)
             {
@@ -96,7 +92,7 @@ public class GameManager : SingleTon<GameManager>
                 //근데!!! 여기서 만약에 Player가 죽어있다? 그러면 new GAme을 다시 시작하도록 해야함.
                 CharacterManager.Instance.SpawnCharacter(playerData, 1);
 
-                StoryManager.Instance.LoadProgress(data.currentNode);
+                NodeManager.Instance.GoToNode(data.currentNode);
             }
         }
     }
@@ -107,7 +103,7 @@ public class GameManager : SingleTon<GameManager>
         SaveData data = new SaveData();
 
         data.playerData = this.playerData;
-        data.currentNode = StoryManager.Instance.currentNode;
+        data.currentNode = NodeManager.Instance.currentNode;
         data.currentState = this.currentState;
 
         SaveManager.Instance.SaveData(data);

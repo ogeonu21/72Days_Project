@@ -5,12 +5,9 @@ using UnityEngine;
 public class StoryManager : SingleTon<StoryManager>
 {
     #region 변수그룹
-    //노드 변경 감지 이벤트 Action뒤에 <>에는 OnNodeChanged 이벤트를 발생시키면서 매개변수로 전달할 데이터 타입을 는다.
-    public event Action<StoryNode> OnStoryNodeChanged;
-    public event Action<Choice> OnCombatNodeStart;
+    
 
-    public StoryNode currentNode;
-
+    public Node currentNode;
 
     //Manager instance
     private GameManager gameManager;
@@ -24,7 +21,6 @@ public class StoryManager : SingleTon<StoryManager>
         //[이벤트 구독]
         gameManager = GameManager.Instance;
         combatManager = CombatManager.Instance;
-        combatManager.OnStoryNodeStart += GoToNode;
 
     }
 
@@ -33,12 +29,12 @@ public class StoryManager : SingleTon<StoryManager>
     public void StartNewProgress()
     {
         string startNodeName = "Main_01";
-        var node = Resources.Load<StoryNode>($"Story/{startNodeName}");
+        var node = Resources.Load<Node>($"Nodes/{startNodeName}");
         //Reset PlayerData 함수가 필요. 새로 게임을 시작하면 기존 데이터를 지워야하니까. Json파일을 써야함.
 
         if (node != null)
         {
-            GoToNode(node);
+            NodeManager.Instance.GoToNode(node);
         }
         else
         {
@@ -46,11 +42,11 @@ public class StoryManager : SingleTon<StoryManager>
         }
     }
 
-    public void LoadProgress(StoryNode node)
+    public void LoadProgress(Node node)
     {
         if (node != null)
         {
-            GoToNode(node);
+            NodeManager.Instance.GoToNode(node);
         }
         else
         {
@@ -61,43 +57,4 @@ public class StoryManager : SingleTon<StoryManager>
     #endregion
 
 
-    public void Choose(int index)
-    {
-        if (currentNode.choices != null && index < currentNode.choices.Count)
-        {
-            if (currentNode.choices[index].triggersCombat)
-            {
-                //전투 시작!
-                OnCombatNodeStart?.Invoke(currentNode.choices[index]);
-                gameManager.UpdateGameState(GameState.Combat);
-                //여기서 문제는 위의 함수가 전부 실행된 이후에 실행이 되냐 아니냐의 문제인데.
-                //만약 전투 시작이 끝나고나서 실행된다면 그대로 GoToNode()를 실행.
-                //아니라면 Enum을 써야함.
-                //일단 전투 시작이 return Win or Defeaut를 통해서 GoToNode()를 제어해야함.
-
-                //여기서 중간에 멈춰!!!
-                //GoToNode를 실행해야함!
-            }
-            else {
-                GoToNode(currentNode.choices[index].nextNode);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("선택지가 올바르지 않음.");
-        }
-    }
-
-    //Node Update
-    public void GoToNode(StoryNode node)
-    {
-        currentNode = node;
-        OnStoryNodeChanged?.Invoke(node);
-        gameManager.SaveGame();
-    }
-
-    public StoryNode GetCurrentNode()
-    {
-        return currentNode;
-    }
 }
