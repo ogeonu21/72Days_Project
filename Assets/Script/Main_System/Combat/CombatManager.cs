@@ -8,7 +8,6 @@ public class CombatManager : SingleTon<CombatManager>
     #region [변수 그룹]
     #region [기본 변수]
     //Manager
-    private StoryManager storyManager;
     private GameManager gameManager;
     private CombatUIController combatUIController;
 
@@ -23,9 +22,7 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     [Header("CombatSetting")]
-    //전투의 활성화를 알림.
     public bool combatActive;
-    //플레이어가 입력을 할 수 있냐 없냐.
     public bool onAttackTurn;
     private AreaData playerInputData;
 
@@ -39,24 +36,20 @@ public class CombatManager : SingleTon<CombatManager>
     public delegate IEnumerator CombatTextUpdate(string text);
     public event CombatTextUpdate onTextUpdate;
 
-    public event Action<Node> OnStoryNodeStart;
     public event Action<Player, Enemy> CombatUIUpdate;
     #endregion
 
-    #region [코루틴]
-    private Coroutine combatLoop;
-    #endregion
 
     #region [Initialize]
     protected override void Awake()
     {
         base.Awake();
-        gameManager = GameManager.Instance;
-        storyManager = StoryManager.Instance;
+        gameManager = GameManager.Instance; //SaveGame을 위해 Instance를 저장. 굳이?
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
-
-        //Event 구독
-        //storyManager.OnCombatNodeStart += CombatNodeStart;
+    }
+    void OnDestroy()
+    {
+        CharacterManager.Instance.OnCharacterReady -= UpdateCharacter;
     }
 
     private void UpdateCharacter(Player player, Enemy enemy)
@@ -90,7 +83,6 @@ public class CombatManager : SingleTon<CombatManager>
         string enemyID = node.combatEnemyID;
         
         var enemyData = Resources.Load<EnemyDefinition>($"NPCStats/{enemyID}");
-
         if (enemyData != null)
         {
             enemy?.InitializeFromDefinition(enemyData);
@@ -101,20 +93,18 @@ public class CombatManager : SingleTon<CombatManager>
         }
 
         CombatUIUpdate?.Invoke(player, enemy);
+        GameEvent.UpdateCharacterUI(player, enemy);
 
         yield return onTextUpdate?.Invoke(enemy.characterName + "가 당신에게 싸움을 걸었다. \n 준비하라.");
-
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-
+        //이벤트 구독
         player.onDied += CombatNodeStop;
         enemy.onDied += CombatNodeStop;
         onAttackTurn = true;
         combatActive = true;
 
         StartCoroutine(CombatLoopStart());
-        
-        yield return null;
     }
 
     private IEnumerator CombatLoopStart()
@@ -129,6 +119,7 @@ public class CombatManager : SingleTon<CombatManager>
             who[0].CountEffect();
             who[1].CountEffect();
             CombatUIUpdate?.Invoke(player, enemy);
+            GameEvent.UpdateCharacterUI(player, enemy);
 
             if (index == 0)
             {
@@ -208,7 +199,8 @@ public class CombatManager : SingleTon<CombatManager>
     #region [Combat Function]
     private IEnumerator AttackTurn(Character who, Character take, AreaData where, int index)
     {
-        int damage = Mathf.RoundToInt(who.AttackPower * where.damageMultiplier);
+        int damage = Mathf.RoundToInt(who.AttackPower * where.damageMultiplier * UnityEngine.Random.Range(0.95f, 1.05f)); ;
+        //여기에 랜타를 더해야하네.
         bool isHit = Roll(where.hitRate - take.DodgeRate + who.AccuracyRate);
         string logMessage;
 

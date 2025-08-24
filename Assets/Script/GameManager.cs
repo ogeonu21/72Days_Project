@@ -7,15 +7,14 @@ using UnityEngine.SceneManagement;
 public class GameManager : SingleTon<GameManager>
 {
     #region [변수 관리]
-
     [Header("플레이어 정보")]
     public PlayerData playerData;
 
     [Header("게임 상태 정보")]
-    public int survive_data; // 생존 날짜
     private GameState currentState;
 
 
+    public int goodAndEvil { get; private set; }
     #endregion
 
     #region [initialization]
@@ -23,14 +22,13 @@ public class GameManager : SingleTon<GameManager>
     {
         base.Awake();
         playerData = new PlayerData();
+        UpdateGameState(GameState.Main);
     }
     #endregion
 
     #region [이벤트 관리]
-    //GameStateChanged를 Notify할 Event
     public event Action<GameState> OnGameStateChanged;
 
-    //SceneLoaded
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -40,16 +38,20 @@ public class GameManager : SingleTon<GameManager>
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
-
     #endregion
 
 
     #region [진행 관리]
+    public void BackToMain()
+    {
+        SaveGame();
+        UpdateGameState(GameState.Main);
+        SceneManager.LoadScene("MainWindow");
+    }
 
-    //새로운 게임 시작
     public void StartNewGame()
     {
-        UpdateGameState(GameState.Start);
+        UpdateGameState(GameState.New);
         SceneManager.LoadScene("GameWindow");
         
     }
@@ -64,16 +66,19 @@ public class GameManager : SingleTon<GameManager>
     {
         if (scene.name == "GameWindow")
         {
-            if (currentState == GameState.Start)
+            if (currentState == GameState.New)
             {
                 Debug.Log("새로운 세계를 시작하기 위해 핵을 떨구는 중입니다...");
                 //코루틴을 이용한 로딩바 추가도 가능.
 
                 //새로운 Data 생성.
                 playerData = new PlayerData();
-                UpdateGameState(GameState.Story);
+                ResetGoodAndEvil();
+
+                UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 0);
                 var node = Resources.Load<Node>($"Nodes/Main_01");
+                
 
                 NodeManager.Instance.GoToNode(node);
             }
@@ -83,15 +88,23 @@ public class GameManager : SingleTon<GameManager>
 
                 //저장된 Data 로드
                 SaveData data = SaveManager.Instance.LoadData();
+                ResetGoodAndEvil();
+                ChangeGoodAndEvil(data.goodAndEvil);
 
                 this.playerData = data.playerData;
-                this.currentState = data.currentState;
-                UpdateGameState(this.currentState);
-
-
-                //근데!!! 여기서 만약에 Player가 죽어있다? 그러면 new GAme을 다시 시작하도록 해야함.
+                if (playerData.currentHP == 0)
+                {
+                    Debug.Log("죽은 플레이어를 불러올 수는 없다.");
+                    BackToMain();
+                    return;
+                }
+                
+                UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 1);
-
+                if (NodeManager.Instance == null)
+                {
+                    Debug.LogWarning("GameManager: NodeManager is not Found");
+                }
                 NodeManager.Instance.GoToNode(data.currentNode);
             }
         }
@@ -100,20 +113,18 @@ public class GameManager : SingleTon<GameManager>
     public void SaveGame()
     {
         this.playerData = CharacterManager.Instance.currentPlayer.GetCurrentData();
+
         SaveData data = new SaveData();
 
         data.playerData = this.playerData;
         data.currentNode = NodeManager.Instance.currentNode;
-        data.currentState = this.currentState;
+        data.goodAndEvil = this.goodAndEvil;
 
         SaveManager.Instance.SaveData(data);
     }
-
-    
     #endregion
 
     #region [GameState 관리]
-
     //게임 State 관리
     public void UpdateGameState(GameState newState)
     {
@@ -122,9 +133,17 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [이벤트 관리]
-   
-
+    #region [선행, 악행 수치 관리]
+    public void ChangeGoodAndEvil(int amount)
+    {
+        this.goodAndEvil += amount;
+        //
+    }
+    public void ResetGoodAndEvil()
+    {
+        this.goodAndEvil = 0;
+    }
 
     #endregion
+
 }

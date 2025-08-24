@@ -73,17 +73,9 @@ public class Player : Character
     #region [Override]
     public override void TakeDamage(int amount)
     {
-        if (IsDead) return;
-        currentHP = Mathf.Max(0, currentHP - amount);
-
+        base.TakeDamage(amount);
+       
         GameEvent.OnTakeDamage(currentHP, MaxHP);
-        UpdateHP_UI();
-
-        if (currentHP <= 0)
-        {
-            Die();
-        }
-        //Player의 경우에는 입은 데미지에 따라 피격이펙트.
     }
     #endregion
 

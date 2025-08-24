@@ -19,8 +19,7 @@ public class NodeManager : SingleTon<NodeManager>
     {
         //event ¹ß»ý È®·ü? Á¶°Ç Ã¼Å©?
         currentNode = nextNode;
-        GameEvent.NotifyNodeChange(nextNode);
-        Debug.Log($"³ëµå ¹Ù²î¾ú´ÙÀ×~~ {nextNode.nodeName} : {nextNode.nodeType}");
+        GameEvent.NotifyNodeChange(currentNode);
         GameManager.Instance.SaveGame();
     }
 }

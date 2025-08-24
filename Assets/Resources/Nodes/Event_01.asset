@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
   m_Name: Event_01
-  m_EditorClassIdentifier: Assembly-CSharp::EventNode
+  m_EditorClassIdentifier: 
   nodeType: 3
   nodeName: Event_01
   nodeMessage: "\uC774\uBCA4\uD2B8 \uB178\uB4DC\uC5D0 \uC9C4\uC785\uD558\uC600\uB2E4.
@@ -26,16 +26,16 @@ MonoBehaviour:
     requiredFlag: 
     eventStack: 0
     triggersEvent: 0
-    eventSuccessRate: 0.5
+    baseEvent: {fileID: 11400000, guid: 4dadd6731b87ce748bfaf372cad08439, type: 2}
   - choiceText: "\uBBFC\uCCA9\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
-    nextNode: {fileID: 0}
+    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
     triggersEvent: 0
-    eventSuccessRate: 0.5
+    baseEvent: {fileID: 11400000, guid: 543a20beffda24d4ab5090012cbafe6f, type: 2}
   - choiceText: "\uAC74\uAC15\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
-    nextNode: {fileID: 0}
+    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
     triggersEvent: 0
-    eventSuccessRate: 0.5
+    baseEvent: {fileID: 11400000, guid: e4797bbc9a369304bbf030dc472edb05, type: 2}

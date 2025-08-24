@@ -260,10 +260,9 @@ public class DataImporter : EditorWindow
             {
                 choice.nextNode = nodeMap[nextNodeName];
             }
-            if (!string.IsNullOrEmpty(lines[43 + (j * 6)].Split(',')[col].Trim()))
-            {
-                float.TryParse(lines[43 + (j * 6)].Split(',')[col].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out choice.eventSuccessRate);
-            }
+            
+            //BaseEvent는 직접 연결
+
             eventNode.choices.Add(choice);
         }
         EditorUtility.SetDirty(eventNode); // 변경 사항 저장

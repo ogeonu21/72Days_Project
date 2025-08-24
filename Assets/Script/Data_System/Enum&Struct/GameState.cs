@@ -3,10 +3,9 @@ using UnityEngine;
 public enum GameState
 {
     Main,
-    Start,
+    New,
     Load,
-    Story,
-    Combat,
+    Playing,
     GameOver,
-    Ending
+    End
 }

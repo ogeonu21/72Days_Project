@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 2cc481ad19478d446b7e936332d10d21, type: 3}
   m_Name: Combat_01
-  m_EditorClassIdentifier: Assembly-CSharp::CombatNode
+  m_EditorClassIdentifier: 
   nodeType: 2
   nodeName: Combat_01
   nodeMessage: "\uC804\uD22C\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uB2F9\uC2E0\uC758 \uC0C1\uB300\uB294
