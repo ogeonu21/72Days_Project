@@ -9,14 +9,6 @@ public class StoryUIController : MonoBehaviour
     public TMP_Text dialogueText;
     public Button[] choiceButtons;
 
-    private void Awake()
-    {
-    }
-
-    private void OnEable()
-    {
-        UpdateStoryUI(NodeManager.Instance.currentNode);
-    }
 
     public void UpdateStoryUI(Node node)
     {
@@ -73,7 +65,6 @@ public class StoryUIController : MonoBehaviour
                 }
             }
         }
-        yield break;
     }
 }
     

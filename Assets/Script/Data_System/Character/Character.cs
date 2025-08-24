@@ -84,6 +84,8 @@ public class Character : MonoBehaviour
         tempDodgeRate = DodgeRate;
         onStatsChanged?.Invoke();
         //UpdateUI추가 필요.
+
+        UpdateHP_UI();
     }
     #endregion
 

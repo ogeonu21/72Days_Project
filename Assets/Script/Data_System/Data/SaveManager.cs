@@ -59,14 +59,14 @@ public class SaveData
 {
     public PlayerData playerData; //플레이어 데이터
     public Node currentNode; //현재 진행중인 Node;
+    public int goodAndEvil; //선악 수치
     // item Data
-    public GameState currentState;
     // 진행도 관련한 스택. 선행, 악행 등의 스택.
 
     public SaveData()
     {
         playerData = new PlayerData();
         currentNode = ScriptableObject.CreateInstance<Node>();
-        currentState = GameState.Main;
+        goodAndEvil = 0;
     }
 }

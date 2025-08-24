@@ -39,45 +39,7 @@ public class Node : ScriptableObject
     }
 }
 
-[System.Serializable]
-[CreateAssetMenu(fileName = "MainStoryNode", menuName = "Node/MainStoryNode", order = 0)]
-public class MainStoryNode : Node
-{
-    public Node nextNode;
-}
-
-[System.Serializable]
-[CreateAssetMenu(fileName = "StoryNode", menuName = "Node/StoryNode", order = 1)]
-public class StoryNode : Node
-{
-    public List<Choice> choices = new List<Choice>();
-}
-
-[System.Serializable]
-[CreateAssetMenu(fileName = "CombatNode", menuName = "Node/CombatNode", order = 2)]
-public class CombatNode : Node
-{
-    public string combatEnemyID;
-    public Node successNode;
-    public Node failureNode;
-}   
-
-[System.Serializable]
-[CreateAssetMenu(fileName = "EventNode", menuName = "Node/EventNode", order = 3)]
-public class EventNode : Node
-{
-    public string eventName;
-    public List<Choice> choices = new List<Choice>();
-}
-
-[System.Serializable]
-[CreateAssetMenu(fileName = "EndingNode", menuName = "Node/EndingNode", order = 4)]
-public class EndingNode : Node
-{
-    public string endingName;
-}
-
-
+   
 
 [System.Serializable]
 public class Choice
@@ -91,6 +53,6 @@ public class Choice
     public int eventStack;
 
     public bool triggersEvent;
-    public float eventSuccessRate; // 이벤트 성공 확률
+    public BaseEvent baseEvent;
 
 }

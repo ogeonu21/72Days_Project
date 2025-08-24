@@ -4,14 +4,8 @@ using TMPro;
 
 public static class TypewriterEffect
 {
-    private static bool isTyping;
-
-    public static void StartTyping(MonoBehaviour monoBehaviour, TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.05f)
-    {
-        monoBehaviour.StartCoroutine(TypeTextCoroutine(targetTextComponent, textToType, typingSpeed));
-    }
-
-    public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed)
+    // 코루틴 자체를 반환하여 호출하는 쪽에서 제어하도록 함
+    public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.05f)
     {
         if (targetTextComponent == null)
         {
@@ -21,6 +15,7 @@ public static class TypewriterEffect
 
         targetTextComponent.text = "";
 
+        // 이 루프가 끝날 때까지 타이핑이 진행됨
         foreach (char letter in textToType.ToCharArray())
         {
             targetTextComponent.text += letter;

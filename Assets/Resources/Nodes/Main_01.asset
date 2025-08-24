@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
   m_Name: Main_01
-  m_EditorClassIdentifier: Assembly-CSharp::MainStoryNode
+  m_EditorClassIdentifier: 
   nodeType: 0
   nodeName: Main_01
-  nodeMessage: "\uBA54\uC778 \uC2A4\uD1A0\uB9AC\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uD14C\uC2A4\uD130\uB294
-    \uC900\uBE44\uD558\uB77C."
+  nodeMessage: "\uBA54\uC778 \uC2A4\uD1A0\uB9AC \uD655\uC778."
   surviveDate: 0
   worldLocation: 0
-  nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+  nextNode: {fileID: 11400000, guid: f73ee6d1247126c498ddbc0033abfe88, type: 2}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,10 +22,6 @@ public class CombatUIController : MonoBehaviour
 
 
     #region [initialize]
-    private void Awake()
-    {
-        
-    }
 
     private void OnEnable()
     {
@@ -44,7 +41,6 @@ public class CombatUIController : MonoBehaviour
     #region [Effect]
     private void HandleTakeDamageEffect(int currentHP, int maxHP)
     {
-        // 이전에 실행 중이던 피격 효과가 있다면 중지
         if (bloodEffectCoroutine != null)
         {
             StopCoroutine(bloodEffectCoroutine);
@@ -105,25 +101,38 @@ public class CombatUIController : MonoBehaviour
 
         for (int i = 0; i < 6; i++)
         {
+            string damageText;
+            string dodgeText;
             switch (i)
             {
                 case 0:
                 case 1:
-                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("팔",out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("팔", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("팔", out data).damageMultiplier)}";
+                    dodgeText = $"{(AreaDataDB.GetArea("팔", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    
                     break;
                 case 2:
                 case 3:
-                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("다리", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("다리", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("다리", out data).damageMultiplier)}";
+                    dodgeText = $"{(AreaDataDB.GetArea("다리", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    
                     break;
                 case 4:
-                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("몸", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("몸", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("몸", out data).damageMultiplier)}";
+                    dodgeText = $"{(AreaDataDB.GetArea("몸", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    
                     break;
                 case 5:
-                    dodgeRateText[i].text = $"{(AreaDataDB.GetArea("머리", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("머리", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("머리", out data).damageMultiplier)}";
+                    dodgeText = $"{(AreaDataDB.GetArea("머리", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
+                    
                     break;
                 default:
+                    damageText = "Error";
+                    dodgeText = "Erroe";
                     break;
             }
+            dodgeRateText[i].text = $"{damageText}\n{dodgeText}";
         }
 
     }
