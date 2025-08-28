@@ -97,41 +97,23 @@ public class CombatUIController : MonoBehaviour
 
     public void UpdateCombatUI(Player player, Enemy enemy)
     {
-        AreaData data;
-
+        
         for (int i = 0; i < 6; i++)
         {
             string damageText;
             string dodgeText;
-            switch (i)
+
+            if (i < 2)
             {
-                case 0:
-                case 1:
-                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("迫", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("迫", out data).damageMultiplier)}";
-                    dodgeText = $"{(AreaDataDB.GetArea("迫", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
-                    
-                    break;
-                case 2:
-                case 3:
-                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("促府", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("促府", out data).damageMultiplier)}";
-                    dodgeText = $"{(AreaDataDB.GetArea("促府", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
-                    
-                    break;
-                case 4:
-                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("个", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("个", out data).damageMultiplier)}";
-                    dodgeText = $"{(AreaDataDB.GetArea("个", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
-                    
-                    break;
-                case 5:
-                    damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * AreaDataDB.GetArea("赣府", out data).damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * AreaDataDB.GetArea("赣府", out data).damageMultiplier)}";
-                    dodgeText = $"{(AreaDataDB.GetArea("赣府", out data).hitRate - enemy.DodgeRate + player.AccuracyRate) * 100}%";
-                    
-                    break;
-                default:
-                    damageText = "Error";
-                    dodgeText = "Erroe";
-                    break;
+                damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * enemy.areaDataDB[i].damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * enemy.areaDataDB[i].damageMultiplier)}";
+                dodgeText = $"{((enemy.areaDataDB[i].hitRate - enemy.DodgeRate + player.AccuracyRate) * 100) :F2}%";
             }
+            else
+            {
+                damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * enemy.areaDataDB[i/2 + 1].damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * enemy.areaDataDB[i/2 + 1].damageMultiplier)}";
+                dodgeText = $"{((enemy.areaDataDB[i/2 +1].hitRate - enemy.DodgeRate + player.AccuracyRate) * 100) :F2}%";
+            }
+            
             dodgeRateText[i].text = $"{damageText}\n{dodgeText}";
         }
 

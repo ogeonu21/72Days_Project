@@ -10,4 +10,7 @@ public static class GameEvent
 
     public static event Action<Player, Enemy> OnCharacterUIChanged;
     public static void UpdateCharacterUI(Player player, Enemy enemy) => OnCharacterUIChanged?.Invoke(player, enemy);
+
+    public static event Action OnPlayerLevelUp;
+    public static void PlayerLevelUp() => OnPlayerLevelUp?.Invoke();
 }

@@ -21,7 +21,7 @@ public class PlayerData
     {
         id = "Player";
         displayName = "플레이어";
-        baseStats = new BaseStats(0, 0, 30);
+        baseStats = new BaseStats(0, 0, 0);
         attackBonus = 100;
         hpBonus = 0;
         dodgeBonus = 0f;

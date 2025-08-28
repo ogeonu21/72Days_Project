@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Player : Character
 {
+    
     private const float BASE_EXP = 12.1f;
     private const float EXP_GROWTH_RATE = 1.33f;
 
@@ -89,33 +90,14 @@ public class Player : Character
     private void UpdateLv()
     {
         int requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
+
         if (exp >= requiredExpForLvUP)
         {
             exp -= requiredExpForLvUP;
             lv++;
-            //OnPlayerLvUp?.Invoke();
-            //지금은 임시로 스탯 하나 올리기.
-            int i = UnityEngine.Random.Range(1, 4);
-            switch (i)
-            {
-                case 1:
-                    baseStats.str++;
-                    Debug.Log("힘증가");
-                    UpdateStats();
-                    break;
-                case 2:
-                    baseStats.dex++;
-                    Debug.Log("민첩증가");
-                    UpdateStats();
-                    break;
-                case 3:
-                    baseStats.con++;
-                    Debug.Log("건강증가");
-                    UpdateStats();
-                    break;
-                default:
-                    break;
-            }
+            Heal(MaxHP);
+
+            GameEvent.PlayerLevelUp();
         }
     }
     #endregion

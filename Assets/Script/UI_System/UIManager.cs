@@ -15,6 +15,10 @@ public class UIManager : SingleTon<UIManager>
     private EventUIController eventUI;
     //다른 Object들도 있어야 함.
 
+
+    [SerializeField]
+    private GameObject levelUpUI;
+
     //Manager
     private GameManager gameManager;
 
@@ -28,7 +32,10 @@ public class UIManager : SingleTon<UIManager>
     {
         base.Awake();
         GameEvent.OnNodeChanged += UpdateUI;
+        GameEvent.OnPlayerLevelUp += UpdateLevelUpUI;
+
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
+
         
     }
 
@@ -134,4 +141,27 @@ public class UIManager : SingleTon<UIManager>
     }
     #endregion
 
+
+    #region [Lv UI Control]
+    private void UpdateLevelUpUI()
+    {
+        Time.timeScale = 0;
+        if (levelUpUI != null)
+        {
+            levelUpUI.SetActive(true);
+        }
+        
+    }
+
+    public void EventExecute(BaseEvent baseEvent)
+    {
+        Time.timeScale = 1;
+        baseEvent.Execute();
+        if (levelUpUI != null)
+        {
+            levelUpUI.SetActive(false);
+        }
+        
+    }
+    #endregion
 }
