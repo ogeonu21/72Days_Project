@@ -7,10 +7,23 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     private CombatManager combatManager;
+    private Player player;
     
     private void Awake()
     {
         combatManager = CombatManager.Instance;
+    }
+
+    private void OnEnable()
+    {
+        if (CharacterManager.Instance.currentPlayer != null)
+        {
+            player = CharacterManager.Instance.currentPlayer;
+        }
+    }
+    private void OnDisable()
+    {
+        player = null;
     }
 
 
@@ -22,7 +35,24 @@ public class InputManager : MonoBehaviour
 
         if (combatManager.onAttackTurn)
         {
-            AreaData data = AreaDataDB.GetArea(name, out data);
+            AreaData data = new AreaData();
+            switch (name)
+            {
+                case "¸Ó¸®":
+                    data = player.areaDataDB[0];
+                    break;
+                case "¸ö":
+                    data = player.areaDataDB[1];
+                    break;
+                case "ÆÈ":
+                    data = player.areaDataDB[2];
+                    break;
+                case "´Ù¸®":
+                    data = player.areaDataDB[3];
+                    break;
+                default:
+                    break;
+            }
             combatManager.GetInput(data);
         }
         else

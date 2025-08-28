@@ -260,8 +260,10 @@ public class DataImporter : EditorWindow
             {
                 choice.nextNode = nodeMap[nextNodeName];
             }
+
+            string eventName = lines[41 + (j * 6)].Split(',')[col].Trim();
             
-            //BaseEvent는 직접 연결
+            choice.baseEvent = Resources.Load<BaseEvent>($"Events/{eventName}");
 
             eventNode.choices.Add(choice);
         }

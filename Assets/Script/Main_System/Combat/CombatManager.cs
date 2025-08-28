@@ -19,8 +19,8 @@ public class CombatManager : SingleTon<CombatManager>
     AreaData[] where = new AreaData[2];
     Character[] who = new Character[2];
     private string[] areaIndex = { "머리", "몸", "팔", "다리" };
-    #endregion
 
+    #endregion
     [Header("CombatSetting")]
     public bool combatActive;
     public bool onAttackTurn;
@@ -32,13 +32,11 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     #region [이벤트 그룹]
-    //combatTextUpdate Event
     public delegate IEnumerator CombatTextUpdate(string text);
     public event CombatTextUpdate onTextUpdate;
 
     public event Action<Player, Enemy> CombatUIUpdate;
     #endregion
-
 
     #region [Initialize]
     protected override void Awake()
@@ -95,10 +93,13 @@ public class CombatManager : SingleTon<CombatManager>
         CombatUIUpdate?.Invoke(player, enemy);
         GameEvent.UpdateCharacterUI(player, enemy);
 
-        yield return onTextUpdate?.Invoke(enemy.characterName + "가 당신에게 싸움을 걸었다. \n 준비하라.");
+        yield return onTextUpdate?.Invoke(enemy.characterName + JosaUtility.GetJosa_이가(enemy.characterName) + " 당신에게 싸움을 걸었다. \n 준비하라.");
         yield return StartCoroutine(WaitForClick.WaitClick());
 
         //이벤트 구독
+        player.EffectReset();
+        enemy.EffectReset();
+
         player.onDied += CombatNodeStop;
         enemy.onDied += CombatNodeStop;
         onAttackTurn = true;
@@ -151,7 +152,7 @@ public class CombatManager : SingleTon<CombatManager>
     private IEnumerator CombatNodeEnd(Character take)
     {
         //Event로 바로 작동하는 것이 아닐, onDied가 발생하면 combatActive만 끄는 식으로.
-        string logMessage = $"{take.characterName}이 사망하였다. 전투가 종료되었다.";
+        string logMessage = $"{take.characterName} {JosaUtility.GetJosa_이가(take.characterName)} 사망하였다. 전투가 종료되었다.";
         yield return onTextUpdate?.Invoke(logMessage);
 
         yield return StartCoroutine(WaitForClick.WaitClick());
@@ -187,7 +188,7 @@ public class CombatManager : SingleTon<CombatManager>
     //Enemy가 자신의 차례때 공격할 위치를 결정하는 함수.
     private AreaData GetEnemyAttack()
     {
-        return AreaDataDB.All[UnityEngine.Random.Range(0, 4)];
+        return enemy.areaDataDB[UnityEngine.Random.Range(0, 4)];
     }
 
     private bool Roll(float f)
@@ -207,7 +208,7 @@ public class CombatManager : SingleTon<CombatManager>
         if (isHit)
         {
             take.TakeDamage(damage);
-            logMessage = $"{who.characterName}은 {take.characterName}의 {where.label}을 공격하여 {damage}의 피해를 입혔다.";
+            logMessage = $"{who.characterName} {JosaUtility.GetJosa_은는(who.characterName)} {take.characterName}의 {where.label}을 공격하여 {damage}의 피해를 입혔다.";
 
             if (damage > 0 && Roll(where.effectRate))
             {   
@@ -217,7 +218,7 @@ public class CombatManager : SingleTon<CombatManager>
         }
         else
         {
-            logMessage = $"{who.characterName}은 {take.characterName}의 {where.label}을 공격하려 하였으나, 빗나갔다.";
+            logMessage = $"{who.characterName} {JosaUtility.GetJosa_은는(who.characterName)} {take.characterName}의 {where.label}을 공격하려 하였으나, 빗나갔다.";
         }
 
         yield return onTextUpdate?.Invoke(logMessage);
@@ -231,11 +232,11 @@ public class CombatManager : SingleTon<CombatManager>
         switch (where.label)
         {
             case "팔":
-                return $"추가로, {take.characterName}는 팔에 부상을 입어 다음 두 턴간 공격이 5만큼 감소하였다.";
+                return $"추가로, {take.characterName} {JosaUtility.GetJosa_은는(take.characterName)} 팔에 부상을 입어 다음 두 턴간 공격이 5만큼 감소하였다.";
             case "다리":
-                return $"추가로, {take.characterName}는 다리에 부상을 입어 다음 두 턴간 회피율이 5%만큼 감소하였다.";
+                return $"추가로, {take.characterName} {JosaUtility.GetJosa_은는(take.characterName)} 다리에 부상을 입어 다음 두 턴간 회피율이 5%만큼 감소하였다.";
             case "몸":
-                return $"추가로, {take.characterName}는 복부에 부상을 입어 다음 두 턴간 3의 출혈 피해를 추가로 입는다.";
+                return $"추가로, {take.characterName} {JosaUtility.GetJosa_은는(take.characterName)} 복부에 부상을 입어 다음 두 턴간 3의 출혈 피해를 추가로 입는다.";
             default:
                 return string.Empty;
         }

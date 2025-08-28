@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 public class Enemy : Character
 {
+
     public void InitializeFromDefinition(EnemyDefinition def)
     {
         if (def == null) return;
@@ -14,9 +16,19 @@ public class Enemy : Character
         hpBonus = def.hpBonus;
         dodgeBonus = def.dodgeBonus;
         rangeBonus = def.rangeBonus;
+
+        AreaDataReset();
         
         UpdateStats();
         SetCurrentHPAndNotify(MaxHP);
+    }
+
+    public void AreaDataReset()
+    {
+        for (int i = 0; i < areaDataDB.Length; i++)
+        {
+            areaDataDB[i].hitRate = areaDataDB[i].hitRate * UnityEngine.Random.Range(0.8f, 1.2f);
+        }
     }
 
     public int GetExpReward()

@@ -37,13 +37,16 @@ public class Character : MonoBehaviour
     [SerializeField, ReadOnly] protected int currentHP;
     #endregion
 
-    //제작 필요.
-    #region [Effect]
-    //머리는 뭐가 없어.
-    //다리는? 2턴간 회피율 감소로 바꾸자. 15%;
-    //팔은 2턴간 공격 감소. 10%, 6;
-    //몸은? 출혈. 10%, 3;
+    #region [AreaData]
+    public AreaData[] areaDataDB = {
+        new AreaData("머리", 0.4f, 0.6f, 1.6f),
+        new AreaData("몸", 0.9f, 0.15f, 0.7f),
+        new AreaData("팔", 0.65f, 0.3f, 1.1f),
+        new AreaData("다리", 0.8f, 0.2f, 0.9f)
+    };
+    #endregion
 
+    #region [Effect]
     private float tempDodgeRate;
     private int tempAttackPower;
 
@@ -79,13 +82,17 @@ public class Character : MonoBehaviour
     //장비 변경, 스탯 성장시에 작동.
     public void UpdateStats()
     {
+        int tmpMaxHP = MaxHP;
         derived = new DerivedStats(baseStats.str, baseStats.dex, baseStats.con, attackBonus, hpBonus, dodgeBonus, rangeBonus);
         tempAttackPower = AttackPower;
         tempDodgeRate = DodgeRate;
+
         onStatsChanged?.Invoke();
-        //UpdateUI추가 필요.
+
+        Heal(MaxHP - tmpMaxHP);
 
         UpdateHP_UI();
+
     }
     #endregion
 
@@ -109,6 +116,7 @@ public class Character : MonoBehaviour
     {
         if (IsDead) return;
         currentHP = Mathf.Min(MaxHP, currentHP + Mathf.Max(0, amount));
+        Debug.Log($"{amount}만큼의 체력을 회복하였다.");
 
         UpdateHP_UI();
     }
@@ -155,10 +163,8 @@ public class Character : MonoBehaviour
             else
             {
                 continue;
-            }
-            
+            }   
         }
-        
     }
 
     public void TakeEffect(AreaData data)
@@ -179,8 +185,18 @@ public class Character : MonoBehaviour
             default:
                 break;
         }
+//이펙트 효과 적용 필요.
+    }
 
-        //이펙트 효과 적용 필요.
+    public void EffectReset()
+    {
+        derived.attackPower = tempAttackPower;
+        derived.dodgeRate = tempDodgeRate;
+
+        for (int i = 0; i < 4; i++)
+        {
+            EffectTurn[i] = 0;
+        }
     }
     #endregion
 
