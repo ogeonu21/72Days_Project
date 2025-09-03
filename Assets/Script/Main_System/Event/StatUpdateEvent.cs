@@ -5,12 +5,29 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "StatUpdateEvent", menuName = "Events/StatUpdateEvent")]
 public class StatUpdateEvent : BaseEvent
 {
+    public string eventCategory;
     public int changeAmount;
     public string statType;
 
     public override void Execute()
     {
-        if (CharacterManager.Instance != null)
+        EventExecute();
+    }
+
+    public override void Execute(Node nextNode)
+    {
+        EventExecute();
+
+        if (nextNode != null)
+        {
+            NodeManager.Instance.GoToNode(nextNode);
+        }
+        
+    }
+
+    public void EventExecute()
+    {
+        if (CharacterManager.Instance != null && NodeManager.Instance != null)
         {
             switch (statType)
             {
@@ -29,6 +46,5 @@ public class StatUpdateEvent : BaseEvent
             }
             CharacterManager.Instance.currentPlayer.UpdateStats();
         }
-        
     }
 }

@@ -19,7 +19,7 @@ public static class TypewriterEffect
         foreach (char letter in textToType.ToCharArray())
         {
             targetTextComponent.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSeconds(typingSpeed-0.03f);
         }
     }
 }

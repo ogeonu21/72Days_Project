@@ -15,8 +15,7 @@ public class EventManager : SingleTon<EventManager>
     public void Choose(Choice choice)
     {
         Debug.Log($"{choice.baseEvent} : Event ½ÇÇà.");
-        choice.baseEvent.Execute();
+        choice.baseEvent.Execute(choice.nextNode);
 
-        NodeManager.Instance.GoToNode(choice.nextNode);
     }
 }

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
-  m_Name: E_000
+  m_Name: E_004
   m_EditorClassIdentifier: 
   type: "\uC545"
-  id: E_000
-  displayName: "\uB178\uC219\uC790 \uAE40\uD5CC\uC77C"
+  id: E_004
+  displayName: "\uC778\uC2E0\uB9E4\uB9E4\uBC94 \uAD8C\uBC94"
   baseStats:
-    str: 0
-    dex: 1
-    con: 0
+    str: 3
+    dex: 0
+    con: 3
   attackBonus: 0
-  hpBonus: 0
-  dodgeBonus: 0.1
+  hpBonus: 7
+  dodgeBonus: 0.02
   rangeBonus: 0

@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class EventUIController : MonoBehaviour
+public class EventUIController : UIController, IUpdatableUI
 {
     public TMP_Text dialogueText;
     public Button[] choiceButtons;
     
 
-    public void UpdateEventUI(Node node)
+    public void UpdateUI(Node node)
     {
         StartCoroutine(UpdateEventNode(node as EventNode));
 

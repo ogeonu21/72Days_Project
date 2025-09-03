@@ -47,7 +47,10 @@ public class CombatManager : SingleTon<CombatManager>
     }
     void OnDestroy()
     {
-        CharacterManager.Instance.OnCharacterReady -= UpdateCharacter;
+        if (CharacterManager.Instance != null)
+        {
+            CharacterManager.Instance.OnCharacterReady -= UpdateCharacter;
+        }
     }
 
     private void UpdateCharacter(Player player, Enemy enemy)
@@ -78,16 +81,14 @@ public class CombatManager : SingleTon<CombatManager>
     {
         successNode = node.successNode;
         failureNode = node.failureNode;
-        string enemyID = node.combatEnemyID;
         
-        var enemyData = Resources.Load<EnemyDefinition>($"NPCStats/{enemyID}");
-        if (enemyData != null)
+        if (node.enemyData != null)
         {
-            enemy?.InitializeFromDefinition(enemyData);
+            enemy?.InitializeFromDefinition(node.enemyData);
         }
         else
         {
-            Debug.LogWarning($"{enemyID} : EnemyDefinition UnFound");
+            Debug.LogWarning($"{node.combatEnemyID} : EnemyDefinition UnFound");
         }
 
         CombatUIUpdate?.Invoke(player, enemy);
@@ -246,8 +247,14 @@ public class CombatManager : SingleTon<CombatManager>
     #region [Reward System]
     private IEnumerator GetReward()
     {
+        
+
+        yield return onTextUpdate?.Invoke($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다.");
+
+        yield return new WaitForSeconds(0.5f);
+
         player.GetExp(enemy.GetExpReward());
-        yield return onTextUpdate?.Invoke($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다. 현재 당신의 Lv는 {player.lv}이다.");
+
         yield return StartCoroutine(WaitForClick.WaitClick());
     }
     #endregion

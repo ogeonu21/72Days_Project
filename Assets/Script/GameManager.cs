@@ -40,7 +40,6 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-
     #region [진행 관리]
     public void BackToMain()
     {
@@ -53,7 +52,6 @@ public class GameManager : SingleTon<GameManager>
     {
         UpdateGameState(GameState.New);
         SceneManager.LoadScene("GameWindow");
-        
     }
 
     public void LoadGame()

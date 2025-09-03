@@ -9,17 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
-  m_Name: E_000
+  m_Script: {fileID: 11500000, guid: b288881e1f76fd8468b8a262a07990fe, type: 3}
+  m_Name: "\uC804\uD22C\uD558\uAE30_\uAD76\uC8FC\uB9B0\uBAA8\uB140"
   m_EditorClassIdentifier: 
-  type: "\uC545"
-  id: E_000
-  displayName: "\uB178\uC219\uC790 \uAE40\uD5CC\uC77C"
-  baseStats:
-    str: 0
-    dex: 1
-    con: 0
-  attackBonus: 0
-  hpBonus: 0
-  dodgeBonus: 0.1
-  rangeBonus: 0
+  eventCategory: 
+  type: 0
+  who: {fileID: 11400000, guid: 1bc8ee1c085f7084e818ca829e128a91, type: 2}

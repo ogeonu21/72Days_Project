@@ -1,18 +1,27 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class EndingUIController : MonoBehaviour
+public class EndingUIController : UIController, IUpdatableUI
 {
-    // Start is called before the first frame update
-    void Start()
+    public TMP_Text dialogueText;
+    
+    public void UpdateUI(Node node)
     {
-        
+        StartCoroutine(UpdateEndingUI(node as EndingNode));
+
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public IEnumerator UpdateEndingUI(EndingNode node)
     {
-        
+        string message = node.endingName + "\n\n" +node.nodeMessage;
+
+        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(dialogueText, message, 0.05f));
+
+        yield return StartCoroutine(WaitForClick.WaitClick());
+
+        GameManager.Instance.BackToMain();
     }
 }
