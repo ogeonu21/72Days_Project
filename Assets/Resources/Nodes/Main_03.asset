@@ -32,8 +32,9 @@ MonoBehaviour:
     eventStack: 0
     triggersEvent: 0
     baseEvent: {fileID: 0}
-  - choiceText: "\uC5D4\uB529 \uB178\uB4DC \uD655\uC778\uD558\uB7EC \uAC00\uAE30."
-    nextNode: {fileID: 11400000, guid: 0dc4205b22c183b419b7d002e7c75a2e, type: 2}
+  - choiceText: "\uB450\uBC88\uC9F8 \uC774\uBCA4\uB4DC \uB178\uB4DC \uD655\uC778\uD558\uB7EC
+      \uAC00\uAE30"
+    nextNode: {fileID: 11400000, guid: b4b86ef88fcb6644788e7de0f605a3ac, type: 2}
     requiredFlag: 
     eventStack: 0
     triggersEvent: 0

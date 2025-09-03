@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cc481ad19478d446b7e936332d10d21, type: 3}
-  m_Name: Combat_01
+  m_Name: Combat_02
   m_EditorClassIdentifier: 
   nodeType: 2
-  nodeName: Combat_01
+  nodeName: Combat_02
   nodeMessage: "\uC804\uD22C\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uB2F9\uC2E0\uC758 \uC0C1\uB300\uB294
-    \uB178\uC219\uC790 \uAE40\uD5CC\uC77C\uC774\uB2E4. \uC0DD\uC874\uD558\uB77C."
-  surviveDate: 1
+    \uAD76\uC8FC\uB9B0 \uBAA8\uB140\uC774\uB2E4. \uD574\uCE58\uC6CC\uB77C."
+  surviveDate: 2
   worldLocation: 0
-  combatEnemyID: E_000
+  combatEnemyID: E_003
   successNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
-  failureNode: {fileID: 11400000, guid: d559f32b34b64ee44892c6a2e5c71d2d, type: 2}
-  enemyData: {fileID: 11400000, guid: 1dce87a50bd23244e87555408a4e2c1e, type: 2}
+  failureNode: {fileID: 11400000, guid: 0dc4205b22c183b419b7d002e7c75a2e, type: 2}
+  enemyData: {fileID: 11400000, guid: 42e72278caf068046a471c89b1eb8ac7, type: 2}

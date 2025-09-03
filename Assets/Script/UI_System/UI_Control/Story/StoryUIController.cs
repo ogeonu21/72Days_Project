@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class StoryUIController : MonoBehaviour
+public class StoryUIController : UIController, IUpdatableUI
 {
     public TMP_Text dialogueText;
     public Button[] choiceButtons;
 
 
-    public void UpdateStoryUI(Node node)
+    public void UpdateUI(Node node)
     {
         if (node.nodeType == NodeType.StoryNode)
         {

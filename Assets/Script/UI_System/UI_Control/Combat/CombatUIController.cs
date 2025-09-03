@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CombatUIController : MonoBehaviour
+public class CombatUIController : UIController, IUpdatableUI
 {
     #region [변수 그룹]
     public TMP_Text combatText;
@@ -94,6 +94,11 @@ public class CombatUIController : MonoBehaviour
     }
 
     #endregion
+
+    public void UpdateUI(Node node)
+    {
+        combatManager.CombatNodeStart(node);
+    }
 
     public void UpdateCombatUI(Player player, Enemy enemy)
     {

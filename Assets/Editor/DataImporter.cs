@@ -77,8 +77,6 @@ public class DataImporter : EditorWindow
 
             #endregion
 
-            if (type != "npc") continue;
-
             #region [Update SO]
             string path = $"Assets/Resources/NPCStats/{id}.asset";
             var def = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(path);
@@ -89,6 +87,7 @@ public class DataImporter : EditorWindow
                 created = true;
             }
 
+            def.type = type;
             def.id = id;
             def.displayName = string.IsNullOrEmpty(name) ? id : name;
             def.baseStats = new BaseStats { str = str, dex = dex, con = con };
@@ -189,7 +188,7 @@ public class DataImporter : EditorWindow
 
     #endregion
 
-    #region [Node Link2]
+    #region [Node Parsing2]
 
     private void LinkMainStoryNode(MainStoryNode mainStoryNode, string[] lines, int col)
     {
@@ -225,6 +224,12 @@ public class DataImporter : EditorWindow
     private void LinkCombatNode(CombatNode combatNode, string[] lines, int col)
     {
         combatNode.combatEnemyID = lines[31].Split(',')[col].Trim();
+        combatNode.enemyData = Resources.Load<EnemyDefinition>($"NPCStats/{combatNode.combatEnemyID}");
+
+        if (combatNode.enemyData == null)
+        {
+            Debug.LogWarning($"비상비상비상비상비상비상 {combatNode.nodeName}에서 enemyData를 못찾음 비상비상비상!!!!");
+        }
 
         string successNodeName = lines[32].Split(',')[col].Trim();
         if (nodeMap.ContainsKey(successNodeName))
@@ -242,7 +247,7 @@ public class DataImporter : EditorWindow
     }
     private void LinkEventNode(EventNode eventNode, string[] lines, int col)
     {
-        eventNode.eventName = lines[35].Split(',')[col].Trim();
+        eventNode.eventCategory = lines[35].Split(',')[col].Trim();
         EditorUtility.SetDirty(eventNode); // 변경 사항 저장
 
         int howManyChoices = 0;
@@ -263,7 +268,9 @@ public class DataImporter : EditorWindow
 
             string eventName = lines[41 + (j * 6)].Split(',')[col].Trim();
             
-            choice.baseEvent = Resources.Load<BaseEvent>($"Events/{eventName}");
+
+            //Event 카테고리를 추가할까?
+            choice.baseEvent = Resources.Load<BaseEvent>($"Events/{eventNode.eventCategory}/{eventName}");
 
             eventNode.choices.Add(choice);
         }

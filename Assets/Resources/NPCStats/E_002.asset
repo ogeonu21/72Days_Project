@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
   m_Name: E_002
   m_EditorClassIdentifier: 
+  type: "\uC545"
   id: E_002
-  displayName: INJURYSOLDIER
+  displayName: "\uD0C8\uC601\uBCD1 \uAE40\uC724\uC7AC"
   baseStats:
-    str: 2
+    str: 1
     dex: 1
     con: 0
   attackBonus: 0

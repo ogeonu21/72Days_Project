@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
   m_Name: E_001
   m_EditorClassIdentifier: 
+  type: "\uC545"
   id: E_001
-  displayName: SOLDIER
+  displayName: "\uC77C\uBCD1 \uC7A5\uC724\uC131"
   baseStats:
-    str: 3
-    dex: 2
+    str: 2
+    dex: 1
     con: 1
-  attackBonus: 2
-  hpBonus: 5
+  attackBonus: 1
+  hpBonus: 3
   dodgeBonus: 0.07
   rangeBonus: 0
