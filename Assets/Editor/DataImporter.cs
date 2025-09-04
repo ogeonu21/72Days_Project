@@ -66,6 +66,8 @@ public class DataImporter : EditorWindow
             string id = parts[1].Trim();
             string name = parts[2].Trim();
 
+            if (string.IsNullOrWhiteSpace(id)) continue;
+
             // 안전하게 파싱
             int.TryParse(parts[3], out int str);
             int.TryParse(parts[4], out int dex);
@@ -75,10 +77,11 @@ public class DataImporter : EditorWindow
             float.TryParse(parts[8], out float dodgeBonus);
             int.TryParse(parts[9], out int rangeBonus);
 
+
             #endregion
 
             #region [Update SO]
-            string path = $"Assets/Resources/NPCStats/{id}.asset";
+            string path = $"Assets/Resources/Characters/{id}.asset";
             var def = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(path);
             bool created = false;
             if (def == null)
@@ -100,7 +103,7 @@ public class DataImporter : EditorWindow
             if (created) AssetDatabase.CreateAsset(def, path);
             else EditorUtility.SetDirty(def);
 
-        }
+        } 
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -224,7 +227,7 @@ public class DataImporter : EditorWindow
     private void LinkCombatNode(CombatNode combatNode, string[] lines, int col)
     {
         combatNode.combatEnemyID = lines[31].Split(',')[col].Trim();
-        combatNode.enemyData = Resources.Load<EnemyDefinition>($"NPCStats/{combatNode.combatEnemyID}");
+        combatNode.enemyData = Resources.Load<EnemyDefinition>($"Characters/{combatNode.combatEnemyID}");
 
         if (combatNode.enemyData == null)
         {

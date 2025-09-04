@@ -22,8 +22,10 @@ public class MeetingEvent : BaseEvent
                 case meetingEventType.전투하기:
                     if (who.enemyData.type == "선")
                     {
-                        //선량한 사람과 싸워? 너새끼는 쓰레기다.
-                        Debug.Log("쓰레기새끼.");
+                        if (GameManager.Instance != null)
+                        {
+                            GameManager.Instance.ChangeGoodAndEvil(1);
+                        }
                     }
                     who.successNode = nextNode;
                     NodeManager.Instance.GoToNode(who);
@@ -34,6 +36,10 @@ public class MeetingEvent : BaseEvent
                 case meetingEventType.도와주기:
                     //조건 사용.
                     //보상 제공
+                    if (GameManager.Instance != null)
+                    {
+                        GameManager.Instance.ChangeGoodAndEvil(-1);
+                    }
                     NodeManager.Instance.GoToNode(nextNode);
                     break;
                 default:

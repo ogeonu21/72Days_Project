@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Text;
@@ -60,6 +62,8 @@ public class SaveData
     public PlayerData playerData; //플레이어 데이터
     public Node currentNode; //현재 진행중인 Node;
     public int goodAndEvil; //선악 수치
+    public ItemData itemData;
+
     // item Data
     // 진행도 관련한 스택. 선행, 악행 등의 스택.
 
@@ -68,5 +72,6 @@ public class SaveData
         playerData = new PlayerData();
         currentNode = ScriptableObject.CreateInstance<Node>();
         goodAndEvil = 0;
+        itemData = new ItemData();
     }
 }
