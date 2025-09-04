@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,7 @@ public class GameManager : SingleTon<GameManager>
     #region [변수 관리]
     [Header("플레이어 정보")]
     public PlayerData playerData;
+    public ItemData itemData;
 
     [Header("게임 상태 정보")]
     private GameState currentState;
@@ -71,10 +73,14 @@ public class GameManager : SingleTon<GameManager>
 
                 //새로운 Data 생성.
                 playerData = new PlayerData();
+                itemData = new ItemData();
                 ResetGoodAndEvil();
+
+                
 
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 0);
+                InventoryManager.Instance.MakeNew(itemData);
                 var node = Resources.Load<Node>($"Nodes/Main_01");
                 
 
@@ -90,6 +96,8 @@ public class GameManager : SingleTon<GameManager>
                 ChangeGoodAndEvil(data.goodAndEvil);
 
                 this.playerData = data.playerData;
+                this.itemData = data.itemData;
+
                 if (playerData.currentHP == 0)
                 {
                     Debug.Log("죽은 플레이어를 불러올 수는 없다.");
@@ -99,10 +107,7 @@ public class GameManager : SingleTon<GameManager>
                 
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 1);
-                if (NodeManager.Instance == null)
-                {
-                    Debug.LogWarning("GameManager: NodeManager is not Found");
-                }
+                InventoryManager.Instance.MakeNew(itemData);
                 NodeManager.Instance.GoToNode(data.currentNode);
             }
         }
