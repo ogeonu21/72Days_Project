@@ -131,6 +131,8 @@ public class Character : MonoBehaviour
 
     #region [Effect Function]
 
+    //특수 효과 턴수 계산.
+    //특수 효과 턴이 존재한다면 -1, 만약 -1하여 0이 된다면 효과 해제.
     public void CountEffect()
     {
         for (int i = 0; i < 3; i++)
