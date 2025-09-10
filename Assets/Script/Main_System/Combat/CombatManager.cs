@@ -201,9 +201,11 @@ public class CombatManager : SingleTon<CombatManager>
     #region [Combat Function]
     private IEnumerator AttackTurn(Character who, Character take, AreaData where, int index)
     {
+        //데미지 공식 = 공격자 공격력 * 공격부위 공격파워 * 
         int damage = Mathf.RoundToInt(who.AttackPower * where.damageMultiplier * UnityEngine.Random.Range(0.95f, 1.05f)); ;
-        //여기에 랜타를 더해야하네.
         bool isHit = Roll(where.hitRate - take.DodgeRate + who.AccuracyRate);
+
+
         string logMessage;
 
         if (isHit)

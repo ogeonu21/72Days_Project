@@ -44,6 +44,7 @@ public class Player : Character
         hpBonus = data.hpBonus;
         dodgeBonus = data.dodgeBonus;
         rangeBonus = data.rangeBonus;
+
         exp = data.exp;
         lv = data.lv;
 

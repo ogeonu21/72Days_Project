@@ -111,12 +111,12 @@ public class CombatUIController : UIController, IUpdatableUI
             if (i < 2)
             {
                 damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * enemy.areaDataDB[i].damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * enemy.areaDataDB[i].damageMultiplier)}";
-                dodgeText = $"{((enemy.areaDataDB[i].hitRate - enemy.DodgeRate + player.AccuracyRate) * 100) :F2}%";
+                dodgeText = $"{(Mathf.Min((enemy.areaDataDB[i].hitRate - enemy.DodgeRate + player.AccuracyRate), 1.0f) * 100) :F2}%";
             }
             else
             {
                 damageText = $"{Mathf.RoundToInt(player.AttackPower * 0.95f * enemy.areaDataDB[i/2 + 1].damageMultiplier)} ~ {Mathf.RoundToInt(player.AttackPower * 1.05f * enemy.areaDataDB[i/2 + 1].damageMultiplier)}";
-                dodgeText = $"{((enemy.areaDataDB[i/2 +1].hitRate - enemy.DodgeRate + player.AccuracyRate) * 100) :F2}%";
+                dodgeText = $"{(Mathf.Min((enemy.areaDataDB[i / 2 + 1].hitRate - enemy.DodgeRate + player.AccuracyRate), 1.0f) * 100) :F2}%";
             }
             
             dodgeRateText[i].text = $"{damageText}\n{dodgeText}";
