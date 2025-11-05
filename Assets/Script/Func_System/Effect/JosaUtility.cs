@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class JosaUtility
 {
-    // 받침이 있는지 확인하는 헬퍼 함수
+    // 종성이 있는지 확인하는 유틸리티 함수
     private static bool HasFinalConsonant(char ch)
     {
         // 한글 범위를 벗어나면 false 반환
@@ -11,38 +11,28 @@ public static class JosaUtility
             return false;
         }
 
-        // 유니코드 값을 기준으로 받침 유무 판단
+        // 유니코드 계산을 통해 종성 여부 확인
         int offset = ch - '가';
         int finalConsonantCode = offset % 28;
         return finalConsonantCode != 0;
     }
 
-    /// <summary>
-    /// 입력된 단어에 따라 '이' 또는 '가' 조사를 반환합니다.
-    /// </summary>
-    /// <param name="word">조사를 붙일 단어</param>
-    /// <returns>받침이 있으면 '이', 없으면 '가'</returns>
     public static string GetJosa_이가(string word)
     {
         if (string.IsNullOrEmpty(word))
         {
-            return "이"; // 또는 "가" 등 기본값
+            return "이"; 
         }
 
         char lastChar = word[word.Length - 1];
         return HasFinalConsonant(lastChar) ? "이" : "가";
     }
 
-    /// <summary>
-    /// 입력된 단어에 따라 '은' 또는 '는' 조사를 반환합니다.
-    /// </summary>
-    /// <param name="word">조사를 붙일 단어</param>
-    /// <returns>받침이 있으면 '은', 없으면 '는'</returns>
     public static string GetJosa_은는(string word)
     {
         if (string.IsNullOrEmpty(word))
         {
-            return "은"; // 또는 "는" 등 기본값
+            return "은";
         }
 
         char lastChar = word[word.Length - 1];

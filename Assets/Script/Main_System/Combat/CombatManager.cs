@@ -38,7 +38,7 @@ public class CombatManager : SingleTon<CombatManager>
     public event Action<Player, Enemy> CombatUIUpdate;
     #endregion
 
-    #region [Initialize]
+    #region [초기화]
     protected override void Awake()
     {
         base.Awake();
@@ -249,8 +249,6 @@ public class CombatManager : SingleTon<CombatManager>
     #region [Reward System]
     private IEnumerator GetReward()
     {
-        
-
         yield return onTextUpdate?.Invoke($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다.");
 
         yield return new WaitForSeconds(0.5f);

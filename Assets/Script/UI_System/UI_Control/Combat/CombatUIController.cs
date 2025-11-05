@@ -39,6 +39,8 @@ public class CombatUIController : UIController, IUpdatableUI
     #endregion
 
     #region [Effect]
+
+    //데미지 피격 효과
     private void HandleTakeDamageEffect(int currentHP, int maxHP)
     {
         if (bloodEffectCoroutine != null)
@@ -94,7 +96,7 @@ public class CombatUIController : UIController, IUpdatableUI
     }
 
     #endregion
-
+    //너는 뭐니?
     public void UpdateUI(Node node)
     {
         combatManager.CombatNodeStart(node);
