@@ -16,6 +16,7 @@ public class GameManager : SingleTon<GameManager>
     private GameState currentState;
 
 
+
     public int goodAndEvil { get; private set; }
     #endregion
 
@@ -75,12 +76,13 @@ public class GameManager : SingleTon<GameManager>
                 playerData = new PlayerData();
                 itemData = new ItemData();
                 ResetGoodAndEvil();
-
-                
+                //currencyManager 초기화 함수.
+                CurrencyManager.Instance.InitializeManager();
 
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 0);
-                InventoryManager.Instance.MakeNew(itemData);
+                InventoryManager.Instance.MakeNew(itemData); //???? 이거 언제 만들었지??
+                //시작 노드 고정. 이것도 수정해야함.
                 var node = Resources.Load<Node>($"Nodes/Main_01");
                 
 
@@ -97,6 +99,22 @@ public class GameManager : SingleTon<GameManager>
 
                 this.playerData = data.playerData;
                 this.itemData = data.itemData;
+                
+                CurrencyManager.Instance.currencyList = data.currencyList;
+
+                Debug.Log($"{CurrencyManager.Instance.GetAmount("Gold")}가 존재함이 확인!");
+                Debug.Log(data.currencyList.Count);
+
+                foreach (CurrencyData d in data.currencyList)
+                {
+                    if (d == null)
+                    {
+                        Debug.Log("감지되지 않음.");
+                    }
+                    Debug.Log($"{d.Name}이름을 지닌 재화를 호출하였다. 잔액 : {d.Amount}");
+                    GameEvent.CurrencyChanged(d);
+                }
+
 
                 if (playerData.currentHP == 0)
                 {
@@ -122,6 +140,7 @@ public class GameManager : SingleTon<GameManager>
         data.playerData = this.playerData;
         data.currentNode = NodeManager.Instance.currentNode;
         data.goodAndEvil = this.goodAndEvil;
+        data.currencyList = CurrencyManager.Instance.currencyList;
 
         SaveManager.Instance.SaveData(data);
     }
