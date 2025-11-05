@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public static class GameEvent
 {
@@ -21,4 +24,13 @@ public static class GameEvent
     //재화 변경 이벤트
     public static event Action<CurrencyData> OnCurrencyChanged;
     public static void CurrencyChanged(CurrencyData data) => OnCurrencyChanged?.Invoke(data);
+
+    //Node Text 변경 이벤트
+    //각 UI컨트롤러별 NodeText 할당과 NodeTextUpdate 구독 필요
+    public delegate IEnumerator OnNodeTextChanged(string text);
+    public static event OnNodeTextChanged NodeTextUpdate;
+    public static IEnumerator OnNodeTextUpdate(string text){
+        yield return NodeTextUpdate?.Invoke(text);
+    } 
+
 }
