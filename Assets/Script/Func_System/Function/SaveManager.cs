@@ -53,6 +53,7 @@ public class SaveManager : SingleTon<SaveManager>
             Debug.LogError($"게임 데이터 불러오기 실패하였습니다. 새로운 SaveData를 생성합니다. : {e.Message}");
             return new SaveData();
         }
+
     }
 }
 
@@ -63,9 +64,9 @@ public class SaveData
     public Node currentNode; //현재 진행중인 Node;
     public int goodAndEvil; //선악 수치
     public ItemData itemData;
-
+    public List<CurrencyData> currencyList;
     // item Data
-    // 진행도 관련한 스택. 선행, 악행 등의 스택.
+    // 진행도 관련한 스택. 선    행, 악행 등의 스택.
 
     public SaveData()
     {
@@ -73,5 +74,6 @@ public class SaveData
         currentNode = ScriptableObject.CreateInstance<Node>();
         goodAndEvil = 0;
         itemData = new ItemData();
+        currencyList = new List<CurrencyData>();
     }
 }

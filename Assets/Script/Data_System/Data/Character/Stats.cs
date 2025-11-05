@@ -30,13 +30,14 @@ public struct DerivedStats
     [ReadOnly] public int attackRange; // 공격 사거리 객체에 따라 상이
     
 
-    public DerivedStats(int str, int dex, int con, int atkBonus, int hpBonus, float dodgeBonus, int rangeBonus)
+    //인자를 이렇게 받는게 아니라. BaseStats를 받는게 더 낫지 않을까?
+    public DerivedStats(BaseStats baseStats, int atkBonus, int hpBonus, float dodgeBonus, int rangeBonus)
     {
-        attackPower = 5 + str * 3 + dex * 1 + atkBonus;
-        maxHP = 30 + str * 5 + con * 10 + hpBonus;
-        dodgeRate = dex * 0.02f + dodgeBonus;
+        attackPower = 5 + baseStats.str * 3 + baseStats.dex * 1 + atkBonus;
+        maxHP = 30 + baseStats.str * 5 + baseStats.con * 10 + hpBonus;
+        dodgeRate = baseStats.dex * 0.02f + dodgeBonus;
         dodgeRate = Math.Clamp(dodgeRate, 0.00f, 0.7f);
-        accuracyRate = dex * 0.015f;
+        accuracyRate = baseStats.dex * 0.015f;
         attackRange = 0 + rangeBonus;
     }
 }

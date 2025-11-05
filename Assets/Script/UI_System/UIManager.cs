@@ -13,16 +13,22 @@ public class UIManager : SingleTon<UIManager>
     private List<UIController> uiControllers = new List<UIController>();
     //다른 Object들도 있어야 함.
 
-
-    [SerializeField]
-    private GameObject levelUpUI;
-
-    //Manager
-    private GameManager gameManager;
-
     //Instance
     private Player player;
     private Enemy enemy;
+
+    #region [UI 그룹]
+    [Header("Level Up UI")]
+    [SerializeField] private GameObject levelUpUI;
+
+    [Header("State UI")]
+    [SerializeField] private TMP_Text dayCountText;
+    [SerializeField] private TMP_Text locationText;
+
+    [Header("Currency UI")]
+    [SerializeField] private TMP_Text goldText;
+    #endregion
+
     #endregion
 
     #region [initialize]
@@ -32,6 +38,7 @@ public class UIManager : SingleTon<UIManager>
         InitializeUIControllers();
         GameEvent.OnNodeChanged += UpdateUI;
         GameEvent.OnPlayerLevelUp += UpdateLevelUpUI;
+        GameEvent.OnCurrencyChanged += UpdateCurrencyUI;
 
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
     }
@@ -73,6 +80,12 @@ public class UIManager : SingleTon<UIManager>
             Debug.LogWarning("노드 오류 발생");
             return;
         }
+
+        //State UI Update
+        dayCountText.text = node.surviveDate + " 일차";
+        locationText.text = node.worldLocation.ToString();
+
+
 
         DeactivateAllUI();
 
@@ -145,6 +158,15 @@ public class UIManager : SingleTon<UIManager>
 
     #endregion
 
+    #region [UI_Func]
+    public void OnPauseButton()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.BackToMain();
+        }
+    }
+    #endregion
 
     #region [Lv UI Control]
     private void UpdateLevelUpUI()
@@ -154,7 +176,6 @@ public class UIManager : SingleTon<UIManager>
         {
             levelUpUI.SetActive(true);
         }
-        
     }
 
     public void EventExecute(BaseEvent baseEvent)
@@ -166,6 +187,20 @@ public class UIManager : SingleTon<UIManager>
             levelUpUI.SetActive(false);
         }
         
+    }
+    #endregion
+
+    #region [Currency UI Control]
+    private void UpdateCurrencyUI(CurrencyData data)
+    {
+        if (data.Name == "Gold")
+        {
+            goldText.text = data.Amount + "금";
+        }
+        else
+        {
+            Debug.Log(data.Name);
+        }
     }
     #endregion
 }

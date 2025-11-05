@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Player : Character
 {
@@ -24,14 +26,19 @@ public class Player : Character
         hpBonus = data.hpBonus;
         dodgeBonus = data.dodgeBonus;
         rangeBonus = data.rangeBonus;
+        //여기까지는 동일한데?
 
         exp = data.exp;
         lv = data.lv;
 
         UpdateStats();
         SetCurrentHPAndNotify(MaxHP);
+        UpdateLV_UI();
     }
 
+
+    //인자를 하나 더 받자. initialmode, loadmode.
+    
     public void LoadFromData(PlayerData data)
     {
         if (data == null) return;
@@ -50,10 +57,12 @@ public class Player : Character
 
         UpdateStats();
         SetCurrentHPAndNotify(data.currentHP);
+        UpdateLV_UI();
     }
     #endregion
 
     #region [Data]
+    //현재 플레이어 정보를 저장하기 위한 함수.
     public PlayerData GetCurrentData()
     {
         PlayerData data = new PlayerData();
@@ -73,6 +82,8 @@ public class Player : Character
     #endregion
 
     #region [Override]
+
+    //데미지 피격 함수.
     public override void TakeDamage(int amount)
     {
         base.TakeDamage(amount);
@@ -82,11 +93,14 @@ public class Player : Character
     #endregion
 
     #region [LV Control]
+
+    //경험치를 올리는 함수.
     public void GetExp(int exp)
     {
         this.exp += exp;
         UpdateLv();
     }
+
 
     private void UpdateLv()
     {
@@ -96,10 +110,21 @@ public class Player : Character
         {
             exp -= requiredExpForLvUP;
             lv++;
-            Heal(MaxHP);
 
+            //10만큼 회복.
+            Heal(10);
+
+
+            UpdateLV_UI();
+
+            //레벨업 이벤트 발생.
             GameEvent.PlayerLevelUp();
         }
+    }
+
+    private void UpdateLV_UI()
+    {
+        lvText.text = "Lv." + lv;
     }
     #endregion
 }
