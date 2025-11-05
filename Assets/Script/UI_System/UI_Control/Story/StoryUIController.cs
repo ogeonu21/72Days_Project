@@ -9,6 +9,17 @@ public class StoryUIController : UIController, IUpdatableUI
     public TMP_Text dialogueText;
     public Button[] choiceButtons;
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        NodeText = dialogueText;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        NodeText = null;
+    }
 
     public void UpdateUI(Node node)
     {
@@ -30,7 +41,7 @@ public class StoryUIController : UIController, IUpdatableUI
             btn.onClick.RemoveAllListeners(); // 기존 리스너 제거
         }
 
-        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(dialogueText, node.nodeMessage, 0.05f));
+        yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
@@ -48,7 +59,7 @@ public class StoryUIController : UIController, IUpdatableUI
         }
 
         //dialogue Text 출력.
-        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(dialogueText, node.nodeMessage, 0.05f));
+        yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
 
         if (node.choices != null && node.choices.Count > 0)
         {

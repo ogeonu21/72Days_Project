@@ -23,17 +23,20 @@ public class CombatUIController : UIController, IUpdatableUI
 
     #region [initialize]
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+        NodeText = combatText;
         combatManager = CombatManager.Instance;
         combatManager.CombatUIUpdate += UpdateCombatUI;
-        combatManager.onTextUpdate += UpdateCombatText;
         GameEvent.OnTakeDamageEffect += HandleTakeDamageEffect;
     }
-    private void OnDisable()
+    
+    protected override void OnDisable()
     {
+        base.OnDisable();
+        NodeText = null;
         combatManager.CombatUIUpdate -= UpdateCombatUI;
-        combatManager.onTextUpdate -= UpdateCombatText;
         GameEvent.OnTakeDamageEffect -= HandleTakeDamageEffect;
     }
     #endregion
@@ -102,6 +105,7 @@ public class CombatUIController : UIController, IUpdatableUI
         combatManager.CombatNodeStart(node);
     }
 
+    //피격률 등 표시
     public void UpdateCombatUI(Player player, Enemy enemy)
     {
         
@@ -124,11 +128,6 @@ public class CombatUIController : UIController, IUpdatableUI
             dodgeRateText[i].text = $"{damageText}\n{dodgeText}";
         }
 
-    }
-
-    IEnumerator UpdateCombatText(string text)
-    {
-        yield return this.StartCoroutine(TypewriterEffect.TypeTextCoroutine(combatText, text, 0.05f));
     }
 
 }

@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class EventManager : SingleTon<EventManager>
 {
-    
-
-
     public void EventNodeStart(EventNode node)
     {
         

@@ -73,11 +73,11 @@ public class CombatManager : SingleTon<CombatManager>
     {
         if (node.nodeType == NodeType.CombatNode)
         {
-            StartCoroutine(LoadCombatNode(node as CombatNode));
+            StartCoroutine(LoadCombatNodeData(node as CombatNode));
         }
     }
 
-    private IEnumerator LoadCombatNode(CombatNode node)
+    private IEnumerator LoadCombatNodeData(CombatNode node)
     {
         successNode = node.successNode;
         failureNode = node.failureNode;
@@ -94,7 +94,7 @@ public class CombatManager : SingleTon<CombatManager>
         CombatUIUpdate?.Invoke(player, enemy);
         GameEvent.UpdateCharacterUI(player, enemy);
 
-        yield return onTextUpdate?.Invoke(enemy.characterName + JosaUtility.GetJosa_이가(enemy.characterName) + " 당신에게 싸움을 걸었다. \n 준비하라.");
+        yield return GameEvent.OnNodeTextUpdate(enemy.characterName + JosaUtility.GetJosa_이가(enemy.characterName) + " 당신에게 싸움을 걸었다. \n 준비하라.");
         yield return StartCoroutine(WaitForClick.WaitClick());
 
         //이벤트 구독
@@ -125,7 +125,7 @@ public class CombatManager : SingleTon<CombatManager>
 
             if (index == 0)
             {
-                yield return onTextUpdate?.Invoke("무슨 행동을 할 것인가?");
+                yield return GameEvent.OnNodeTextUpdate("무슨 행동을 할 것인가?");
                 onAttackTurn = true;
 
                 yield return new WaitUntil(() => onAttackTurn == false);
@@ -154,7 +154,7 @@ public class CombatManager : SingleTon<CombatManager>
     {
         //Event로 바로 작동하는 것이 아닐, onDied가 발생하면 combatActive만 끄는 식으로.
         string logMessage = $"{take.characterName} {JosaUtility.GetJosa_이가(take.characterName)} 사망하였다. 전투가 종료되었다.";
-        yield return onTextUpdate?.Invoke(logMessage);
+        yield return GameEvent.OnNodeTextUpdate(logMessage);
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
@@ -224,7 +224,7 @@ public class CombatManager : SingleTon<CombatManager>
             logMessage = $"{who.characterName} {JosaUtility.GetJosa_은는(who.characterName)} {take.characterName}의 {where.label}을 공격하려 하였으나, 빗나갔다.";
         }
 
-        yield return onTextUpdate?.Invoke(logMessage);
+        yield return GameEvent.OnNodeTextUpdate(logMessage);
         yield return StartCoroutine(WaitForClick.WaitClick());
 
         yield return null;
@@ -249,7 +249,8 @@ public class CombatManager : SingleTon<CombatManager>
     #region [Reward System]
     private IEnumerator GetReward()
     {
-        yield return onTextUpdate?.Invoke($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다.");
+        //경험치 보상
+        yield return GameEvent.OnNodeTextUpdate($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다.");
 
         yield return new WaitForSeconds(0.5f);
 
