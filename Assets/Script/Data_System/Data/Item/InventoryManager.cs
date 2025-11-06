@@ -27,4 +27,5 @@ public class InventoryManager : SingleTon<InventoryManager>
             }
         }
     }
+
 }

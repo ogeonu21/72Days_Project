@@ -20,6 +20,6 @@ public class NodeManager : SingleTon<NodeManager>
         //event 발생 확률? 조건 체크?
         currentNode = nextNode;
         GameEvent.NotifyNodeChange(currentNode);
-        GameManager.Instance.SaveGame();
+        GameEvent.SaveGame();
     }
 }

@@ -93,11 +93,8 @@ public class DataImporter : EditorWindow
             def.type = type;
             def.id = id;
             def.displayName = string.IsNullOrEmpty(name) ? id : name;
-            def.baseStats = new BaseStats { str = str, dex = dex, con = con };
-            def.attackBonus = attackBonus;
-            def.hpBonus = hpBonus;
-            def.dodgeBonus = Mathf.Clamp01(dodgeBonus); // 0~1 범위 권장
-            def.rangeBonus = rangeBonus;
+            def.baseStats = new BaseStats(str, dex, con);
+            def.tuningStats = new TuningStats(attackBonus, hpBonus, dodgeBonus, rangeBonus);
             #endregion
 
             if (created) AssetDatabase.CreateAsset(def, path);

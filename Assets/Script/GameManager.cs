@@ -46,7 +46,7 @@ public class GameManager : SingleTon<GameManager>
     #region [진행 관리]
     public void BackToMain()
     {
-        SaveGame();
+        GameEvent.SaveGame();
         UpdateGameState(GameState.Main);
         SceneManager.LoadScene("MainWindow");
     }
@@ -131,19 +131,28 @@ public class GameManager : SingleTon<GameManager>
         }
     }
 
-    public void SaveGame()
+    // public void SaveGame()
+    // {
+    //     SaveData data = new SaveData();
+
+    //     data.playerData = CharacterManagerInstance.currentPlayer.GetCurrentData();
+    //     data.currentNode = NodeManager.Instance.currentNode;
+    //     data.goodAndEvil = GameManager.goodAndEvil;
+    //     data.currencyList = CurrencyManager.Instance.currencyList;
+    //     data.itemData = InventoryManager.Instance.inventoryItems;
+
+    //     SaveManager.Instance.SaveData(data);
+    // }
+
+    public void QuitGame()
     {
-        this.playerData = CharacterManager.Instance.currentPlayer.GetCurrentData();
+        Debug.Log("게임을 종료합니다...");
 
-        SaveData data = new SaveData();
-
-        data.playerData = this.playerData;
-        data.currentNode = NodeManager.Instance.currentNode;
-        data.goodAndEvil = this.goodAndEvil;
-        data.currencyList = CurrencyManager.Instance.currencyList;
-
-        SaveManager.Instance.SaveData(data);
+        //추후 가능하다면 세이브 완료 후 종료할 수 있도록 변경.
+        Application.Quit();
     }
+
+
     #endregion
 
     #region [GameState 관리]

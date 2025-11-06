@@ -14,14 +14,12 @@ public class Enemy : Character
         characterName = string.IsNullOrWhiteSpace(def.displayName) ? characterName : def.displayName;
 
         baseStats = def.baseStats;
-        attackBonus = def.attackBonus;
-        hpBonus = def.hpBonus;
-        dodgeBonus = def.dodgeBonus;
-        rangeBonus = def.rangeBonus;
+        tuningStats = def.tuningStats;
 
         AreaDataReset();
         
         UpdateStats();
+        
         SetCurrentHPAndNotify(MaxHP);
         UpdateLV_UI();
     }

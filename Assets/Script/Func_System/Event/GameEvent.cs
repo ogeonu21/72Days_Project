@@ -27,10 +27,12 @@ public static class GameEvent
 
     //Node Text 변경 이벤트
     //각 UI컨트롤러별 NodeText 할당과 NodeTextUpdate 구독 필요
-    public delegate IEnumerator OnNodeTextChanged(string text);
-    public static event OnNodeTextChanged NodeTextUpdate;
+    public delegate IEnumerator NodeTextChanged(string text);
+    public static event NodeTextChanged NodeTextUpdate;
     public static IEnumerator OnNodeTextUpdate(string text){
         yield return NodeTextUpdate?.Invoke(text);
     } 
 
+    public static event Action OnSaveGame;
+    public static void SaveGame() => OnSaveGame?.Invoke();
 }
