@@ -15,6 +15,16 @@ public class SaveManager : SingleTon<SaveManager>
         savePath = Path.Combine(Application.persistentDataPath, "savedata.json");
     }
 
+    protected void OnEnable()
+    {
+        GameEvent.OnSaveGame += SaveGame;
+    }
+
+    protected void OnDisable()
+    {
+        GameEvent.OnSaveGame -= SaveGame;
+    }
+
     public void SaveData(SaveData data)
     {
         string json = JsonUtility.ToJson(data, true);
@@ -54,6 +64,18 @@ public class SaveManager : SingleTon<SaveManager>
             return new SaveData();
         }
 
+    }
+
+    public void SaveGame()
+    {
+        SaveData data = new SaveData();
+        data.playerData = CharacterManager.Instance.currentPlayer.GetCurrentData();
+        data.currentNode = NodeManager.Instance.currentNode;
+        data.goodAndEvil = GameManager.Instance.goodAndEvil;
+        data.currencyList = CurrencyManager.Instance.currencyList;
+        data.itemData.inventoryItems = InventoryManager.Instance.inventoryItems;
+
+        SaveManager.Instance.SaveData(data);
     }
 }
 

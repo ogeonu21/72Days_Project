@@ -1,3 +1,4 @@
+
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,10 +6,9 @@ using TMPro;
 
 public class Player : Character
 {
-    
     private const float BASE_EXP = 12.1f;
     private const float EXP_GROWTH_RATE = 1.33f;
-
+    
     private int exp;
     public int lv;
     //public event Action OnPlayerLvUp;
@@ -22,11 +22,7 @@ public class Player : Character
         characterName = string.IsNullOrWhiteSpace(data.displayName) ? characterName : data.displayName;
 
         baseStats = data.baseStats;
-        attackBonus = data.attackBonus;
-        hpBonus = data.hpBonus;
-        dodgeBonus = data.dodgeBonus;
-        rangeBonus = data.rangeBonus;
-        //여기까지는 동일한데?
+        tuningStats = data.tuningStats;
 
         exp = data.exp;
         lv = data.lv;
@@ -47,10 +43,7 @@ public class Player : Character
         characterName = string.IsNullOrWhiteSpace(data.displayName) ? characterName : data.displayName;
 
         baseStats = data.baseStats;
-        attackBonus = data.attackBonus;
-        hpBonus = data.hpBonus;
-        dodgeBonus = data.dodgeBonus;
-        rangeBonus = data.rangeBonus;
+        tuningStats = data.tuningStats;
 
         exp = data.exp;
         lv = data.lv;
@@ -68,11 +61,11 @@ public class Player : Character
         PlayerData data = new PlayerData();
 
         data.baseStats = this.baseStats;
-        data.attackBonus = this.attackBonus;
-        data.hpBonus = this.hpBonus;
-        data.dodgeBonus = this.dodgeBonus;
-        data.rangeBonus = this.rangeBonus;
+        data.tuningStats = this.tuningStats;
+
+        data.id = this.ID;
         data.displayName = this.characterName;
+
         data.currentHP = this.currentHP;
         data.exp = this.exp;
         data.lv = this.lv;

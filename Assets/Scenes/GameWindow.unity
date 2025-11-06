@@ -1103,6 +1103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc3aff98af04914e947d9575738791f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NodeText: {fileID: 0}
   combatText: {fileID: 687755591}
   attackButtons: {fileID: 1636104602}
   blood_Effect: {fileID: 871380900}
@@ -2025,6 +2026,7 @@ Transform:
   - {fileID: 215928794}
   - {fileID: 1213320671}
   - {fileID: 964507478}
+  - {fileID: 750176204}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3662,6 +3664,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 747154750}
   m_CullTransparentMesh: 1
+--- !u!1 &750176203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 750176204}
+  - component: {fileID: 750176205}
+  m_Layer: 0
+  m_Name: RewardSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &750176204
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750176203}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 468009303}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &750176205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750176203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d65a18ddbd216043a3463e3977defcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGlobal: 0
 --- !u!1 &840680862
 GameObject:
   m_ObjectHideFlags: 0
@@ -5578,6 +5625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c91b7f8df0d0ca640ae1cb0583d77319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NodeText: {fileID: 0}
   dialogueText: {fileID: 976039624}
 --- !u!1 &1469012442
 GameObject:
@@ -6106,6 +6154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da289500d664db5478cdb7184b98f540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NodeText: {fileID: 0}
   dialogueText: {fileID: 2065335706}
   choiceButtons:
   - {fileID: 994665189}
@@ -7096,6 +7145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3c629ac32f21694a8923ce52d66ac3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NodeText: {fileID: 0}
   dialogueText: {fileID: 645024573}
   choiceButtons:
   - {fileID: 1272962668}

@@ -32,9 +32,6 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     #region [이벤트 그룹]
-    public delegate IEnumerator CombatTextUpdate(string text);
-    public event CombatTextUpdate onTextUpdate;
-
     public event Action<Player, Enemy> CombatUIUpdate;
     #endregion
 
@@ -161,9 +158,12 @@ public class CombatManager : SingleTon<CombatManager>
         combatActive = false;
         onAttackTurn = false;
 
-        if (enemy.IsDead) yield return StartCoroutine(GetReward());
+        if (enemy.IsDead) yield return StartCoroutine(RewardEvent.RewardCoroutine(enemy, player));
 
+        //플레이어 데이터 저장.
         gameManager.playerData = player.GetCurrentData();
+
+        //이벤트 구독 해제
         player.onDied -= CombatNodeStop;
         enemy.onDied -= CombatNodeStop;
 
@@ -243,20 +243,6 @@ public class CombatManager : SingleTon<CombatManager>
             default:
                 return string.Empty;
         }
-    }
-    #endregion
-
-    #region [Reward System]
-    private IEnumerator GetReward()
-    {
-        //경험치 보상
-        yield return GameEvent.OnNodeTextUpdate($"보상으로 {enemy.GetExpReward()}만큼의 경험치를 획득하였다.");
-
-        yield return new WaitForSeconds(0.5f);
-
-        player.GetExp(enemy.GetExpReward());
-
-        yield return StartCoroutine(WaitForClick.WaitClick());
     }
     #endregion
 }

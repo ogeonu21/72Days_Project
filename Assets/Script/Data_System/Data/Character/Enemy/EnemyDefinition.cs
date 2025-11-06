@@ -9,8 +9,5 @@ public class EnemyDefinition : ScriptableObject
     public string displayName;
 
     public BaseStats baseStats;  // str, dex, con
-    public int attackBonus;
-    public int hpBonus;
-    [Range(0f, 1f)] public float dodgeBonus;
-    public int rangeBonus;
+    public TuningStats tuningStats;
 }

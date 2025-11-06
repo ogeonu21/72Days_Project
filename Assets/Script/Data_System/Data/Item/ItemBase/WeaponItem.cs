@@ -14,6 +14,12 @@ public class WeaponItem : BaseItem
         //아이템 장착 함수.
         //튜닝 수치 업데이트.
         //player에게 장착 아이템 정보 제공 및 수치 업데이트.
+        if(durability <= 0)
+        {
+            Debug.Log("내구도가 0이하입니다. 장착할 수 없습니다.");
+            Release(player);
+            return;
+        }
     }
 
     public void Release(Player player)

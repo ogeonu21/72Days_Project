@@ -25,20 +25,18 @@ public class Character : MonoBehaviour
     #region [Stats]
     [Header("기본 스탯")]
     public BaseStats baseStats;
+    private Stats stats;
 
     [Header("보정치")]
     [Tooltip("장비/버프 보정치")]
-    public int attackBonus = 0;
-    public int hpBonus = 0;
-    public float dodgeBonus = 0.0f;
-    public int rangeBonus = 0;
+    public TuningStats tuningStats;
 
-    [Header("세부 스탯")]
-    [SerializeField, ReadOnly] protected DerivedStats derived;
+    [Header("현재 체력")]
     [SerializeField, ReadOnly] protected int currentHP;
     #endregion
 
     #region [AreaData]
+    //개별 부위 데이터베이스 => Enemy 객체에서 개별 확률 계산을 위해 적용.
     public AreaData[] areaDataDB = {
         new AreaData("머리", 0.4f, 0.6f, 1.6f),
         new AreaData("몸", 0.9f, 0.15f, 0.7f),
@@ -48,6 +46,7 @@ public class Character : MonoBehaviour
     #endregion
 
     #region [Effect]
+    //기존 스탯 보관용
     private float tempDodgeRate;
     private int tempAttackPower;
 
@@ -62,12 +61,13 @@ public class Character : MonoBehaviour
 
     #region [initialize]
     //읽기 전용.
+    //해야하나??
     public int CurrentHP => currentHP;
-    public int MaxHP => derived.maxHP;
-    public int AttackPower => derived.attackPower;
-    public float DodgeRate => derived.dodgeRate;
-    public float AccuracyRate => derived.accuracyRate;
-    public int AttackRange => derived.attackRange;
+    public int MaxHP => stats.maxHP;
+    public int AttackPower => stats.attackPower;
+    public float DodgeRate => stats.dodgeRate;
+    public float AccuracyRate => stats.accuracyRate;
+    public int AttackRange => stats.attackRange;
     
     public bool IsDead => currentHP <= 0;
     
@@ -84,20 +84,19 @@ public class Character : MonoBehaviour
     //장비 변경, 스탯 성장시에 작동.
     public void UpdateStats()
     {
+
         //스탯 변동시 체력회복을 위해서.
         int tmpMaxHP = MaxHP;
-        derived = new DerivedStats(baseStats, attackBonus, hpBonus, dodgeBonus, rangeBonus);
+        stats = new Stats(baseStats, tuningStats);
 
         //디버프 해제시 스탯을 정상 적용하기 위해서.
         tempAttackPower = AttackPower;
         tempDodgeRate = DodgeRate;
 
-
         //스탯 변화 이벤트 발생.
         onStatsChanged?.Invoke();
-
+        //최대체력 변화에 따른 현재체력 보정.
         Heal(MaxHP - tmpMaxHP);
-
         UpdateHP_UI();
 
     }
@@ -153,16 +152,17 @@ public class Character : MonoBehaviour
                     case 0:
                         if (EffectTurn[0] == 0)
                         {
-                            derived.attackPower = tempAttackPower;
+                            tuningStats.attackBonus += 5;
                         }
                         break;
                     case 1:
                         if (EffectTurn[1] == 0)
                         {
-                            derived.dodgeRate = tempDodgeRate;
+                            tuningStats.dodgeBonus += 0.05f;
                         }
                         break;
                     case 2:
+                    //복부 특수효과, 3의 데미지
                         TakeDamage(3);
                         break;
                     default:
@@ -174,6 +174,7 @@ public class Character : MonoBehaviour
                 continue;
             }   
         }
+        UpdateStats();
     }
 
     public void TakeEffect(AreaData data)
@@ -181,11 +182,19 @@ public class Character : MonoBehaviour
         switch (data.label)
         {
             case "팔":
-                derived.attackPower = Mathf.Max(0, tempAttackPower-5);
+                if(EffectTurn[0] <= 0)
+                {
+                    tuningStats.attackBonus -= 5;
+                }
+                
                 EffectTurn[0] = 3;
                 break;
             case "다리":
-                derived.dodgeRate = Mathf.Max(0, tempDodgeRate - 0.05f);
+                if(EffectTurn[1] <= 0)
+                {
+                    tuningStats.dodgeBonus -= 0.05f;
+                }
+
                 EffectTurn[1] = 3;
                 break;
             case "몸":
@@ -194,18 +203,27 @@ public class Character : MonoBehaviour
             default:
                 break;
         }
+
+        UpdateStats();
 //이펙트 효과 적용 필요.
     }
 
     public void EffectReset()
     {
-        derived.attackPower = tempAttackPower;
-        derived.dodgeRate = tempDodgeRate;
+        if(EffectTurn[0] > 0)
+        {
+            tuningStats.attackBonus += 5;
+        }
+        if(EffectTurn[1] > 0)
+        {
+            tuningStats.dodgeBonus += 0.05f;
+        }
 
         for (int i = 0; i < 4; i++)
         {
             EffectTurn[i] = 0;
         }
+        UpdateStats();
     }
     #endregion
 
