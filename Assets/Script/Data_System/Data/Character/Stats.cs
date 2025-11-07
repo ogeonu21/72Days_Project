@@ -39,7 +39,7 @@ public struct Stats
         attackPower = 5 + str * 3 + dex * 1 + tuning.attackBonus;
         maxHP = 30 + str * 5 + con * 10 + tuning.hpBonus;
         dodgeRate = dex * 0.02f + tuning.dodgeBonus;
-        dodgeRate = Math.Clamp(dodgeRate, 0.00f, 0.7f);
+        dodgeRate = Math.Min(dodgeRate, 0.7f);
         accuracyRate = dex * 0.015f;
         attackRange = 0 + tuning.rangeBonus;
     }

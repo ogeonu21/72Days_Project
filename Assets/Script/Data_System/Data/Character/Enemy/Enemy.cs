@@ -6,6 +6,8 @@ using TMPro;
 public class Enemy : Character
 {
 
+    //굳이 건드려야 할까? 이대로도 충분히 작동하는데...
+    //코드 효율성과 보기 깔끔한거는 통합이 맞기는 한데...
     public void InitializeFromDefinition(EnemyDefinition def)
     {
         if (def == null) return;
@@ -17,19 +19,19 @@ public class Enemy : Character
         tuningStats = def.tuningStats;
 
         AreaDataReset();
-        
+
         UpdateStats();
-        
+
         SetCurrentHPAndNotify(MaxHP);
         UpdateLV_UI();
     }
 
     //객체별 피격 확률 변동을 위한 함수.
-    public void AreaDataReset()
+    private void AreaDataReset()
     {
         for (int i = 0; i < areaDataDB.Length; i++)
         {
-            areaDataDB[i].hitRate = areaDataDB[i].hitRate * UnityEngine.Random.Range(0.8f, 1.2f);
+            areaDataDB[i].hitRate = areaDataDB[i].hitRate * UnityEngine.Random.Range(0.9f, 1.1f);
         }
     }
 
@@ -48,5 +50,15 @@ public class Enemy : Character
         int x = Mathf.RoundToInt((baseStats.str + baseStats.dex + baseStats.con));
 
         lvText.text = "LV." + x;
+    }
+
+    public override void UpdateTuningStats()
+    {
+        //특수 효과에 따른 스탯 조정.
+        tuningStats.attackBonus = (EffectTurn[0] > 0 ? -5 : 0);
+        tuningStats.dodgeBonus = (EffectTurn[1] > 0 ? -0.05f : 0);
+
+        //최종 스탯 업데이트.
+        UpdateStats();
     }
 }
