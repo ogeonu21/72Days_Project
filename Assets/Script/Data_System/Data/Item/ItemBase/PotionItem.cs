@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 [CreateAssetMenu(fileName = "Potion", menuName = "Items/Potion")]
 public class PotionItem : BaseItem
 {

@@ -1,16 +1,27 @@
-
 using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Security.AccessControl;
 
 public class Player : Character
 {
+    #region [경험치 배율]
     private const float BASE_EXP = 12.1f;
     private const float EXP_GROWTH_RATE = 1.33f;
-    
+    #endregion
+
+    #region [플레이어 경험치 & 장비 데이터]
+    //레벨 관련
     private int exp;
     public int lv;
+
+    //장비 관련 - 추후 구현 예정
+    public EquipmentData equipmentData;
+
+    #endregion
+
+
     //public event Action OnPlayerLvUp;
 
     #region [Initialize]
@@ -34,7 +45,7 @@ public class Player : Character
 
 
     //인자를 하나 더 받자. initialmode, loadmode.
-    
+
     public void LoadFromData(PlayerData data)
     {
         if (data == null) return;
@@ -80,7 +91,7 @@ public class Player : Character
     public override void TakeDamage(int amount)
     {
         base.TakeDamage(amount);
-       
+
         GameEvent.OnTakeDamage(currentHP, MaxHP);
     }
     #endregion
@@ -118,6 +129,75 @@ public class Player : Character
     private void UpdateLV_UI()
     {
         lvText.text = "Lv." + lv;
+    }
+    #endregion
+
+    #region [Equipment Control]
+    public void EquipItem(EquipmentItem item)
+    {
+        if (item == null)
+        {
+            Debug.LogWarning("장착할 아이템이 없습니다.");
+            return;
+        }
+        //장착 아이템 정보 업데이트.
+        switch (item.equipmentType)
+        {
+            case EquipmentType.Weapon:
+                WeaponItem weaponItem = item as WeaponItem;
+                if (equipmentData.weaponItem != null)
+                {
+                    //기존 장착 아이템 해제.
+                    equipmentData.weaponItem.Release(this);
+                }
+                weaponItem.Use(this);
+                equipmentData.weaponItem = weaponItem;
+                break;
+            case EquipmentType.Armor:
+                ArmorItem armorItem = item as ArmorItem;
+                if (equipmentData.armorItem != null)
+                {
+                    //기존 장착 아이템 해제.
+                    equipmentData.armorItem.Release(this);
+                }
+                armorItem.Use(this);
+                equipmentData.armorItem = armorItem;
+                break;
+            case EquipmentType.Accessory:
+                AccessoryItem accessoryItem = item as AccessoryItem;
+                if (equipmentData.accessoryItem != null)
+                {
+                    //기존 장착 아이템 해제.
+                    equipmentData.accessoryItem.Release(this);
+                }
+                accessoryItem.Use(this);
+                equipmentData.accessoryItem = accessoryItem;
+                break;
+            default:
+                Debug.LogWarning("알 수 없는 장비 유형입니다.");
+                break;
+        }
+
+        //장착 후 스탯 업데이트.
+        UpdateTuningStats();
+    }
+
+    #endregion
+
+    #region [Tuning Control]
+    public override void UpdateTuningStats()
+    {
+        //장비 스탯 적용
+        tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.bonusAttackPower : 0;
+        tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.bonusHp : 0;
+        tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.bonusDodge : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.bonusDodge : 0);
+
+        //특수 효과에 따른 스탯 조정.
+        tuningStats.attackBonus = tuningStats.attackBonus + (EffectTurn[0] > 0 ? -5 : 0);
+        tuningStats.dodgeBonus = tuningStats.dodgeBonus + (EffectTurn[1] > 0 ? -0.05f : 0);
+
+        //최종 스탯 업데이트.
+        UpdateStats();
     }
     #endregion
 }

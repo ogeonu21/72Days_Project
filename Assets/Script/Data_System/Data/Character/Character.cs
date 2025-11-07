@@ -46,11 +46,8 @@ public class Character : MonoBehaviour
     #endregion
 
     #region [Effect]
-    //기존 스탯 보관용
-    private float tempDodgeRate;
-    private int tempAttackPower;
 
-    private int[] EffectTurn = new int[4];
+    protected int[] EffectTurn = new int[4];
     //기존 회피율 등등이 필요함.
     #endregion
 
@@ -84,21 +81,20 @@ public class Character : MonoBehaviour
     //장비 변경, 스탯 성장시에 작동.
     public void UpdateStats()
     {
-
         //스탯 변동시 체력회복을 위해서.
         int tmpMaxHP = MaxHP;
         stats = new Stats(baseStats, tuningStats);
-
-        //디버프 해제시 스탯을 정상 적용하기 위해서.
-        tempAttackPower = AttackPower;
-        tempDodgeRate = DodgeRate;
 
         //스탯 변화 이벤트 발생.
         onStatsChanged?.Invoke();
         //최대체력 변화에 따른 현재체력 보정.
         Heal(MaxHP - tmpMaxHP);
         UpdateHP_UI();
+    }
 
+    public virtual void UpdateTuningStats()
+    {
+        UpdateStats();
     }
     #endregion
 
@@ -149,16 +145,18 @@ public class Character : MonoBehaviour
 
                 switch (i)
                 {
+                    //팔
                     case 0:
                         if (EffectTurn[0] == 0)
                         {
-                            tuningStats.attackBonus += 5;
+                            UpdateTuningStats();
                         }
                         break;
+                    //다리
                     case 1:
                         if (EffectTurn[1] == 0)
                         {
-                            tuningStats.dodgeBonus += 0.05f;
+                            UpdateTuningStats();
                         }
                         break;
                     case 2:
@@ -168,33 +166,19 @@ public class Character : MonoBehaviour
                     default:
                         break;
                 }
-            }
-            else
-            {
-                continue;
             }   
         }
-        UpdateStats();
     }
 
+    //특수 효과 턴수 적용 함수.
     public void TakeEffect(AreaData data)
     {
         switch (data.label)
         {
             case "팔":
-                if(EffectTurn[0] <= 0)
-                {
-                    tuningStats.attackBonus -= 5;
-                }
-                
                 EffectTurn[0] = 3;
                 break;
             case "다리":
-                if(EffectTurn[1] <= 0)
-                {
-                    tuningStats.dodgeBonus -= 0.05f;
-                }
-
                 EffectTurn[1] = 3;
                 break;
             case "몸":
@@ -203,27 +187,17 @@ public class Character : MonoBehaviour
             default:
                 break;
         }
-
-        UpdateStats();
-//이펙트 효과 적용 필요.
+        UpdateTuningStats();
+        //이펙트 효과 적용 필요.
     }
 
     public void EffectReset()
     {
-        if(EffectTurn[0] > 0)
-        {
-            tuningStats.attackBonus += 5;
-        }
-        if(EffectTurn[1] > 0)
-        {
-            tuningStats.dodgeBonus += 0.05f;
-        }
-
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < EffectTurn.Length; i++)
         {
             EffectTurn[i] = 0;
         }
-        UpdateStats();
+        UpdateTuningStats();
     }
     #endregion
 
