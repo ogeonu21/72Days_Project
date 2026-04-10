@@ -5,7 +5,7 @@ using UnityEngine;
 public class WeaponItem : EquipmentItem
 {
     [Header("Weapon Stats")]
-    public int bonusAttackPower;
-    public int attackDistance;
+    public int attackBonus;
+    public int range;
 
 }
