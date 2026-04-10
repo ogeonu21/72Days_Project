@@ -1482,6 +1482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isGlobal: 1
+  dumpNode: {fileID: 11400000, guid: 3fa23ba03d65fb04f8ed4f15de2a4096, type: 2}
 --- !u!1 &1502034003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,10 +1911,11 @@ MonoBehaviour:
       str: 0
       dex: 0
       con: 0
-    attackBonus: 0
-    hpBonus: 0
-    dodgeBonus: 0
-    rangeBonus: 0
+    tuningStats:
+      attackBonus: 0
+      hpBonus: 0
+      dodgeBonus: 0
+      rangeBonus: 0
     currentHP: 0
     exp: 0
     lv: 1
