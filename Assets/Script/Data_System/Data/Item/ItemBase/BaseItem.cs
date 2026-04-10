@@ -3,6 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public abstract class BaseItem : ScriptableObject
 {
+    public string itemID;
     public string itemName;
     public string itemDescription;
     public Sprite itemIcon;

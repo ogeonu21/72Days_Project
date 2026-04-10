@@ -10,7 +10,7 @@ public class EnemyDefinition : ScriptableObject
 
     public BaseStats baseStats;  // str, dex, con
     public TuningStats tuningStats;
-    public string dropItemID;
+    public BaseItem dropItem;
     public float itemDropRate;
     public int dropGold;
 }
