@@ -8,6 +8,7 @@ public class PlayerData
 
     public BaseStats baseStats; // str, dex, con
     public TuningStats tuningStats;
+    public EquipmentData equipmentData;
 
     // 현재 상태
     public int currentHP;
@@ -20,6 +21,7 @@ public class PlayerData
         displayName = "플레이어";
         baseStats = new BaseStats(0, 0, 0);
         tuningStats = new TuningStats(0, 0, 0f, 0);
+        equipmentData = new EquipmentData();
 
         exp = 0;
         lv = 1;
