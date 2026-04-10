@@ -5,7 +5,7 @@ using UnityEngine;
 public class PotionItem : BaseItem
 {
 
-    public int healAmount;
+    public int health;
 
 
     public override void Use(Player player)
@@ -13,7 +13,7 @@ public class PotionItem : BaseItem
         if (isConsumable)
         {
             //인벤토리에서 아이템 제거.
-            player.Heal(healAmount);
+            player.Heal(health);
         }
     }
 

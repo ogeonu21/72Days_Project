@@ -3,7 +3,6 @@ using UnityEngine;
 [System.Serializable]
 public class EquipmentItem : BaseItem
 {
-    public EquipmentType equipmentType;
     public int durability; //내구도
 
     // public int weaponDamageAmount;
@@ -23,21 +22,24 @@ public class EquipmentItem : BaseItem
 
     public void Release(Player player)
     {
-        switch (equipmentType)
+        switch (itemCategory)
         {
-            case EquipmentType.Weapon:
+            case ItemCategory.Weapon:
                 player.equipmentData.weaponItem = null;
                 //무기 해제 로직
                 //player.equipmentData.weaponId = -1;
                 //palyer.UpdateEquipmentStats();
                 break;
-            case EquipmentType.Armor:
+            case ItemCategory.Armor:
                 player.equipmentData.armorItem = null;
                 //방어구 해제 로직
                 break;
-            case EquipmentType.Accessory:
+            case ItemCategory.Accessory:
                 player.equipmentData.accessoryItem = null;
                 //악세서리 해제 로직
+                break;
+            case ItemCategory.Potion:
+                // 포션은 장비가 아니므로 해제 로직이 필요 없음
                 break;
             default:
                 Debug.LogWarning("알 수 없는 장비 유형입니다.");
