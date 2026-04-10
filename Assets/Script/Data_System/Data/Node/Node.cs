@@ -19,14 +19,14 @@ public enum NodeType
     EventNode,
     EndingNode
 }
-[System.Serializable]
+
 public class Node : ScriptableObject
 {
     [Header("노드 기본 정보")]
     public NodeType nodeType;
     public string nodeName;
 
-    [TextArea]
+    [TextArea(3, 10)]
     public string nodeMessage;
 
     [Header("생존 날짜 및 위치")]
