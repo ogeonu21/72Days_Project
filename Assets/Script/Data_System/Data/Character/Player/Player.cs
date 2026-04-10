@@ -141,9 +141,9 @@ public class Player : Character
             return;
         }
         //장착 아이템 정보 업데이트.
-        switch (item.equipmentType)
+        switch (item.itemCategory)
         {
-            case EquipmentType.Weapon:
+            case ItemCategory.Weapon:
                 WeaponItem weaponItem = item as WeaponItem;
                 if (equipmentData.weaponItem != null)
                 {
@@ -153,7 +153,7 @@ public class Player : Character
                 weaponItem.Use(this);
                 equipmentData.weaponItem = weaponItem;
                 break;
-            case EquipmentType.Armor:
+            case ItemCategory.Armor:
                 ArmorItem armorItem = item as ArmorItem;
                 if (equipmentData.armorItem != null)
                 {
@@ -163,7 +163,7 @@ public class Player : Character
                 armorItem.Use(this);
                 equipmentData.armorItem = armorItem;
                 break;
-            case EquipmentType.Accessory:
+            case ItemCategory.Accessory:
                 AccessoryItem accessoryItem = item as AccessoryItem;
                 if (equipmentData.accessoryItem != null)
                 {
@@ -188,9 +188,9 @@ public class Player : Character
     public override void UpdateTuningStats()
     {
         //장비 스탯 적용
-        tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.bonusAttackPower : 0;
-        tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.bonusHp : 0;
-        tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.bonusDodge : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.bonusDodge : 0);
+        tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.attackBonus : 0;
+        tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.hpBonus : 0;
+        tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.dodgeBonus : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.dodgeBonus : 0);
 
         //특수 효과에 따른 스탯 조정.
         tuningStats.attackBonus = tuningStats.attackBonus + (EffectTurn[0] > 0 ? -5 : 0);
