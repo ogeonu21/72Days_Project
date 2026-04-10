@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine.Networking;
 using System.IO;
 using System.Collections.Generic;
+using Codice.Client.Common.GameUI;
 
 public class DataImporter : EditorWindow
 {
@@ -14,6 +15,7 @@ public class DataImporter : EditorWindow
     {
         FetchAndImport("StatusData", ImportStats);
         FetchAndImport("NodeData", RunImportSequence);
+        FetchAndImport("ItemData", ImportItems);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -206,5 +208,65 @@ public class DataImporter : EditorWindow
         }
     }
     #endregion
+    #region [Import Items]
+    private static void ImportItems(string json)
+    {
+        var items = JsonHelper.FromJson<ItemDataRaw>(json);
+        foreach(var data in items)
+        {
+            if (string.IsNullOrEmpty(data.ItemID)) continue;
+            string path = $"Assets/Resources/Items/{data.ItemID}.asset";
+            BaseItem item = AssetDatabase.LoadAssetAtPath<BaseItem>(path);
+            if (item != null && item.GetType().Name != data.ItemCategory.ToString())
+            {
+                AssetDatabase.DeleteAsset(path);
+                item = null;
+            }
+            if (item == null)
+            {
+                item = CreateItemInstance(data.ItemCategory);
+                AssetDatabase.CreateAsset(item, path);
+            }
+            item.itemName = data.ItemName;
+            item.itemDescription = data.ItemDesc;
+            item.itemIcon = data.ItemIcon;
+            item.isConsumable = data.Consumable;
+            item.itemValue = data.ItemValue;
+            
+            if (item is WeaponItem w)
+            {
+                w.attackBonus = data.AttackBonus;
+                w.range = data.Range;
+            }
+            else if (item is ArmorItem a)
+            {
+                a.hpBonus = data.HpBonus;
+                a.dodgeBonus = data.DodgeBonus;
+            }
+            else if (item is AccessoryItem ac)
+            {
+                ac.dodgeBonus = data.DodgeBonus;
+                ac.questID = data.QuestID;
+            }
+            else if (item is PotionItem p)
+            {
+                p.health = data.Health;
+            }
 
+            EditorUtility.SetDirty(item);
+        }
+    }
+
+        private static BaseItem CreateItemInstance(ItemCategory category)
+        {
+            return category switch
+            {
+                ItemCategory.Weapon => CreateInstance<WeaponItem>(),
+                ItemCategory.Armor => CreateInstance<ArmorItem>(),
+                ItemCategory.Accessory => CreateInstance<AccessoryItem>(),
+                ItemCategory.Potion => CreateInstance<PotionItem>(),
+                _ => CreateInstance<BaseItem>()
+            };
+        }
+    #endregion
 }
