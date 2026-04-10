@@ -26,18 +26,18 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
-    triggersEvent: 1
+    triggersEvent: 0
     baseEvent: {fileID: 11400000, guid: 388b945cff479364ea69ec3ceea0e514, type: 2}
   - choiceText: "\uC2F8\uC6B4\uB2E4. (\uB3C8 +10000\uC6D0 \uD1B5\uC870\uB9BC + 1)"
     nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
-    triggersEvent: 1
+    triggersEvent: 0
     baseEvent: {fileID: 11400000, guid: cb72748138c48804f871b43017044bea, type: 2}
   - choiceText: "\uB3C4\uC640\uC900\uB2E4. (\uD1B5\uC870\uB9BC - 2 \uC120\uD589 +
       1)"
     nextNode: {fileID: 11400000, guid: 0dc4205b22c183b419b7d002e7c75a2e, type: 2}
     requiredFlag: 
     eventStack: 0
-    triggersEvent: 1
+    triggersEvent: 0
     baseEvent: {fileID: 11400000, guid: b174aa79f65668d48a792916d01db5b2, type: 2}

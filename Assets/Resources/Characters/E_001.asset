@@ -24,3 +24,6 @@ MonoBehaviour:
     hpBonus: 3
     dodgeBonus: 0
     rangeBonus: 0
+  dropItem: {fileID: 11400000, guid: 07c5ad52308c38f4ca53e7434bd269f0, type: 2}
+  itemDropRate: 0.6
+  dropGold: 100

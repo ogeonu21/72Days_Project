@@ -6,10 +6,10 @@ public class ItemDataRaw
     public string ItemID;
     public string ItemName;
     public string ItemDesc;
-    public Sprite ItemIcon;
+    public string ItemIcon;
     public bool Consumable;
     public int ItemValue;
-    public ItemCategory ItemCategory;
+    public string ItemCategory;
     public int Durability; //³»±¸µµ
     public int AttackBonus;
     public int Range;

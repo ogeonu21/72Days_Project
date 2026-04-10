@@ -25,17 +25,17 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
-    triggersEvent: 1
+    triggersEvent: 0
     baseEvent: {fileID: 11400000, guid: 4dadd6731b87ce748bfaf372cad08439, type: 2}
   - choiceText: "\uBBFC\uCCA9\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
     nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
-    triggersEvent: 1
+    triggersEvent: 0
     baseEvent: {fileID: 11400000, guid: 543a20beffda24d4ab5090012cbafe6f, type: 2}
   - choiceText: "\uAC74\uAC15\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
     nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
     requiredFlag: 
     eventStack: 0
-    triggersEvent: 1
+    triggersEvent: 0
     baseEvent: {fileID: 11400000, guid: e4797bbc9a369304bbf030dc472edb05, type: 2}

@@ -5,9 +5,9 @@ using TMPro;
 
 public class Enemy : Character
 {
-
-    //굳이 건드려야 할까? 이대로도 충분히 작동하는데...
-    //코드 효율성과 보기 깔끔한거는 통합이 맞기는 한데...
+    public BaseItem dropItem;
+    public float itemDropRate;
+    public int dropGold;
     public void InitializeFromDefinition(EnemyDefinition def)
     {
         if (def == null) return;
@@ -17,6 +17,14 @@ public class Enemy : Character
 
         baseStats = def.baseStats;
         tuningStats = def.tuningStats;
+
+        //드랍 아이템과 보상 설정;
+        if (def.dropItem != null)
+        {
+            dropItem = def.dropItem;
+            itemDropRate = def.itemDropRate;
+        }
+        dropGold = def.dropGold;
 
         AreaDataReset();
 

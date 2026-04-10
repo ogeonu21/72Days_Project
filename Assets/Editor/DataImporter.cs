@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Collections.Generic;
 using Codice.Client.Common.GameUI;
+using Unity.VisualScripting;
 
 public class DataImporter : EditorWindow
 {
@@ -13,9 +14,10 @@ public class DataImporter : EditorWindow
     [MenuItem("Tools/Update All Game Data")]
     public static void UpdateAllGameData()
     {
+        FetchAndImport("ItemData", ImportItems);
         FetchAndImport("StatusData", ImportStats);
         FetchAndImport("NodeData", RunImportSequence);
-        FetchAndImport("ItemData", ImportItems);
+        
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -189,27 +191,57 @@ public class DataImporter : EditorWindow
 
     #region [Import Stats]
     private static void ImportStats(string json)
+{
+    var stats = JsonHelper.FromJson<StatusDataRaw>(json);
+    foreach (var data in stats)
     {
-        var stats = JsonHelper.FromJson<StatusDataRaw>(json);
-        foreach (var data in stats)
+        if (string.IsNullOrEmpty(data.ID)) continue;
+        
+        string path = $"Assets/Resources/Characters/{data.ID}.asset";
+        EnemyDefinition def = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(path);
+        if (def == null)
         {
-            if (string.IsNullOrEmpty(data.ID)) continue;
-            string path = $"Assets/Resources/Characters/{data.ID}.asset";
-            EnemyDefinition def = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(path);
-            if (def == null)
-            {
-                def = ScriptableObject.CreateInstance<EnemyDefinition>();
-                AssetDatabase.CreateAsset(def, path);
-            }
-            def.type = data.Type; def.id = data.ID; def.displayName = data.Name;
-            def.baseStats = new BaseStats(data.STR, data.DEX, data.CON);
-            def.tuningStats = new TuningStats(data.AttackBonus, data.HpBonus, data.DodgeBonus, data.RangeBonus);
-            def.dropItemID = data.DropItemID;
-            def.itemDropRate = data.ItemDropRate;
-            def.dropGold = data.DropGold;
-            EditorUtility.SetDirty(def);
+            def = ScriptableObject.CreateInstance<EnemyDefinition>();
+            AssetDatabase.CreateAsset(def, path);
         }
+
+        // 기본 정보 갱신
+        def.type = data.Type; 
+        def.id = data.ID; 
+        def.displayName = data.Name;
+        def.baseStats = new BaseStats(data.STR, data.DEX, data.CON);
+        def.tuningStats = new TuningStats(data.AttackBonus, data.HpBonus, data.DodgeBonus, data.RangeBonus);
+
+        // --- [드랍 아이템 연결 로직: 연결만 수행] ---
+        if (!string.IsNullOrEmpty(data.DropItemID))
+        {
+            string itemPath = $"Assets/Resources/Items/{data.DropItemID}.asset";
+            BaseItem itemAsset = AssetDatabase.LoadAssetAtPath<BaseItem>(itemPath);
+
+            if (itemAsset != null)
+            {
+                def.dropItem = itemAsset;
+            }
+            else
+            {
+                // 아이템 에셋 자체가 없는 경우
+                Debug.LogWarning($"<color=orange>[Missing Item]</color> {data.ID}의 드랍 아이템 {data.DropItemID} 에셋을 찾을 수 없습니다. ItemData를 먼저 임포트했는지 확인하세요.");
+                def.dropItem = null;
+            }
+            
+            def.itemDropRate = data.ItemDropRate;
+        }
+        else
+        {
+            def.dropItem = null; // 아이템 ID가 비어있으면 참조 제거
+        }
+
+        def.dropGold = data.DropGold;
+        EditorUtility.SetDirty(def);
     }
+}
+
+    
     #endregion
     #region [Import Items]
     private static void ImportItems(string json)
@@ -230,9 +262,11 @@ public class DataImporter : EditorWindow
                 item = CreateItemInstance(data.ItemCategory);
                 AssetDatabase.CreateAsset(item, path);
             }
+            item.itemID = data.ItemID;
             item.itemName = data.ItemName;
             item.itemDescription = data.ItemDesc;
-            item.itemIcon = data.ItemIcon;
+            item.itemCategory = System.Enum.TryParse(data.ItemCategory, out ItemCategory cat) ? cat : ItemCategory.Weapon;
+            //item.itemIcon = data.ItemIcon; ID화 필요
             item.isConsumable = data.Consumable;
             item.itemValue = data.ItemValue;
             
@@ -260,16 +294,19 @@ public class DataImporter : EditorWindow
         }
     }
 
-        private static BaseItem CreateItemInstance(ItemCategory category)
+    private static BaseItem CreateItemInstance(string categoryStr)
+    {
+        if (!System.Enum.TryParse(categoryStr, out ItemCategory category)) return null;
+
+        BaseItem item = category switch
         {
-            return category switch
-            {
-                ItemCategory.Weapon => CreateInstance<WeaponItem>(),
-                ItemCategory.Armor => CreateInstance<ArmorItem>(),
-                ItemCategory.Accessory => CreateInstance<AccessoryItem>(),
-                ItemCategory.Potion => CreateInstance<PotionItem>(),
-                _ => CreateInstance<BaseItem>()
-            };
-        }
+            ItemCategory.Weapon => CreateInstance<WeaponItem>(),
+            ItemCategory.Armor => CreateInstance<ArmorItem>(),
+            ItemCategory.Accessory => CreateInstance<AccessoryItem>(),
+            ItemCategory.Potion => CreateInstance<PotionItem>(),
+            _ => null
+        };
+        return item;
+    }
     #endregion
 }
