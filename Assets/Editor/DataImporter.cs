@@ -204,6 +204,9 @@ public class DataImporter : EditorWindow
             def.type = data.Type; def.id = data.ID; def.displayName = data.Name;
             def.baseStats = new BaseStats(data.STR, data.DEX, data.CON);
             def.tuningStats = new TuningStats(data.AttackBonus, data.HpBonus, data.DodgeBonus, data.RangeBonus);
+            def.dropItemID = data.DropItemID;
+            def.itemDropRate = data.ItemDropRate;
+            def.dropGold = data.DropGold;
             EditorUtility.SetDirty(def);
         }
     }
