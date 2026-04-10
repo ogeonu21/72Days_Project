@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "StatUpdateEvent", menuName = "Events/StatUpdateEvent")]
 public class StatUpdateEvent : BaseEvent
 {
-    public string eventCategory;
     public int changeAmount;
     public string statType;
 
@@ -16,12 +15,10 @@ public class StatUpdateEvent : BaseEvent
 
     public override void Execute(Node nextNode)
     {
+        NodeManager.Instance.dumpNode.nextNode = nextNode;
+        NodeManager.Instance.dumpNode.surviveDate = nextNode.surviveDate;
+        NodeManager.Instance.dumpNode.worldLocation = nextNode.worldLocation;
         EventExecute();
-
-        if (nextNode != null)
-        {
-            NodeManager.Instance.GoToNode(nextNode);
-        }
         
     }
 
@@ -33,18 +30,23 @@ public class StatUpdateEvent : BaseEvent
             {
                 case "str":
                     CharacterManager.Instance.currentPlayer.baseStats.str += changeAmount;
+                    NodeManager.Instance.dumpNode.nodeMessage = $"힘이 {changeAmount}만큼 증가했다!";
                     break;
                 case "dex":
                     CharacterManager.Instance.currentPlayer.baseStats.dex += changeAmount;
+                    NodeManager.Instance.dumpNode.nodeMessage = $"민첩성이 {changeAmount}만큼 증가했다!";
                     break;
                 case "con":
                     CharacterManager.Instance.currentPlayer.baseStats.con += changeAmount;
+                    NodeManager.Instance.dumpNode.nodeMessage = $"체력이 {changeAmount}만큼 증가했다!";
+         
                     break;
                 default:
                     Debug.Log($"StatUpdateEvent: statType Error");
                     break;
             }
             CharacterManager.Instance.currentPlayer.UpdateStats();
+            NodeManager.Instance.GoToNode(NodeManager.Instance.dumpNode);
         }
     }
 }

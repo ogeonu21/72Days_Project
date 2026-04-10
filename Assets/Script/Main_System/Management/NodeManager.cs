@@ -5,6 +5,7 @@ public class NodeManager : SingleTon<NodeManager>
 {
     public Node startNode { get; private set; }
     public Node currentNode { get; private set; }
+    public MainStoryNode dumpNode;
 
     protected override void Awake()
     {

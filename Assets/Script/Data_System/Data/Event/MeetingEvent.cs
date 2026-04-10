@@ -9,8 +9,6 @@ public class MeetingEvent : BaseEvent
         무시하기,
         도와주기
     }
-
-    public string eventCategory;
     public meetingEventType type;
     public CombatNode who;
 
