@@ -19,7 +19,8 @@ MonoBehaviour:
     str: 10
     dex: 10
     con: 10
-  attackBonus: 10
-  hpBonus: 10
-  dodgeBonus: 0
-  rangeBonus: 0
+  tuningStats:
+    attackBonus: 10
+    hpBonus: 10
+    dodgeBonus: 0
+    rangeBonus: 0
