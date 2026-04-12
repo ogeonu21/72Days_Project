@@ -33,11 +33,11 @@ public class SaveManager : SingleTon<SaveManager>
         try
         {
             File.WriteAllText(savePath, encodedJson);
-            Debug.Log($"<color=orange>[SaveManager]</color>게임 데이터 저장 성공 : {savePath}");
+            Debug.Log($"<color=orange>[SaveManager] </color>게임 데이터 저장 성공 : {savePath}");
         }
         catch(System.Exception e)
         {
-            Debug.LogError($"<color=orange>[SaveManager]</color>게임 데이터 저장 실패 : {e.Message}");
+            Debug.LogError($"<color=orange>[SaveManager] </color>게임 데이터 저장 실패 : {e.Message}");
         }
     }
 
@@ -45,7 +45,7 @@ public class SaveManager : SingleTon<SaveManager>
     {
         if (!File.Exists(savePath))
         {
-            Debug.LogWarning($"<color=orange>[SaveManager]</color>저장된 파일이 없습니다. 새로운 SaveData를 생성합니다.");
+            Debug.LogWarning($"<color=orange>[SaveManager] </color>저장된 파일이 없습니다. 새로운 SaveData를 생성합니다.");
             return new SaveData();
         }
 
@@ -55,12 +55,12 @@ public class SaveManager : SingleTon<SaveManager>
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
 
             SaveData data = JsonUtility.FromJson<SaveData>(json);
-            Debug.Log($"<color=orange>[SaveManager]</color>게임 데이터를 불러왔습니다 : {savePath}");
+            Debug.Log($"<color=orange>[SaveManager] </color>게임 데이터를 불러왔습니다 : {savePath}");
             return data;
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"<color=orange>[SaveManager]</color>게임 데이터 불러오기 실패하였습니다. 새로운 SaveData를 생성합니다. : {e.Message}");
+            Debug.LogError($"<color=orange>[SaveManager] </color>게임 데이터 불러오기 실패하였습니다. 새로운 SaveData를 생성합니다. : {e.Message}");
             return new SaveData();
         }
 
