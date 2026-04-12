@@ -22,12 +22,11 @@ public class RewardSystem : SingleTon<RewardSystem>
 
         player.GetExp(enemy.GetExpReward());
 
-        if(CalculateFunction.Roll(0.2f))
+        if(CalculateFunction.Roll(
+            enemy.itemDropRate))
         {
-
-
-            
-            yield return GameEvent.OnNodeTextUpdate($"당신은 보상으로 ....을 얻을 예정이다.");
+            yield return GameEvent.OnNodeTextUpdate($"당신은 보상으로 {enemy.dropItem.itemName}을 얻었다.");
+            InventoryManager.Instance.AddToInventory(enemy.dropItem);
             yield return StartCoroutine(WaitForClick.WaitClick());
 
         }

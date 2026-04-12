@@ -10,7 +10,5 @@ public static class WaitForClick
         {
             yield return null; // 한 프레임 대기
         }
-
-        Debug.Log("마우스가 클릭되었습니다!");
     }
 }
