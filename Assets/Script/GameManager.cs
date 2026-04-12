@@ -112,7 +112,7 @@ public class GameManager : SingleTon<GameManager>
                         Debug.Log("감지되지 않음.");
                     }
                     Debug.Log($"{d.Name}이름을 지닌 재화를 호출하였다. 잔액 : {d.Amount}");
-                    GameEvent.CurrencyChanged(d);
+                    CurrencyEvent.CurrencyChanged(d);
                 }
 
 

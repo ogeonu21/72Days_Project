@@ -122,7 +122,7 @@ public class Player : Character
             UpdateLV_UI();
 
             //레벨업 이벤트 발생.
-            GameEvent.PlayerLevelUp();
+            PlayerEvent.PlayerLevelUp();
         }
     }
 
