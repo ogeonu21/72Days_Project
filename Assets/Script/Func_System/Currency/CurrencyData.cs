@@ -24,6 +24,6 @@ public class CurrencyData
     public void SetAmount(int amount)
     {
         this.amount = Mathf.Max(0, amount);
-        GameEvent.CurrencyChanged(this);
+        CurrencyEvent.CurrencyChanged(this);
     }
 }

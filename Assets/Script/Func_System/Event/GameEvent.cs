@@ -17,10 +17,6 @@ public static class GameEvent
     public static event Action<Player, Enemy> OnCharacterUIChanged;
     public static void UpdateCharacterUI(Player player, Enemy enemy) => OnCharacterUIChanged?.Invoke(player, enemy);
 
-    //Player 레벨업 이벤트
-    public static event Action OnPlayerLevelUp;
-    public static void PlayerLevelUp() => OnPlayerLevelUp?.Invoke();
-
     //재화 변경 이벤트
     public static event Action<CurrencyData> OnCurrencyChanged;
     public static void CurrencyChanged(CurrencyData data) => OnCurrencyChanged?.Invoke(data);
