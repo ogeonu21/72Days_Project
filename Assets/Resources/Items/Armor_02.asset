@@ -9,16 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00184cacf2a96804e9fcfd4d0bdf9157, type: 3}
-  m_Name: Weapon_03
+  m_Script: {fileID: 11500000, guid: 80f1e32f900590b4c8111f05bf89ce83, type: 3}
+  m_Name: Armor_02
   m_EditorClassIdentifier: 
-  itemID: Weapon_03
-  itemName: "\uBE60\uB8E8"
-  itemDescription: "\uBE60\uB8E8! \uC9C0\uC0C1 \uCD5C\uACE0\uC758 \uBB34\uAE30!"
+  itemID: Armor_02
+  itemName: "\uB450\uD130\uC6B4 \uD328\uB529"
+  itemDescription: "\uB365\uC9C0\uB9CC \uD479\uC2E0\uD558\uB2E4"
   itemIcon: {fileID: 0}
   isConsumable: 0
-  itemValue: 6910
-  itemCategory: 0
-  durability: 57
-  attackBonus: 12
-  range: 1
+  itemValue: 15000
+  itemCategory: 1
+  durability: 14
+  armorType: 1
+  hpBonus: 10
+  dodgeBonus: 0
