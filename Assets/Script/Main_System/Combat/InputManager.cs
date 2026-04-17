@@ -64,10 +64,6 @@ public class InputManager : MonoBehaviour
             }
             //배틀 매니저와 연결. 이거 이벤트로 바꿀 수 있나?
             combatManager.GetInput(data);
-        }
-        else
-        {
-            Debug.Log("아직 당신의 턴이 아닙니다.");
         }   
     }
 }

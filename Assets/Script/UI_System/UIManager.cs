@@ -37,8 +37,8 @@ public class UIManager : SingleTon<UIManager>
         base.Awake();
         InitializeUIControllers();
         GameEvent.OnNodeChanged += UpdateUI;
-        GameEvent.OnPlayerLevelUp += UpdateLevelUpUI;
-        GameEvent.OnCurrencyChanged += UpdateCurrencyUI;
+        PlayerEvent.OnPlayerLevelUp += UpdateLevelUpUI;
+        CurrencyEvent.OnCurrencyChanged += UpdateCurrencyUI;
 
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
     }

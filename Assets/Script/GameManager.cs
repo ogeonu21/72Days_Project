@@ -69,7 +69,7 @@ public class GameManager : SingleTon<GameManager>
         {
             if (currentState == GameState.New)
             {
-                Debug.Log("새로운 세계를 시작하기 위해 핵을 떨구는 중입니다...");
+                Debug.Log("<color=red>[GameManager] </color>새로운 세계를 시작하기 위해 핵을 떨구는 중입니다...");
                 //코루틴을 이용한 로딩바 추가도 가능.
 
                 //새로운 Data 생성.
@@ -90,7 +90,7 @@ public class GameManager : SingleTon<GameManager>
             }
             else if (currentState == GameState.Load)
             {
-                Debug.Log("저장된 세계를 불러오는 중입니다...");
+                Debug.Log("<color=red>[GameManager] </color>저장된 세계를 불러오는 중입니다...");
 
                 //저장된 Data 로드
                 SaveData data = SaveManager.Instance.LoadData();
@@ -102,23 +102,22 @@ public class GameManager : SingleTon<GameManager>
                 
                 CurrencyManager.Instance.currencyList = data.currencyList;
 
-                Debug.Log($"{CurrencyManager.Instance.GetAmount("Gold")}가 존재함이 확인!");
-                Debug.Log(data.currencyList.Count);
+                Debug.Log($"<color=red>[GameManager] </color> 돈 {CurrencyManager.Instance.GetAmount("Gold")} 원이 존재함이 확인되었습니다");
 
                 foreach (CurrencyData d in data.currencyList)
                 {
                     if (d == null)
                     {
-                        Debug.Log("감지되지 않음.");
+                        Debug.Log("<color=red>[GameManager] </color>감지되지 않음.");
                     }
-                    Debug.Log($"{d.Name}이름을 지닌 재화를 호출하였다. 잔액 : {d.Amount}");
-                    GameEvent.CurrencyChanged(d);
+                    Debug.Log($"<color=red>[GameManager] </color>{d.Name}이름을 지닌 재화를 호출하였다. 잔액 : {d.Amount}원");
+                    CurrencyEvent.CurrencyChanged(d);
                 }
 
 
                 if (playerData.currentHP == 0)
                 {
-                    Debug.Log("죽은 플레이어를 불러올 수는 없다.");
+                    Debug.Log("<color=red>[GameManager] </color>죽은 플레이어를 불러올 수는 없다.");
                     BackToMain();
                     return;
                 }
@@ -146,7 +145,7 @@ public class GameManager : SingleTon<GameManager>
 
     public void QuitGame()
     {
-        Debug.Log("게임을 종료합니다...");
+        Debug.Log("<color=red>[GameManager] </color>게임을 종료합니다...");
 
         //추후 가능하다면 세이브 완료 후 종료할 수 있도록 변경.
         Application.Quit();

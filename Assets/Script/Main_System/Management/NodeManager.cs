@@ -20,6 +20,7 @@ public class NodeManager : SingleTon<NodeManager>
     {
         //event 발생 확률? 조건 체크?
         currentNode = nextNode;
+        Debug.Log($"<color=beige>[NodeManager] </color> 노드를 이동합니다. 현재 노드 : {currentNode.nodeName}");
         GameEvent.NotifyNodeChange(currentNode);
         GameEvent.SaveGame();
     }

@@ -27,5 +27,15 @@ public class InventoryManager : SingleTon<InventoryManager>
             }
         }
     }
+    public void AddToInventory(BaseItem item)
+    {
+        if (inventoryItems.Contains(item))
+        {
+            Debug.Log("<color=green>[Inventory] </color>이미 인벤토리에 존재하는 아이템입니다.");
+            return;
+        }
+        inventoryItems.Add(item);
+        Debug.Log($"<color=green>[Inventory] </color>현재 인벤토리에 들어있는 아이템은 {string.Join(", ", inventoryItems.ConvertAll(i => i.itemName))}입니다.");
+    }
 
 }
