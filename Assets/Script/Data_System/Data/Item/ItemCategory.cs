@@ -7,3 +7,11 @@ public enum ItemCategory
     Accessory,
     Potion
 }
+
+public enum ArmorType
+{
+    Helmet,
+    Chestplate,
+    Boots,
+    Gloves
+}

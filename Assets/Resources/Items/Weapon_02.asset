@@ -19,6 +19,6 @@ MonoBehaviour:
   isConsumable: 0
   itemValue: 14200
   itemCategory: 0
-  durability: 0
+  durability: 32
   attackBonus: 8
   range: 1
