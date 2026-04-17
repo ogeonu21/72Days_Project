@@ -272,11 +272,14 @@ public class DataImporter : EditorWindow
             
             if (item is WeaponItem w)
             {
+                w.durability = data.Durability;
                 w.attackBonus = data.AttackBonus;
                 w.range = data.Range;
             }
             else if (item is ArmorItem a)
             {
+                a.durability = data.Durability;
+                a.armorType = System.Enum.TryParse(data.ArmorType, out ArmorType at) ? at : ArmorType.Helmet;
                 a.hpBonus = data.HpBonus;
                 a.dodgeBonus = data.DodgeBonus;
             }
