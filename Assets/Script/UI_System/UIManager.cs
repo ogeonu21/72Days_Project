@@ -203,4 +203,22 @@ public class UIManager : SingleTon<UIManager>
         }
     }
     #endregion
+
+    #region [UI Control]
+    public void OpenUI(GameObject UI)
+    {
+        if (UI != null && !UI.activeSelf)
+        {
+            UI.SetActive(true);    
+        }
+    }
+    public void CloseUI(GameObject UI)
+    {
+        if(UI != null && UI.activeSelf)
+        {
+            UI.SetActive(false);
+        }
+    }
+
+    #endregion
 }
