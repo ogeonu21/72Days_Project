@@ -218,7 +218,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 964507477}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: CloseUI
+        m_MethodName: OpenUI
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1956636713}
@@ -7513,7 +7513,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 964507477}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OpenUI
+        m_MethodName: CloseUI
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1956636713}

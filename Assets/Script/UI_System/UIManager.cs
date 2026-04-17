@@ -207,16 +207,25 @@ public class UIManager : SingleTon<UIManager>
     #region [UI Control]
     public void OpenUI(GameObject UI)
     {
-        if (UI != null && !UI.activeSelf)
+        if (UI != null)
         {
+            
+            Debug.Log($"<color=yellow>[UIMANAGER] </color>UI가 활성화되었습니다: {UI.name}</color>");
             UI.SetActive(true);    
+        }
+        else
+        {
+            Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UI가 이미 활성화되어 있거나 null입니다.</color>");
         }
     }
     public void CloseUI(GameObject UI)
     {
-        if(UI != null && UI.activeSelf)
+        if(UI != null)
         {
             UI.SetActive(false);
+        }else
+        {
+            Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UI가 이미 활성화되어 있거나 null입니다.</color>");
         }
     }
 
