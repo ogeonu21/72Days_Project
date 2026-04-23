@@ -53,7 +53,6 @@ public class Character : MonoBehaviour
 
     #region [Events]
     public event Action onDied;
-    public event Action onStatsChanged; //Stats이 변경되었을때 작동 -> 아직은 연결된 곳 없음.
     #endregion
 
     #region [initialize]
@@ -86,7 +85,7 @@ public class Character : MonoBehaviour
         stats = new Stats(baseStats, tuningStats);
 
         //스탯 변화 이벤트 발생.
-        onStatsChanged?.Invoke();
+        PlayerEvent.OnStatsChanged();
         //최대체력 변화에 따른 현재체력 보정.
         Heal(MaxHP - tmpMaxHP);
         UpdateHP_UI();

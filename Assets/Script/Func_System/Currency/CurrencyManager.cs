@@ -43,6 +43,7 @@ public class CurrencyManager : SingleTon<CurrencyManager>, ICurrency
             data.SetAmount(newAmount);
             Debug.Log($"재화 {currencyName}의 잔액이 {newAmount}로 설정되었다.");
         }
+        CurrencyEvent.CurrencyChanged(GetCurrencyData(currencyName));
     }
 
     public void Increase(string currencyName, int amount)

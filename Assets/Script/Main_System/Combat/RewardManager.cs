@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class RewardSystem : SingleTon<RewardSystem>
+public class RewardManager : SingleTon<RewardManager>
 {
     public void OnEnable()
     {
@@ -21,6 +21,7 @@ public class RewardSystem : SingleTon<RewardSystem>
         yield return StartCoroutine(WaitForClick.WaitClick());
 
         player.GetExp(enemy.GetExpReward());
+        CurrencyManager.Instance.Increase("Gold", enemy.dropGold);
 
         if(CalculateFunction.Roll(
             enemy.itemDropRate))

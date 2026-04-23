@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class UIManager : SingleTon<UIManager>
 {
@@ -27,6 +28,11 @@ public class UIManager : SingleTon<UIManager>
 
     [Header("Currency UI")]
     [SerializeField] private TMP_Text goldText;
+
+    [Header("Inventory Character UI")]
+    [SerializeField] private TMP_Text inventoryCharacterSTRText;
+    [SerializeField] private TMP_Text inventoryCharacterDEXText;
+    [SerializeField] private TMP_Text inventoryCharacterCONText;
     #endregion
 
     #endregion
@@ -39,6 +45,7 @@ public class UIManager : SingleTon<UIManager>
         GameEvent.OnNodeChanged += UpdateUI;
         PlayerEvent.OnPlayerLevelUp += UpdateLevelUpUI;
         CurrencyEvent.OnCurrencyChanged += UpdateCurrencyUI;
+        PlayerEvent.onStatsChanged += UpdateCharacterStatsUI;
 
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
     }
@@ -200,6 +207,18 @@ public class UIManager : SingleTon<UIManager>
         else
         {
             Debug.Log(data.Name);
+        }
+    }
+    #endregion
+
+    #region [Character Stats UI Control]
+    private void UpdateCharacterStatsUI()
+    {
+        if (player != null)
+        {
+            inventoryCharacterSTRText.text = " : " + player.baseStats.str;
+            inventoryCharacterDEXText.text = " : " + player.baseStats.dex;
+            inventoryCharacterCONText.text = " : " + player.baseStats.con;
         }
     }
     #endregion

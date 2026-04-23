@@ -17,10 +17,6 @@ public static class GameEvent
     public static event Action<Player, Enemy> OnCharacterUIChanged;
     public static void UpdateCharacterUI(Player player, Enemy enemy) => OnCharacterUIChanged?.Invoke(player, enemy);
 
-    //재화 변경 이벤트
-    public static event Action<CurrencyData> OnCurrencyChanged;
-    public static void CurrencyChanged(CurrencyData data) => OnCurrencyChanged?.Invoke(data);
-
     //Node Text 변경 이벤트
     //각 UI컨트롤러별 NodeText 할당과 NodeTextUpdate 구독 필요
     public delegate IEnumerator NodeTextChanged(string text);
