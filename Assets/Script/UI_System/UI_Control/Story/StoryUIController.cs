@@ -38,15 +38,15 @@ public class StoryUIController : UIController, IUpdatableUI
         foreach (var btn in choiceButtons)
         {
             btn.gameObject.SetActive(false);
-            btn.onClick.RemoveAllListeners(); // ±âÁ¸ ¸®½º³Ê Á¦°Å
+            btn.onClick.RemoveAllListeners(); // ê¸°ì¡´ ë¦¬ìŠ¤ë„ˆ ì œê±°
         }
 
         yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-        //¾ê´Â µû·Î MainStoryUIController³ª ±×·±°Å¸¦ ¸¸µé±â°¡ Èûµå³×.
-        NodeManager.Instance.GoToNode(node.nextNode);
+        //ì–˜ëŠ” ë”°ë¡œ MainStoryUIControllerë‚˜ ê·¸ëŸ°ê±°ë¥¼ ë§Œë“¤ê¸°ê°€ íž˜ë“œë„¤.
+        NodeManager.Instance.AdvanceMainStory(node);
     }
 
     public IEnumerator UpdateStoryNode(StoryNode node)
@@ -55,10 +55,10 @@ public class StoryUIController : UIController, IUpdatableUI
         foreach (var btn in choiceButtons)
         {
             btn.gameObject.SetActive(false);
-            btn.onClick.RemoveAllListeners(); // ±âÁ¸ ¸®½º³Ê Á¦°Å
+            btn.onClick.RemoveAllListeners(); // ê¸°ì¡´ ë¦¬ìŠ¤ë„ˆ ì œê±°
         }
 
-        //dialogue Text Ãâ·Â.
+        //dialogue Text ì¶œë ¥.
         yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
 
         if (node.choices != null && node.choices.Count > 0)
@@ -72,10 +72,9 @@ public class StoryUIController : UIController, IUpdatableUI
 
                     choiceButtons[i].gameObject.SetActive(true);
                     choiceButtons[i].GetComponentInChildren<TMP_Text>().text = choice.choiceText;
-                    choiceButtons[i].onClick.AddListener(() => NodeManager.Instance.GoToNode(choice.nextNode));
+                    choiceButtons[i].onClick.AddListener(() => NodeManager.Instance.SelectStoryChoice(choice));
                 }
             }
         }
     }
 }
-    
