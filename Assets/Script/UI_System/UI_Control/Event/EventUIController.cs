@@ -8,16 +8,19 @@ public class EventUIController : UIController, IUpdatableUI
 {
     public TMP_Text dialogueText;
     public Button[] choiceButtons;
+    private ChoiceListPresenter choiceListPresenter;
     
     protected override void OnEnable()
     {
         base.OnEnable();
         NodeText = dialogueText;
+        choiceListPresenter = choiceListPresenter ?? new ChoiceListPresenter(choiceButtons);
     }
     protected override void OnDisable()
     {
         base.OnDisable();
         NodeText = null;
+        choiceListPresenter?.Clear();
     }
 
     public void UpdateUI(Node node)
@@ -28,28 +31,7 @@ public class EventUIController : UIController, IUpdatableUI
 
     public IEnumerator UpdateEventNode(EventNode node)
     {
-        foreach (var btn in choiceButtons)
-        {
-            btn.gameObject.SetActive(false);
-            btn.onClick.RemoveAllListeners();
-        }
-
         yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
-
-        if (node.choices != null && node.choices.Count > 0)
-        {
-            for (int i = 0; i < node.choices.Count && i < choiceButtons.Length; i++)
-            {
-                if (node.choices[i].choiceText != "" || node.choices[i].nextNode != null)
-                {
-                    int index = i;
-                    var choice = node.choices[i];
-
-                    choiceButtons[i].gameObject.SetActive(true);
-                    choiceButtons[i].GetComponentInChildren<TMP_Text>().text = choice.choiceText;
-                    choiceButtons[i].onClick.AddListener(() => EventManager.Instance.Choose(choice));
-                }
-            }
-        }
+        choiceListPresenter.Present(node.choices, choice => EventManager.Instance.Choose(choice));
     }
 }
