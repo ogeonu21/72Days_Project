@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
-using System.Text;
+using UnityEngine;
 
 public class SaveManager : SingleTon<SaveManager>
 {
@@ -25,77 +23,211 @@ public class SaveManager : SingleTon<SaveManager>
         GameEvent.OnSaveGame -= SaveGame;
     }
 
-    public void SaveData(SaveData data)
+    public bool TryLoadGame(out SaveGameData data, out string error)
     {
-        string json = JsonUtility.ToJson(data, true);
-        string encodedJson = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        data = null;
+        error = null;
+
+        if (!File.Exists(savePath))
+        {
+            error = "ì €ì¥ íŒŒì¼ì´ ì—†ìŠµë‹ˆë‹¤.";
+            return false;
+        }
 
         try
         {
-            File.WriteAllText(savePath, encodedJson);
-            Debug.Log($"<color=orange>[SaveManager] </color>°ÔÀÓ µ¥ÀÌÅÍ ÀúÀå ¼º°ø : {savePath}");
+            data = JsonUtility.FromJson<SaveGameData>(File.ReadAllText(savePath));
+            if (data == null || data.version <= 0)
+            {
+                error = "ì§€ì›í•˜ì§€ ì•ŠëŠ” ì´ì „ ì €ì¥ í˜•ì‹ì…ë‹ˆë‹¤. ìƒˆ ê²Œì„ì„ ì‹œì‘í•œ ë’¤ ë‹¤ì‹œ ì €ì¥í•´ ì£¼ì„¸ìš”.";
+                return false;
+            }
+
+            if (data.version != SaveGameData.CurrentVersion)
+            {
+                error = $"ì§€ì›í•˜ì§€ ì•ŠëŠ” ì €ì¥ ë²„ì „ì…ë‹ˆë‹¤. (íŒŒì¼: {data.version}, ì§€ì›: {SaveGameData.CurrentVersion})";
+                return false;
+            }
+
+            return true;
         }
-        catch(System.Exception e)
+        catch (Exception exception)
         {
-            Debug.LogError($"<color=orange>[SaveManager] </color>°ÔÀÓ µ¥ÀÌÅÍ ÀúÀå ½ÇÆĞ : {e.Message}");
+            error = $"ì €ì¥ íŒŒì¼ì„ ì½ì§€ ëª»í–ˆìŠµë‹ˆë‹¤: {exception.Message}";
+            return false;
         }
     }
 
-    public SaveData LoadData()
+    public bool TryRestoreGame(out PlayerData playerData, out ItemData itemData, out List<CurrencyData> currencies,
+        out int goodAndEvil, out Node currentNode, out EquipmentData equipmentData, out string error)
     {
-        if (!File.Exists(savePath))
+        playerData = null;
+        itemData = null;
+        currencies = null;
+        goodAndEvil = 0;
+        currentNode = null;
+        equipmentData = null;
+
+        if (!TryLoadGame(out SaveGameData data, out error))
         {
-            Debug.LogWarning($"<color=orange>[SaveManager] </color>ÀúÀåµÈ ÆÄÀÏÀÌ ¾ø½À´Ï´Ù. »õ·Î¿î SaveData¸¦ »ı¼ºÇÕ´Ï´Ù.");
-            return new SaveData();
+            return false;
         }
 
-        try
+        currentNode = LoadNode(data.currentNodeId);
+        if (currentNode == null)
         {
-            string encodedJson = File.ReadAllText(savePath);
-            string json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
-
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
-            Debug.Log($"<color=orange>[SaveManager] </color>°ÔÀÓ µ¥ÀÌÅÍ¸¦ ºÒ·¯¿Ô½À´Ï´Ù : {savePath}");
-            return data;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"<color=orange>[SaveManager] </color>°ÔÀÓ µ¥ÀÌÅÍ ºÒ·¯¿À±â ½ÇÆĞÇÏ¿´½À´Ï´Ù. »õ·Î¿î SaveData¸¦ »ı¼ºÇÕ´Ï´Ù. : {e.Message}");
-            return new SaveData();
+            error = $"ì €ì¥ëœ ë…¸ë“œë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤: {data.currentNodeId}";
+            return false;
         }
 
+        playerData = data.player != null ? data.player.ToPlayerData() : new PlayerData();
+        itemData = new ItemData { inventoryItems = LoadItems(data.inventoryItemIds) };
+        currencies = LoadCurrencies(data.currencies);
+        goodAndEvil = data.goodAndEvil;
+        equipmentData = new EquipmentData
+        {
+            weaponItem = LoadItem<WeaponItem>(data.weaponItemId),
+            armorItem = LoadItem<ArmorItem>(data.armorItemId),
+            accessoryItem = LoadItem<AccessoryItem>(data.accessoryItemId)
+        };
+        playerData.equipmentData = equipmentData;
+        return true;
     }
 
     public void SaveGame()
     {
-        SaveData data = new SaveData();
-        data.playerData = CharacterManager.Instance.currentPlayer.GetCurrentData();
-        data.currentNode = NodeManager.Instance.currentNode;
-        data.goodAndEvil = GameManager.Instance.goodAndEvil;
-        data.currencyList = CurrencyManager.Instance.currencyList;
-        data.itemData.inventoryItems = InventoryManager.Instance.inventoryItems;
+        Player player = CharacterManager.Instance != null ? CharacterManager.Instance.currentPlayer : null;
+        Node node = NodeManager.Instance != null ? NodeManager.Instance.currentNode : null;
+        if (player == null || node == null)
+        {
+            Debug.LogWarning("[SaveManager] í”Œë ˆì´ì–´ ë˜ëŠ” í˜„ì¬ ë…¸ë“œê°€ ì¤€ë¹„ë˜ì§€ ì•Šì•„ ì €ì¥í•˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
+            return;
+        }
 
-        SaveManager.Instance.SaveData(data);
+        SaveGameData data = CreateSnapshot(player, node);
+        WriteAtomically(JsonUtility.ToJson(data, true));
     }
-}
 
-[System.Serializable]
-public class SaveData
-{
-    public PlayerData playerData; //ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ
-    public Node currentNode; //ÇöÀç ÁøÇàÁßÀÎ Node;
-    public int goodAndEvil; //¼±¾Ç ¼öÄ¡
-    public ItemData itemData;
-    public List<CurrencyData> currencyList;
-    // item Data
-    // ÁøÇàµµ °ü·ÃÇÑ ½ºÅÃ. ¼±    Çà, ¾ÇÇà µîÀÇ ½ºÅÃ.
-
-    public SaveData()
+    private SaveGameData CreateSnapshot(Player player, Node node)
     {
-        playerData = new PlayerData();
-        currentNode = ScriptableObject.CreateInstance<Node>();
-        goodAndEvil = 0;
-        itemData = new ItemData();
-        currencyList = new List<CurrencyData>();
+        SaveGameData data = new SaveGameData
+        {
+            currentNodeId = node.name,
+            goodAndEvil = GameManager.Instance != null ? GameManager.Instance.goodAndEvil : 0,
+            player = PlayerSaveData.FromPlayerData(player.GetCurrentData()),
+            weaponItemId = GetItemId(player.equipmentData != null ? player.equipmentData.weaponItem : null),
+            armorItemId = GetItemId(player.equipmentData != null ? player.equipmentData.armorItem : null),
+            accessoryItemId = GetItemId(player.equipmentData != null ? player.equipmentData.accessoryItem : null)
+        };
+
+        if (CurrencyManager.Instance != null && CurrencyManager.Instance.currencyList != null)
+        {
+            foreach (CurrencyData currency in CurrencyManager.Instance.currencyList)
+            {
+                if (currency != null)
+                {
+                    data.currencies.Add(new CurrencySaveData(currency.Name, currency.Amount));
+                }
+            }
+        }
+
+        if (InventoryManager.Instance != null && InventoryManager.Instance.inventoryItems != null)
+        {
+            foreach (BaseItem item in InventoryManager.Instance.inventoryItems)
+            {
+                string itemId = GetItemId(item);
+                if (!string.IsNullOrWhiteSpace(itemId))
+                {
+                    data.inventoryItemIds.Add(itemId);
+                }
+            }
+        }
+
+        return data;
+    }
+
+    private void WriteAtomically(string json)
+    {
+        string temporaryPath = savePath + ".tmp";
+        try
+        {
+            File.WriteAllText(temporaryPath, json);
+            if (File.Exists(savePath))
+            {
+                File.Replace(temporaryPath, savePath, null);
+            }
+            else
+            {
+                File.Move(temporaryPath, savePath);
+            }
+
+            Debug.Log($"[SaveManager] ì €ì¥ ì™„ë£Œ: {savePath}");
+        }
+        catch (Exception exception)
+        {
+            if (File.Exists(temporaryPath))
+            {
+                File.Delete(temporaryPath);
+            }
+
+            Debug.LogError($"[SaveManager] ì €ì¥ ì‹¤íŒ¨: {exception.Message}");
+        }
+    }
+
+    private static string GetItemId(BaseItem item)
+    {
+        return item != null ? item.itemID : null;
+    }
+
+    private static Node LoadNode(string nodeId)
+    {
+        return string.IsNullOrWhiteSpace(nodeId) ? null : Resources.Load<Node>($"Nodes/{nodeId}");
+    }
+
+    private static T LoadItem<T>(string itemId) where T : BaseItem
+    {
+        return string.IsNullOrWhiteSpace(itemId) ? null : Resources.Load<T>($"Items/{itemId}");
+    }
+
+    private static List<BaseItem> LoadItems(List<string> itemIds)
+    {
+        List<BaseItem> items = new List<BaseItem>();
+        if (itemIds == null)
+        {
+            return items;
+        }
+
+        foreach (string itemId in itemIds)
+        {
+            BaseItem item = Resources.Load<BaseItem>($"Items/{itemId}");
+            if (item == null)
+            {
+                Debug.LogWarning($"[SaveManager] ì¸ë²¤í† ë¦¬ ì•„ì´í…œì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤: {itemId}");
+                continue;
+            }
+
+            items.Add(item);
+        }
+
+        return items;
+    }
+
+    private static List<CurrencyData> LoadCurrencies(List<CurrencySaveData> savedCurrencies)
+    {
+        List<CurrencyData> currencies = new List<CurrencyData>();
+        if (savedCurrencies == null)
+        {
+            return currencies;
+        }
+
+        foreach (CurrencySaveData savedCurrency in savedCurrencies)
+        {
+            if (savedCurrency != null && !string.IsNullOrWhiteSpace(savedCurrency.name))
+            {
+                currencies.Add(new CurrencyData(savedCurrency.name, savedCurrency.amount));
+            }
+        }
+
+        return currencies;
     }
 }
