@@ -24,7 +24,6 @@ public class EventUIController : UIController, IUpdatableUI
     {
         StartCoroutine(UpdateEventNode(node as EventNode));
 
-        EventManager.Instance.EventNodeStart(node as EventNode);
     }
 
     public IEnumerator UpdateEventNode(EventNode node)

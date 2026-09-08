@@ -145,19 +145,6 @@ public class GameManager : SingleTon<GameManager>
         }
     }
 
-    // public void SaveGame()
-    // {
-    //     SaveData data = new SaveData();
-
-    //     data.playerData = CharacterManagerInstance.currentPlayer.GetCurrentData();
-    //     data.currentNode = NodeManager.Instance.currentNode;
-    //     data.goodAndEvil = GameManager.goodAndEvil;
-    //     data.currencyList = CurrencyManager.Instance.currencyList;
-    //     data.itemData = InventoryManager.Instance.inventoryItems;
-
-    //     SaveManager.Instance.SaveData(data);
-    // }
-
     public void QuitGame()
     {
         Debug.Log("<color=red>[GameManager] </color>게임을 종료합니다...");

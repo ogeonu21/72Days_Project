@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class EventManager : SingleTon<EventManager>
 {
-    public void EventNodeStart(EventNode node)
-    {
-        
-    }
-
     public void Choose(Choice choice)
     {
-        Debug.Log($"{choice.baseEvent} : Event ½ÇÇà.");
+        Debug.Log($"{choice.baseEvent} : Event ì‹¤í–‰.");
         choice.baseEvent.Execute(choice.nextNode);
     }
 }
