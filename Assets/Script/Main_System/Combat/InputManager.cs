@@ -6,20 +6,20 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    #region [º¯¼ö ±×·ì]
-    //º¯¼ö ¸ñ·Ï.
+    #region [ë³€ìˆ˜ ê·¸ë£¹]
+    //ë³€ìˆ˜ ëª©ë¡.
     private CombatManager combatManager;
     private Player player;
     #endregion
 
-    #region [ÃÊ±âÈ­]
-    //¹èÆ² ¸Å´ÏÀú instance ¿¬°á.
+    #region [ì´ˆê¸°í™”]
+    //ë°°í‹€ ë§¤ë‹ˆì € instance ì—°ê²°.
     private void Awake()
     {
         combatManager = CombatManager.Instance;
     }
 
-    //InputManager°¡ È°¼ºÈ­µÉ °æ¿ì, player¸¦ instance¸¦ ¹Ş¾Æ¿È.
+    //InputManagerê°€ í™œì„±í™”ë  ê²½ìš°, playerë¥¼ instanceë¥¼ ë°›ì•„ì˜´.
     private void OnEnable()
     {
         if (CharacterManager.Instance.currentPlayer != null)
@@ -28,7 +28,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    //ºñÈ°¼ºÈ­½Ã, ¿¬°á ÇØÁ¦.
+    //ë¹„í™œì„±í™”ì‹œ, ì—°ê²° í•´ì œ.
     private void OnDisable()
     {
         player = null;
@@ -36,34 +36,32 @@ public class InputManager : MonoBehaviour
     #endregion
 
 
-    public void AttackAreaInput(string name)
+    public void AttackAreaInput(int serializedArea)
     {
-        if (!combatManager.combatActive) {
+        if (!combatManager.combatActive || player == null)
+        {
             return;
         }
 
-        if (combatManager.onAttackTurn)
+        if (!System.Enum.IsDefined(typeof(AttackArea), serializedArea))
         {
-            AreaData data = new AreaData();
-            switch (name)
-            {
-                case "¸Ó¸®":
-                    data = player.areaDataDB[0];
-                    break;
-                case "¸ö":
-                    data = player.areaDataDB[1];
-                    break;
-                case "ÆÈ":
-                    data = player.areaDataDB[2];
-                    break;
-                case "´Ù¸®":
-                    data = player.areaDataDB[3];
-                    break;
-                default:
-                    break;
-            }
-            //¹èÆ² ¸Å´ÏÀú¿Í ¿¬°á. ÀÌ°Å ÀÌº¥Æ®·Î ¹Ù²Ü ¼ö ÀÖ³ª?
-            combatManager.GetInput(data);
-        }   
+            Debug.LogWarning($"[InputManager] ì•Œ ìˆ˜ ì—†ëŠ” ê³µê²© ë¶€ìœ„ ê°’ì…ë‹ˆë‹¤: {serializedArea}");
+            return;
+        }
+
+        if (!combatManager.onAttackTurn)
+        {
+            return;
+        }
+
+        AttackArea area = (AttackArea)serializedArea;
+        int index = (int)area;
+        if (player.areaDataDB == null || index >= player.areaDataDB.Length)
+        {
+            Debug.LogError($"[InputManager] {area}ì— ëŒ€ì‘í•˜ëŠ” ê³µê²© ë¶€ìœ„ ë°ì´í„°ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+            return;
+        }
+
+        combatManager.GetInput(player.areaDataDB[index]);
     }
 }
