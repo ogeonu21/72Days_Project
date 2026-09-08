@@ -5,8 +5,8 @@ using System;
 
 public class CombatManager : SingleTon<CombatManager>
 {
-    #region [º¯¼ö ±×·ì]
-    #region [±âº» º¯¼ö]
+    #region [ë³€ìˆ˜ ê·¸ë£¹]
+    #region [ê¸°ë³¸ ë³€ìˆ˜]
     //Manager
     private GameManager gameManager;
     private CombatUIController combatUIController;
@@ -18,7 +18,7 @@ public class CombatManager : SingleTon<CombatManager>
     //Array
     AreaData[] where = new AreaData[2];
     Character[] who = new Character[2];
-    private string[] areaIndex = { "¸Ó¸®", "¸ö", "ÆÈ", "´Ù¸®" };
+    private string[] areaIndex = { "ë¨¸ë¦¬", "ëª¸", "íŒ”", "ë‹¤ë¦¬" };
 
     #endregion
     [Header("CombatSetting")]
@@ -31,15 +31,15 @@ public class CombatManager : SingleTon<CombatManager>
     private Node failureNode;
     #endregion
 
-    #region [ÀÌº¥Æ® ±×·ì]
+    #region [ì´ë²¤íŠ¸ ê·¸ë£¹]
     public event Action<Player, Enemy> CombatUIUpdate;
     #endregion
 
-    #region [ÃÊ±âÈ­]
+    #region [ì´ˆê¸°í™”]
     protected override void Awake()
     {
         base.Awake();
-        gameManager = GameManager.Instance; //SaveGameÀ» À§ÇØ Instance¸¦ ÀúÀå. ±»ÀÌ?
+        gameManager = GameManager.Instance; //SaveGameì„ ìœ„í•´ Instanceë¥¼ ì €ì¥. êµ³ì´?
         CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
     }
     void OnDestroy()
@@ -91,10 +91,10 @@ public class CombatManager : SingleTon<CombatManager>
         CombatUIUpdate?.Invoke(player, enemy);
         GameEvent.UpdateCharacterUI(player, enemy);
 
-        yield return GameEvent.OnNodeTextUpdate(enemy.characterName + JosaUtility.GetJosa_ÀÌ°¡(enemy.characterName) + " ´ç½Å¿¡°Ô ½Î¿òÀ» °É¾ú´Ù. \n ÁØºñÇÏ¶ó.");
+        yield return GameEvent.OnNodeTextUpdate(enemy.characterName + JosaUtility.GetJosa_ì´ê°€(enemy.characterName) + " ë‹¹ì‹ ì—ê²Œ ì‹¸ì›€ì„ ê±¸ì—ˆë‹¤. \n ì¤€ë¹„í•˜ë¼.");
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-        //ÀÌº¥Æ® ±¸µ¶
+        //ì´ë²¤íŠ¸ êµ¬ë…
         player.EffectReset();
         enemy.EffectReset();
 
@@ -122,7 +122,7 @@ public class CombatManager : SingleTon<CombatManager>
 
             if (index == 0)
             {
-                yield return GameEvent.OnNodeTextUpdate("¹«½¼ Çàµ¿À» ÇÒ °ÍÀÎ°¡?");
+                yield return GameEvent.OnNodeTextUpdate("ë¬´ìŠ¨ í–‰ë™ì„ í•  ê²ƒì¸ê°€?");
                 onAttackTurn = true;
 
                 yield return new WaitUntil(() => onAttackTurn == false);
@@ -149,8 +149,8 @@ public class CombatManager : SingleTon<CombatManager>
 
     private IEnumerator CombatNodeEnd(Character take)
     {
-        //Event·Î ¹Ù·Î ÀÛµ¿ÇÏ´Â °ÍÀÌ ¾Æ´Ò, onDied°¡ ¹ß»ıÇÏ¸é combatActive¸¸ ²ô´Â ½ÄÀ¸·Î.
-        string logMessage = $"{take.characterName} {JosaUtility.GetJosa_ÀÌ°¡(take.characterName)} »ç¸ÁÇÏ¿´´Ù. ÀüÅõ°¡ Á¾·áµÇ¾ú´Ù.";
+        //Eventë¡œ ë°”ë¡œ ì‘ë™í•˜ëŠ” ê²ƒì´ ì•„ë‹, onDiedê°€ ë°œìƒí•˜ë©´ combatActiveë§Œ ë„ëŠ” ì‹ìœ¼ë¡œ.
+        string logMessage = $"{take.characterName} {JosaUtility.GetJosa_ì´ê°€(take.characterName)} ì‚¬ë§í•˜ì˜€ë‹¤. ì „íˆ¬ê°€ ì¢…ë£Œë˜ì—ˆë‹¤.";
         yield return GameEvent.OnNodeTextUpdate(logMessage);
 
         yield return StartCoroutine(WaitForClick.WaitClick());
@@ -160,10 +160,10 @@ public class CombatManager : SingleTon<CombatManager>
 
         if (enemy.IsDead) yield return StartCoroutine(RewardEvent.RewardCoroutine(enemy, player));
 
-        //ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ ÀúÀå.
+        //í”Œë ˆì´ì–´ ë°ì´í„° ì €ì¥.
         gameManager.playerData = player.GetCurrentData();
 
-        //ÀÌº¥Æ® ±¸µ¶ ÇØÁ¦
+        //ì´ë²¤íŠ¸ êµ¬ë… í•´ì œ
         player.onDied -= CombatNodeStop;
         enemy.onDied -= CombatNodeStop;
 
@@ -179,41 +179,44 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     #region [Calculate Fucntion]
-    //¼±°ø È®ÀÎ ÇÔ¼ö.
-    //player¶û enemy°£ÀÇ AttackRange ºñ±³.
+    //ì„ ê³µ í™•ì¸ í•¨ìˆ˜.
+    //playerë‘ enemyê°„ì˜ AttackRange ë¹„êµ.
     private int GetFirst()
     {
         return (player.AttackRange >= enemy.AttackRange) ? 0 : 1;
     }
 
-    //Enemy°¡ ÀÚ½ÅÀÇ Â÷·Ê¶§ °ø°İÇÒ À§Ä¡¸¦ °áÁ¤ÇÏ´Â ÇÔ¼ö.
+    //Enemyê°€ ìì‹ ì˜ ì°¨ë¡€ë•Œ ê³µê²©í•  ìœ„ì¹˜ë¥¼ ê²°ì •í•˜ëŠ” í•¨ìˆ˜.
     private AreaData GetEnemyAttack()
     {
         return enemy.areaDataDB[UnityEngine.Random.Range(0, 4)];
     }
 
-    private bool Roll(float f)
-    {
-        return f >= UnityEngine.Random.Range(0f, 1f);
-    }
     #endregion
 
     #region [Combat Function]
     private IEnumerator AttackTurn(Character who, Character take, AreaData where, int index)
     {
-        //µ¥¹ÌÁö °ø½Ä = °ø°İÀÚ °ø°İ·Â * °ø°İºÎÀ§ °ø°İÆÄ¿ö * 
-        int damage = Mathf.RoundToInt(who.AttackPower * where.damageMultiplier * UnityEngine.Random.Range(0.95f, 1.05f)); ;
-        bool isHit = Roll(where.hitRate - take.DodgeRate + who.AccuracyRate);
+        CombatAttackResult result = CombatRules.ResolveAttack(
+            who.AttackPower,
+            where.damageMultiplier,
+            where.hitRate,
+            where.effectRate,
+            take.DodgeRate,
+            who.AccuracyRate,
+            UnityEngine.Random.Range(0.95f, 1.05f),
+            UnityEngine.Random.Range(0f, 1f),
+            UnityEngine.Random.Range(0f, 1f));
 
 
         string logMessage;
 
-        if (isHit)
+        if (result.IsHit)
         {
-            take.TakeDamage(damage);
-            logMessage = $"{who.characterName} {JosaUtility.GetJosa_Àº´Â(who.characterName)} {take.characterName}ÀÇ {where.label}À» °ø°İÇÏ¿© {damage}ÀÇ ÇÇÇØ¸¦ ÀÔÇû´Ù.";
+            take.TakeDamage(result.Damage);
+            logMessage = $"{who.characterName} {JosaUtility.GetJosa_ì€ëŠ”(who.characterName)} {take.characterName}ì˜ {where.label}ì„ ê³µê²©í•˜ì—¬ {result.Damage}ì˜ í”¼í•´ë¥¼ ì…í˜”ë‹¤.";
 
-            if (damage > 0 && Roll(where.effectRate))
+            if (result.AppliesEffect)
             {   
                 take.TakeEffect(where);
                 logMessage += "\n" + GetEffectMessage(where, take);
@@ -221,7 +224,7 @@ public class CombatManager : SingleTon<CombatManager>
         }
         else
         {
-            logMessage = $"{who.characterName} {JosaUtility.GetJosa_Àº´Â(who.characterName)} {take.characterName}ÀÇ {where.label}À» °ø°İÇÏ·Á ÇÏ¿´À¸³ª, ºø³ª°¬´Ù.";
+            logMessage = $"{who.characterName} {JosaUtility.GetJosa_ì€ëŠ”(who.characterName)} {take.characterName}ì˜ {where.label}ì„ ê³µê²©í•˜ë ¤ í•˜ì˜€ìœ¼ë‚˜, ë¹—ë‚˜ê°”ë‹¤.";
         }
 
         yield return GameEvent.OnNodeTextUpdate(logMessage);
@@ -234,12 +237,12 @@ public class CombatManager : SingleTon<CombatManager>
     {
         switch (where.label)
         {
-            case "ÆÈ":
-                return $"Ãß°¡·Î, {take.characterName} {JosaUtility.GetJosa_Àº´Â(take.characterName)} ÆÈ¿¡ ºÎ»óÀ» ÀÔ¾î ´ÙÀ½ µÎ ÅÏ°£ °ø°İÀÌ 5¸¸Å­ °¨¼ÒÇÏ¿´´Ù.";
-            case "´Ù¸®":
-                return $"Ãß°¡·Î, {take.characterName} {JosaUtility.GetJosa_Àº´Â(take.characterName)} ´Ù¸®¿¡ ºÎ»óÀ» ÀÔ¾î ´ÙÀ½ µÎ ÅÏ°£ È¸ÇÇÀ²ÀÌ 5%¸¸Å­ °¨¼ÒÇÏ¿´´Ù.";
-            case "¸ö":
-                return $"Ãß°¡·Î, {take.characterName} {JosaUtility.GetJosa_Àº´Â(take.characterName)} º¹ºÎ¿¡ ºÎ»óÀ» ÀÔ¾î ´ÙÀ½ µÎ ÅÏ°£ 3ÀÇ ÃâÇ÷ ÇÇÇØ¸¦ Ãß°¡·Î ÀÔ´Â´Ù.";
+            case "íŒ”":
+                return $"ì¶”ê°€ë¡œ, {take.characterName} {JosaUtility.GetJosa_ì€ëŠ”(take.characterName)} íŒ”ì— ë¶€ìƒì„ ì…ì–´ ë‹¤ìŒ ë‘ í„´ê°„ ê³µê²©ì´ 5ë§Œí¼ ê°ì†Œí•˜ì˜€ë‹¤.";
+            case "ë‹¤ë¦¬":
+                return $"ì¶”ê°€ë¡œ, {take.characterName} {JosaUtility.GetJosa_ì€ëŠ”(take.characterName)} ë‹¤ë¦¬ì— ë¶€ìƒì„ ì…ì–´ ë‹¤ìŒ ë‘ í„´ê°„ íšŒí”¼ìœ¨ì´ 5%ë§Œí¼ ê°ì†Œí•˜ì˜€ë‹¤.";
+            case "ëª¸":
+                return $"ì¶”ê°€ë¡œ, {take.characterName} {JosaUtility.GetJosa_ì€ëŠ”(take.characterName)} ë³µë¶€ì— ë¶€ìƒì„ ì…ì–´ ë‹¤ìŒ ë‘ í„´ê°„ 3ì˜ ì¶œí˜ˆ í”¼í•´ë¥¼ ì¶”ê°€ë¡œ ì…ëŠ”ë‹¤.";
             default:
                 return string.Empty;
         }
