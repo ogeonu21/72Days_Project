@@ -61,6 +61,11 @@ sysinfo.txt
 *.unitypackage
 *.app
 
+# Local signing material and temporary Android template copies must never be committed.
+/Keystore/
+*.keystore
+*.backup
+
 # Crashlytics generated file
 crashlytics-build.properties
 
