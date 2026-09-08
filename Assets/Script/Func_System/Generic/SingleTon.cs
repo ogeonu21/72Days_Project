@@ -12,15 +12,15 @@ public class SingleTon<T> : MonoBehaviour where T : MonoBehaviour
                 instance = FindObjectOfType<T>();
                 if (instance == null)
                 {
-                    GameObject obj = new GameObject(typeof(T).Name);
-                    instance = obj.AddComponent<T>();
+                    Debug.LogError($"[SingleTon] í•„ìˆ˜ ë§¤ë‹ˆì € '{typeof(T).Name}'ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. " +
+                                   "ì‹œì‘ ì”¬ ë˜ëŠ” í•´ë‹¹ ê¸°ëŠ¥ ì”¬ì— ëª…ì‹œì ìœ¼ë¡œ ë°°ì¹˜í•´ ì£¼ì„¸ìš”.");
                 }
             }
             return instance;
         }
     }
 
-    // ÀÌ º¯¼ö¸¦ ÀÌ¿ëÇØ ±Û·Î¹ú/¾À ¸Å´ÏÀú¸¦ ±¸ºĞÇÕ´Ï´Ù.
+    // ì´ ë³€ìˆ˜ë¥¼ ì´ìš©í•´ ê¸€ë¡œë²Œ/ì”¬ ë§¤ë‹ˆì €ë¥¼ êµ¬ë¶„í•©ë‹ˆë‹¤.
     [SerializeField]
     protected bool isGlobal = false;
 
@@ -34,10 +34,11 @@ public class SingleTon<T> : MonoBehaviour where T : MonoBehaviour
 
         instance = this as T;
 
-        // isGlobal º¯¼ö°¡ trueÀÏ ¶§¸¸ DontDestroyOnLoad¸¦ È£ÃâÇÕ´Ï´Ù.
+        // isGlobal ë³€ìˆ˜ê°€ trueì¼ ë•Œë§Œ DontDestroyOnLoadë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
         if (isGlobal)
         {
             DontDestroyOnLoad(gameObject);
         }
     }
+
 }
