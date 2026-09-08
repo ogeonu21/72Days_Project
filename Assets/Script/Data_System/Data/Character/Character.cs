@@ -57,7 +57,6 @@ public class Character : MonoBehaviour
 
     #region [initialize]
     //읽기 전용.
-    //해야하나??
     public int CurrentHP => currentHP;
     public int MaxHP => stats.maxHP;
     public int AttackPower => stats.attackPower;
@@ -67,7 +66,7 @@ public class Character : MonoBehaviour
     
     public bool IsDead => currentHP <= 0;
     
-    //HP 수정.
+    //HP 수정하고 수정 사실을 알림.
     protected void SetCurrentHPAndNotify(int currentHP)
     {
         this.currentHP = currentHP;
@@ -77,7 +76,7 @@ public class Character : MonoBehaviour
 
     #region [State Update Function]
     //Stats Update
-    //장비 변경, 스탯 성장시에 작동.
+    //장비 변경, 스탯 변동 시에 작동.
     public void UpdateStats()
     {
         //스탯 변동시 체력회복을 위해서.
@@ -116,6 +115,7 @@ public class Character : MonoBehaviour
     public virtual void Heal(int amount)
     {
         if (IsDead) return;
+        if (amount == 0) return;
         currentHP = Mathf.Min(MaxHP, currentHP + Mathf.Max(0, amount));
         Debug.Log($"{amount}만큼의 체력을 회복하였다.");
 

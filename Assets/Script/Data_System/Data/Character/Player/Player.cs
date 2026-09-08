@@ -8,7 +8,7 @@ public class Player : Character
 {
     #region [경험치 배율]
     private const float BASE_EXP = 12.1f;
-    private const float EXP_GROWTH_RATE = 1.33f;
+    private const float EXP_GROWTH_RATE = 1.08f;
     #endregion
 
     #region [플레이어 경험치 & 장비 데이터]
@@ -17,7 +17,7 @@ public class Player : Character
     public int lv;
 
     //장비 관련 - 추후 구현 예정
-    public EquipmentData equipmentData;
+    public EquipmentData equipmentData; 
 
     #endregion
 
