@@ -8,17 +8,22 @@ using Unity.VisualScripting;
 
 public class UIManager : SingleTon<UIManager>
 {
-    #region [º¯¼ö ±×·ì]
+    #region [ë³€ìˆ˜ ê·¸ë£¹]
     //Object
     [SerializeField]
     private List<UIController> uiControllers = new List<UIController>();
-    //´Ù¸¥ Objectµéµµ ÀÖ¾î¾ß ÇÔ.
+    //ë‹¤ë¥¸ Objectë“¤ë„ ìˆì–´ì•¼ í•¨.
 
     //Instance
     private Player player;
     private Enemy enemy;
+    private NodeScreenRouter screenRouter;
+    private HudView hudView;
+    private PlayerStatsView playerStatsView;
+    private LevelUpModal levelUpModal;
+    private CharacterManager characterSource;
 
-    #region [UI ±×·ì]
+    #region [UI ê·¸ë£¹]
     [Header("Level Up UI")]
     [SerializeField] private GameObject levelUpUI;
 
@@ -41,22 +46,32 @@ public class UIManager : SingleTon<UIManager>
     protected override void Awake()
     {
         base.Awake();
+        hudView = new HudView(dayCountText, locationText, goldText);
+        playerStatsView = new PlayerStatsView(inventoryCharacterSTRText, inventoryCharacterDEXText, inventoryCharacterCONText);
+        levelUpModal = new LevelUpModal(levelUpUI);
         InitializeUIControllers();
+        screenRouter = new NodeScreenRouter(uiControllers);
         GameEvent.OnNodeChanged += UpdateUI;
         PlayerEvent.OnPlayerLevelUp += UpdateLevelUpUI;
         CurrencyEvent.OnCurrencyChanged += UpdateCurrencyUI;
         PlayerEvent.onStatsChanged += UpdateCharacterStatsUI;
 
-        CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
+        characterSource = CharacterManager.Instance;
+        if (characterSource != null)
+            characterSource.OnCharacterReady += UpdateCharacter;
     }
 
     void OnDestroy()
     {
-        // ¿ÀºêÁ§Æ®°¡ ÆÄ±«µÉ ¶§ ÀÌº¥Æ® ±¸µ¶À» ÇØÁö
+        // ì˜¤ë¸Œì íŠ¸ê°€ íŒŒê´´ë  ë•Œ ì´ë²¤íŠ¸ êµ¬ë…ì„ í•´ì§€
         GameEvent.OnNodeChanged -= UpdateUI;
-        if (CharacterManager.Instance != null)
+        PlayerEvent.OnPlayerLevelUp -= UpdateLevelUpUI;
+        CurrencyEvent.OnCurrencyChanged -= UpdateCurrencyUI;
+        PlayerEvent.onStatsChanged -= UpdateCharacterStatsUI;
+        levelUpModal?.Close();
+        if (characterSource != null)
         {
-            CharacterManager.Instance.OnCharacterReady -= UpdateCharacter;
+            characterSource.OnCharacterReady -= UpdateCharacter;
         }
 
     }
@@ -67,7 +82,7 @@ public class UIManager : SingleTon<UIManager>
         {
             if (controller == null)
             {
-                Debug.LogError("UI ÄÁÆ®·Ñ·¯ ¸ñ·Ï¿¡ nullÀÌ ÀÖ½À´Ï´Ù. Inspector¸¦ È®ÀÎÇØÁÖ¼¼¿ä!");
+                Debug.LogError("UI ì»¨íŠ¸ë¡¤ëŸ¬ ëª©ë¡ì— nullì´ ìˆìŠµë‹ˆë‹¤. Inspectorë¥¼ í™•ì¸í•´ì£¼ì„¸ìš”!");
             }
         }
     }
@@ -76,91 +91,16 @@ public class UIManager : SingleTon<UIManager>
     {
         this.enemy = enemy;
         this.player = player;
+        playerStatsView.Show(player);
     }
     #endregion
 
     #region [Node UI Control]
     private void UpdateUI(Node node)
     {
-        if (node == null)
-        {
-            Debug.LogWarning("³ëµå ¿À·ù ¹ß»ı");
-            return;
-        }
-
-        //State UI Update
-        dayCountText.text = node.surviveDate + " ÀÏÂ÷";
-        locationText.text = node.worldLocation.ToString();
-
-
-
-        DeactivateAllUI();
-
-        // ³ëµå Å¸ÀÔ¿¡ µû¶ó Æ¯Á¤ UI È°¼ºÈ­
-        switch (node.nodeType)
-        {
-            case NodeType.MainStoryNode:
-            case NodeType.StoryNode:
-                ActivateUI<StoryUIController>(node);
-                DeactivateEnemy();
-                break;
-            case NodeType.CombatNode:
-                ActivateUI<CombatUIController>(node);
-                ActivateEnemy();
-                break;
-            case NodeType.EventNode:
-                ActivateUI<EventUIController>(node);
-                DeactivateEnemy();
-                break;
-            case NodeType.EndingNode:
-                ActivateUI<EndingUIController>(node);
-                DeactivateEnemy();
-                break;
-            default:
-                Debug.LogWarning($"¾Ë ¼ö ¾ø´Â ³ëµå Å¸ÀÔÀÔ´Ï´Ù: {node.nodeType}");
-                break;
-        }
-    }
-
-    private void DeactivateAllUI()
-    {
-        foreach (var controller in uiControllers)
-        {
-            if (controller != null)
-            {
-                controller.gameObject.SetActive(false);
-            }
-        }
-    }
-
-    private void ActivateUI<T>(Node node) where T : MonoBehaviour, IUpdatableUI
-    {
-        var targetUI = uiControllers.FirstOrDefault(ui => ui is T);
-        if (targetUI != null)
-        {
-            targetUI.gameObject.SetActive(true);
-            (targetUI as IUpdatableUI)?.UpdateUI(node);
-        }
-        else
-        {
-            Debug.LogError($"{typeof(T).Name} UI¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. Inspector¸¦ È®ÀÎÇÏ¼¼¿ä.");
-        }
-    }
-
-    private void ActivateEnemy()
-    {
-        if (enemy != null)
-        {
-            enemy.gameObject.SetActive(true);
-        }
-    }
-
-    private void DeactivateEnemy()
-    {
-        if (enemy != null)
-        {
-            enemy.gameObject.SetActive(false);
-        }
+        if (node == null) return;
+        hudView.ShowNode(node);
+        screenRouter.Show(node, enemy);
     }
 
     #endregion
@@ -178,21 +118,18 @@ public class UIManager : SingleTon<UIManager>
     #region [Lv UI Control]
     private void UpdateLevelUpUI()
     {
-        Time.timeScale = 0;
-        if (levelUpUI != null)
-        {
-            levelUpUI.SetActive(true);
-        }
+        levelUpModal.Open();
     }
 
     public void EventExecute(BaseEvent baseEvent)
     {
-        Time.timeScale = 1;
-        baseEvent.Execute();
-        if (levelUpUI != null)
+        if (baseEvent == null)
         {
-            levelUpUI.SetActive(false);
+            Debug.LogWarning("[UIManager] ì‹¤í–‰í•  ë ˆë²¨ì—… ì´ë²¤íŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
+            return;
         }
+        levelUpModal.Close();
+        baseEvent.Execute();
         
     }
     #endregion
@@ -200,26 +137,14 @@ public class UIManager : SingleTon<UIManager>
     #region [Currency UI Control]
     private void UpdateCurrencyUI(CurrencyData data)
     {
-        if (data.Name == "Gold")
-        {
-            goldText.text = data.Amount + "±İ";
-        }
-        else
-        {
-            Debug.Log(data.Name);
-        }
+        hudView.ShowCurrency(data);
     }
     #endregion
 
     #region [Character Stats UI Control]
     private void UpdateCharacterStatsUI()
     {
-        if (player != null)
-        {
-            inventoryCharacterSTRText.text = " : " + player.baseStats.str;
-            inventoryCharacterDEXText.text = " : " + player.baseStats.dex;
-            inventoryCharacterCONText.text = " : " + player.baseStats.con;
-        }
+        playerStatsView.Show(player);
     }
     #endregion
 
@@ -229,12 +154,12 @@ public class UIManager : SingleTon<UIManager>
         if (UI != null)
         {
             
-            Debug.Log($"<color=yellow>[UIMANAGER] </color>UI°¡ È°¼ºÈ­µÇ¾ú½À´Ï´Ù: {UI.name}</color>");
+            Debug.Log($"<color=yellow>[UIMANAGER] </color>UIê°€ í™œì„±í™”ë˜ì—ˆìŠµë‹ˆë‹¤: {UI.name}</color>");
             UI.SetActive(true);    
         }
         else
         {
-            Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UI°¡ ÀÌ¹Ì È°¼ºÈ­µÇ¾î ÀÖ°Å³ª nullÀÔ´Ï´Ù.</color>");
+            Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UIê°€ ì´ë¯¸ í™œì„±í™”ë˜ì–´ ìˆê±°ë‚˜ nullì…ë‹ˆë‹¤.</color>");
         }
     }
     public void CloseUI(GameObject UI)
@@ -244,7 +169,7 @@ public class UIManager : SingleTon<UIManager>
             UI.SetActive(false);
         }else
         {
-            Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UI°¡ ÀÌ¹Ì È°¼ºÈ­µÇ¾î ÀÖ°Å³ª nullÀÔ´Ï´Ù.</color>");
+            Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UIê°€ ì´ë¯¸ í™œì„±í™”ë˜ì–´ ìˆê±°ë‚˜ nullì…ë‹ˆë‹¤.</color>");
         }
     }
 
