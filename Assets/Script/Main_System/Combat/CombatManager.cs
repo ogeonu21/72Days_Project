@@ -9,6 +9,7 @@ public class CombatManager : SingleTon<CombatManager>
     #region [기본 변수]
     //Manager
     private GameManager gameManager;
+    private CharacterManager characterSource;
     private CombatUIController combatUIController;
 
     //Instance
@@ -40,13 +41,14 @@ public class CombatManager : SingleTon<CombatManager>
     {
         base.Awake();
         gameManager = GameManager.Instance; //SaveGame을 위해 Instance를 저장. 굳이?
-        CharacterManager.Instance.OnCharacterReady += UpdateCharacter;
+        characterSource = CharacterManager.Instance;
+        if (characterSource != null) characterSource.OnCharacterReady += UpdateCharacter;
     }
     void OnDestroy()
     {
-        if (CharacterManager.Instance != null)
+        if (characterSource != null)
         {
-            CharacterManager.Instance.OnCharacterReady -= UpdateCharacter;
+            characterSource.OnCharacterReady -= UpdateCharacter;
         }
     }
 

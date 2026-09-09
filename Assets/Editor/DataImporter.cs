@@ -3,35 +3,160 @@ using UnityEditor;
 using UnityEngine.Networking;
 using System.IO;
 using System.Collections.Generic;
-using Codice.Client.Common.GameUI;
-using Unity.VisualScripting;
+using System;
+using System.Threading.Tasks;
 
 public class DataImporter : EditorWindow
 {
     private const string baseURL = "https://script.google.com/macros/s/AKfycbzd47uZXwCe472lYE247EzI4jabj9fhZOIRgXUVL6f74683LiMpo7T4NnMFDc2G76VG-Q/exec";    
-    private static Dictionary<string, Node> nodeMap = new Dictionary<string, Node>();
+    private static Dictionary<string, Node> nodeMap = new Dictionary<string, Node>(StringComparer.OrdinalIgnoreCase);
 
     [MenuItem("Tools/Update All Game Data")]
-    public static void UpdateAllGameData()
+    public static async void UpdateAllGameData()
     {
-        FetchAndImport("ItemData", ImportItems);
-        FetchAndImport("StatusData", ImportStats);
-        FetchAndImport("NodeData", RunImportSequence);
-        
+        if (importing || EditorApplication.isPlayingOrWillChangePlaymode) return;
+        importing = true;
+        try
+        {
+            string items = await Fetch("ItemData");
+            string stats = await Fetch("StatusData");
+            string nodes = await Fetch("NodeData");
+            ValidateSnapshot(items, stats, nodes);
+            if (!EditorUtility.DisplayDialog("ë°ì´í„° ê°€ì ¸ì˜¤ê¸° ë¯¸ë¦¬ë³´ê¸°",
+                $"ì•„ì´í…œ {JsonHelper.FromJson<ItemDataRaw>(items).Length}ê°œ, ìºë¦­í„° {JsonHelper.FromJson<StatusDataRaw>(stats).Length}ê°œ, ë…¸ë“œ {JsonHelper.FromJson<NodeDataRaw>(nodes).Length}ê°œ ê°±ì‹ \nê¸°ì¡´ GUID ìœ ì§€. ì ìš©í• ê¹Œìš”?", "ì ìš©", "ì·¨ì†Œ")) return;
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            Undo.IncrementCurrentGroup();
+            int undoGroup = Undo.GetCurrentGroup();
+            Undo.SetCurrentGroupName("ê²Œì„ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°");
+            try
+            {
+                ImportItems(items);
+                ImportStats(stats);
+                RunImportSequence(nodes);
+                AssetDatabase.SaveAssets();
+                Undo.CollapseUndoOperations(undoGroup);
+            }
+            catch
+            {
+                Undo.RevertAllDownToGroup(undoGroup);
+                AssetDatabase.SaveAssets();
+                throw;
+            }
+            Debug.Log("[DataImporter] ë°ì´í„° ì ìš© ì™„ë£Œ.");
+        }
+        catch (Exception ex) { Debug.LogError("[DataImporter] ê°€ì ¸ì˜¤ê¸° ì‹¤íŒ¨: " + ex.Message); }
+        finally { importing = false; }
+    }
+    private static bool importing;
 
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-        Debug.Log("<color=cyan><b>[System]</b> °ÔÀÓ µ¥ÀÌÅÍ µ¿±âÈ­ ¿Ï·á.</color>");
+    // Validate the entire snapshot before touching any asset.
+    public static void ValidateSnapshot(string itemJson, string statusJson, string nodeJson)
+    {
+        var items = ParseRows<ItemDataRaw>(itemJson);
+        var stats = ParseRows<StatusDataRaw>(statusJson);
+        var nodes = ParseRows<NodeDataRaw>(nodeJson);
+        var itemIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var enemyIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var nodeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var row in items)
+        {
+            CheckId(row?.ItemID, itemIds, "Items");
+            var sample = CreateItemInstance(row.ItemCategory);
+            if (sample == null) throw new InvalidOperationException(row.ItemID + ": ì˜ëª»ëœ ì•„ì´í…œ ì¢…ë¥˜");
+            try { CheckType("Items", row.ItemID, sample.GetType()); }
+            finally { DestroyImmediate(sample); }
+            if (row.ItemCategory == "Armor" && (!Enum.TryParse(row.ArmorType, out ArmorType armor) || !Enum.IsDefined(typeof(ArmorType), armor)))
+                throw new InvalidOperationException(row.ItemID + ": ì˜ëª»ëœ ë°©ì–´êµ¬ ì¢…ë¥˜");
+        }
+        foreach (var row in stats)
+        {
+            CheckId(row?.ID, enemyIds, "Characters");
+            CheckType("Characters", row.ID, typeof(EnemyDefinition));
+            if (float.IsNaN(row.ItemDropRate) || float.IsInfinity(row.ItemDropRate) || row.ItemDropRate < 0 || row.ItemDropRate > 1 || (row.ItemDropRate > 0 && string.IsNullOrWhiteSpace(row.DropItemID)))
+                throw new InvalidOperationException(row.ID + ": ë“œë¡­ í™•ë¥  ë˜ëŠ” ì•„ì´í…œ ì„¤ì • ì˜¤ë¥˜");
+            if (!string.IsNullOrEmpty(row.DropItemID) && !itemIds.Contains(row.DropItemID) && Resources.Load<BaseItem>("Items/" + row.DropItemID) == null)
+                throw new InvalidOperationException(row.ID + ": ë“œë¡­ ì•„ì´í…œ ëˆ„ë½ " + row.DropItemID);
+        }
+        foreach (var row in nodes)
+        {
+            CheckId(row?.NodeID, nodeIds, "Nodes");
+            if (!Enum.TryParse(row.NodeType, out NodeType type) || !Enum.IsDefined(typeof(NodeType), type) || type.ToString() != row.NodeType)
+                throw new InvalidOperationException(row.NodeID + ": ì˜ëª»ëœ ë…¸ë“œ ì¢…ë¥˜");
+            var sample = CreateNodeInstance(type);
+            try { CheckType("Nodes", row.NodeID, sample.GetType()); }
+            finally { DestroyImmediate(sample); }
+            if (!Enum.TryParse(row.WorldLocation, out WorldLocation location) || !Enum.IsDefined(typeof(WorldLocation), location))
+                throw new InvalidOperationException(row.NodeID + ": ì˜ëª»ëœ ì§€ì—­");
+        }
+        foreach (var row in nodes)
+        {
+            if (row.NodeType == nameof(NodeType.MainStoryNode)) CheckLink(row.NodeID, row.NextNode, nodeIds);
+            if (row.NodeType == nameof(NodeType.CombatNode))
+            {
+                CheckLink(row.NodeID, row.SuccessNode, nodeIds);
+                CheckLink(row.NodeID, row.FailureNode, nodeIds);
+                if (string.IsNullOrWhiteSpace(row.CombatEnemyID) || (!enemyIds.Contains(row.CombatEnemyID) && Resources.Load<EnemyDefinition>("Characters/" + row.CombatEnemyID) == null))
+                    throw new InvalidOperationException(row.NodeID + ": ì „íˆ¬ ì  ëˆ„ë½");
+            }
+            if (row.NodeType != nameof(NodeType.StoryNode) && row.NodeType != nameof(NodeType.EventNode)) continue;
+            string[] labels = { row.Choice1_Text, row.Choice2_Text, row.Choice3_Text };
+            string[] links = { row.Choice1_NextNode, row.Choice2_NextNode, row.Choice3_NextNode };
+            string[] events = { row.Choice1_EventName, row.Choice2_EventName, row.Choice3_EventName };
+            int count = 0;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(labels[i]))
+                {
+                    if (!string.IsNullOrEmpty(links[i]) || !string.IsNullOrEmpty(events[i])) throw new InvalidOperationException(row.NodeID + ": ì„ íƒì§€ ë¬¸êµ¬ ëˆ„ë½");
+                    continue;
+                }
+                count++;
+                CheckLink(row.NodeID, links[i], nodeIds);
+                if ((row.NodeType == nameof(NodeType.EventNode) || !string.IsNullOrEmpty(events[i])) &&
+                    (string.IsNullOrEmpty(events[i]) || Resources.Load<BaseEvent>($"Events/{row.EventCategory}/{events[i]}") == null))
+                    throw new InvalidOperationException(row.NodeID + ": ì„ íƒì§€ ì´ë²¤íŠ¸ ëˆ„ë½ " + events[i]);
+            }
+            if (count == 0) throw new InvalidOperationException(row.NodeID + ": ì„ íƒì§€ ì—†ìŒ");
+        }
+    }
+
+    private static T[] ParseRows<T>(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json) || !json.TrimStart().StartsWith("[")) throw new InvalidOperationException("JSON ë°°ì—´ ì‘ë‹µì´ ì•„ë‹™ë‹ˆë‹¤.");
+        var rows = JsonHelper.FromJson<T>(json);
+        if (rows == null || rows.Length == 0) throw new InvalidOperationException("ë¹ˆ ì‹œíŠ¸ëŠ” ì ìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+        return rows;
+    }
+
+    private static void CheckId(string id, HashSet<string> ids, string folder)
+    {
+        if (string.IsNullOrWhiteSpace(id) || id != id.Trim() || id.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 || id == "." || id == ".." || !ids.Add(id))
+            throw new InvalidOperationException(folder + ": ì˜ëª»ë˜ì—ˆê±°ë‚˜ ì¤‘ë³µëœ ID " + id);
+    }
+
+    private static void CheckType(string folder, string id, Type type)
+    {
+        string path = $"Assets/Resources/{folder}/{id}.asset";
+        var existing = AssetDatabase.LoadMainAssetAtPath(path);
+        if (existing != null && existing.GetType() != type) throw new InvalidOperationException(path + ": íƒ€ì… ë³€ê²½ ë¶ˆê°€ (GUID ë³´í˜¸)");
+    }
+
+    private static void CheckLink(string source, string target, HashSet<string> ids)
+    {
+        if (string.IsNullOrWhiteSpace(target) || (!ids.Contains(target) && Resources.Load<Node>("Nodes/" + target) == null))
+            throw new InvalidOperationException("Assets/Resources/Nodes/" + source + ".asset: ì—°ê²° ëˆ„ë½ " + target);
     }
     #region [Helpers]
-    private static void FetchAndImport(string sheetName, System.Action<string> importAction)
+    private static async Task<string> Fetch(string sheetName)
     {
         string url = $"{baseURL}?sheetName={sheetName}";
         using UnityWebRequest www = UnityWebRequest.Get(url);
+        www.timeout = 30;
         var op = www.SendWebRequest();
-        while (!op.isDone) { }
-        if (www.result == UnityWebRequest.Result.Success)
-            importAction(www.downloadHandler.text);
+        while (!op.isDone) await Task.Delay(50);
+        if (www.result != UnityWebRequest.Result.Success)
+            throw new InvalidOperationException(sheetName + ": " + www.error);
+        return www.downloadHandler.text;
     }
     #endregion
     
@@ -45,10 +170,10 @@ public class DataImporter : EditorWindow
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        // [´Ü°è 2] ¸Ê Àç±¸Ãà (ÂüÁ¶ ¿¬°áÀ» À§ÇØ ¸Ş¸ğ¸®¿¡ ·Îµå)
+        // [ë‹¨ê³„ 2] ë§µ ì¬êµ¬ì¶• (ì°¸ì¡° ì—°ê²°ì„ ìœ„í•´ ë©”ëª¨ë¦¬ì— ë¡œë“œ)
         RebuildNodeMap();
 
-        // [´Ü°è 3] Å¬·¡½ºº° Àü¿ë ÇÊµå ¹× ³ëµå °£ ÂüÁ¶ ¿¬°á
+        // [ë‹¨ê³„ 3] í´ë˜ìŠ¤ë³„ ì „ìš© í•„ë“œ ë° ë…¸ë“œ ê°„ ì°¸ì¡° ì—°ê²°
         LinkAllReferences(json);
         
         AssetDatabase.SaveAssets();
@@ -73,17 +198,18 @@ public class DataImporter : EditorWindow
             if (existingNode != null && existingNode.GetType().Name != targetType.ToString())
             {
                 Debug.Log($"<color=yellow>[Replace]</color> {data.NodeID}: {existingNode.GetType().Name} -> {targetType}");
-                AssetDatabase.DeleteAsset(path);
-                existingNode = null;
+                throw new InvalidOperationException(path + ": ë…¸ë“œ íƒ€ì… ë³€ê²½ì€ ë³„ë„ ë§ˆì´ê·¸ë ˆì´ì…˜ì´ í•„ìš”í•©ë‹ˆë‹¤.");
             }
 
             if (existingNode == null)
             {
                 existingNode = CreateNodeInstance(targetType);
                 AssetDatabase.CreateAsset(existingNode, path);
+                Undo.RegisterCreatedObjectUndo(existingNode, "ë…¸ë“œ ìƒì„±");
             }
 
-            existingNode.nodeType = targetType; // ÀÎ½ºÆåÅÍ º¯¼ö ÇÒ´ç
+            Undo.RecordObject(existingNode, "ë…¸ë“œ ê°±ì‹ ");
+            existingNode.nodeType = targetType; // ì¸ìŠ¤í™í„° ë³€ìˆ˜ í• ë‹¹
             existingNode.nodeName = data.NodeID;
             existingNode.nodeMessage = data.NodeMessage;
             existingNode.surviveDate = data.SurviveDate;
@@ -105,8 +231,9 @@ public class DataImporter : EditorWindow
         foreach (var data in nodeDataList)
         {
             if (!nodeMap.TryGetValue(data.NodeID, out Node node)) continue;
+            Undo.RecordObject(node, "ë…¸ë“œ ì—°ê²°");
 
-            // Å¬·¡½º Å¸ÀÔ¿¡ ¸ÂÃç Á¤È®ÇÑ ÂüÁ¶ ÇÊµå ¿¬°á
+            // í´ë˜ìŠ¤ íƒ€ì…ì— ë§ì¶° ì •í™•í•œ ì°¸ì¡° í•„ë“œ ì—°ê²°
             switch (node)
             {
                 case MainStoryNode mn:
@@ -203,16 +330,18 @@ public class DataImporter : EditorWindow
         {
             def = ScriptableObject.CreateInstance<EnemyDefinition>();
             AssetDatabase.CreateAsset(def, path);
+            Undo.RegisterCreatedObjectUndo(def, "ìºë¦­í„° ìƒì„±");
         }
+        Undo.RecordObject(def, "ìºë¦­í„° ê°±ì‹ ");
 
-        // ±âº» Á¤º¸ °»½Å
+        // ê¸°ë³¸ ì •ë³´ ê°±ì‹ 
         def.type = data.Type; 
         def.id = data.ID; 
         def.displayName = data.Name;
         def.baseStats = new BaseStats(data.STR, data.DEX, data.CON);
         def.tuningStats = new TuningStats(data.AttackBonus, data.HpBonus, data.DodgeBonus, data.RangeBonus);
 
-        // --- [µå¶ø ¾ÆÀÌÅÛ ¿¬°á ·ÎÁ÷: ¿¬°á¸¸ ¼öÇà] ---
+        // --- [ë“œë ì•„ì´í…œ ì—°ê²° ë¡œì§: ì—°ê²°ë§Œ ìˆ˜í–‰] ---
         if (!string.IsNullOrEmpty(data.DropItemID))
         {
             string itemPath = $"Assets/Resources/Items/{data.DropItemID}.asset";
@@ -224,8 +353,8 @@ public class DataImporter : EditorWindow
             }
             else
             {
-                // ¾ÆÀÌÅÛ ¿¡¼Â ÀÚÃ¼°¡ ¾ø´Â °æ¿ì
-                Debug.LogWarning($"<color=orange>[Missing Item]</color> {data.ID}ÀÇ µå¶ø ¾ÆÀÌÅÛ {data.DropItemID} ¿¡¼ÂÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù. ItemData¸¦ ¸ÕÀú ÀÓÆ÷Æ®Çß´ÂÁö È®ÀÎÇÏ¼¼¿ä.");
+                // ì•„ì´í…œ ì—ì…‹ ìì²´ê°€ ì—†ëŠ” ê²½ìš°
+                Debug.LogWarning($"<color=orange>[Missing Item]</color> {data.ID}ì˜ ë“œë ì•„ì´í…œ {data.DropItemID} ì—ì…‹ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ItemDataë¥¼ ë¨¼ì € ì„í¬íŠ¸í–ˆëŠ”ì§€ í™•ì¸í•˜ì„¸ìš”.");
                 def.dropItem = null;
             }
             
@@ -233,9 +362,10 @@ public class DataImporter : EditorWindow
         }
         else
         {
-            def.dropItem = null; // ¾ÆÀÌÅÛ ID°¡ ºñ¾îÀÖÀ¸¸é ÂüÁ¶ Á¦°Å
+            def.dropItem = null; // ì•„ì´í…œ IDê°€ ë¹„ì–´ìˆìœ¼ë©´ ì°¸ì¡° ì œê±°
         }
 
+        def.itemDropRate = data.ItemDropRate;
         def.dropGold = data.DropGold;
         EditorUtility.SetDirty(def);
     }
@@ -252,21 +382,22 @@ public class DataImporter : EditorWindow
             if (string.IsNullOrEmpty(data.ItemID)) continue;
             string path = $"Assets/Resources/Items/{data.ItemID}.asset";
             BaseItem item = AssetDatabase.LoadAssetAtPath<BaseItem>(path);
-            if (item != null && item.GetType().Name != data.ItemCategory.ToString())
+            if (item != null && item.GetType().Name != data.ItemCategory + "Item")
             {
-                AssetDatabase.DeleteAsset(path);
-                item = null;
+                throw new InvalidOperationException(path + ": ì•„ì´í…œ íƒ€ì… ë³€ê²½ì€ ë³„ë„ ë§ˆì´ê·¸ë ˆì´ì…˜ì´ í•„ìš”í•©ë‹ˆë‹¤.");
             }
             if (item == null)
             {
                 item = CreateItemInstance(data.ItemCategory);
                 AssetDatabase.CreateAsset(item, path);
+                Undo.RegisterCreatedObjectUndo(item, "ì•„ì´í…œ ìƒì„±");
             }
+            Undo.RecordObject(item, "ì•„ì´í…œ ê°±ì‹ ");
             item.itemID = data.ItemID;
             item.itemName = data.ItemName;
             item.itemDescription = data.ItemDesc;
             item.itemCategory = System.Enum.TryParse(data.ItemCategory, out ItemCategory cat) ? cat : ItemCategory.Weapon;
-            //item.itemIcon = data.ItemIcon; IDÈ­ ÇÊ¿ä
+            //item.itemIcon = data.ItemIcon; IDí™” í•„ìš”
             item.isConsumable = data.Consumable;
             item.itemValue = data.ItemValue;
             
@@ -299,7 +430,7 @@ public class DataImporter : EditorWindow
 
     private static BaseItem CreateItemInstance(string categoryStr)
     {
-        if (!System.Enum.TryParse(categoryStr, out ItemCategory category)) return null;
+        if (!System.Enum.TryParse(categoryStr, out ItemCategory category) || category.ToString() != categoryStr) return null;
 
         BaseItem item = category switch
         {
