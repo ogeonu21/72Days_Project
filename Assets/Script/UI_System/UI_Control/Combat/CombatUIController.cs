@@ -7,7 +7,7 @@ using TMPro;
 
 public class CombatUIController : UIController, IUpdatableUI
 {
-    #region [º¯¼ö ±×·ì]
+    #region [ë³€ìˆ˜ ê·¸ë£¹]
     public TMP_Text combatText;
     public GameObject attackButtons;
     public Image blood_Effect;
@@ -18,7 +18,7 @@ public class CombatUIController : UIController, IUpdatableUI
     private CombatManager combatManager;
     #endregion
 
-    private Coroutine bloodEffectCoroutine; // ÇÇ°İ È¿°ú ÄÚ·çÆ¾À» Á¦¾îÇÏ±â À§ÇÑ º¯¼ö
+    private Coroutine bloodEffectCoroutine; // í”¼ê²© íš¨ê³¼ ì½”ë£¨í‹´ì„ ì œì–´í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
 
 
     #region [initialize]
@@ -43,31 +43,31 @@ public class CombatUIController : UIController, IUpdatableUI
 
     #region [Effect]
 
-    //µ¥¹ÌÁö ÇÇ°İ È¿°ú
+    //ë°ë¯¸ì§€ í”¼ê²© íš¨ê³¼
     private void HandleTakeDamageEffect(int currentHP, int maxHP)
     {
         if (bloodEffectCoroutine != null)
         {
             StopCoroutine(bloodEffectCoroutine);
         }
-        // »õ·Î¿î ÇÇ°İ È¿°ú ÄÚ·çÆ¾ ½ÃÀÛ
+        // ìƒˆë¡œìš´ í”¼ê²© íš¨ê³¼ ì½”ë£¨í‹´ ì‹œì‘
         bloodEffectCoroutine = StartCoroutine(ShowBloodScreenEffect(currentHP, maxHP));
     }
 
     private IEnumerator ShowBloodScreenEffect(int currentHP, int maxHP)
     {
-        // 1. Ã¼·Â ºñÀ² °è»ê (Ã¼·ÂÀÌ ³·À»¼ö·Ï È¿°ú°¡ °­ÇØÁü)
+        // 1. ì²´ë ¥ ë¹„ìœ¨ ê³„ì‚° (ì²´ë ¥ì´ ë‚®ì„ìˆ˜ë¡ íš¨ê³¼ê°€ ê°•í•´ì§)
         float healthPercent = (float)currentHP / maxHP;
-        // Ã¼·ÂÀÌ 50%ÀÏ ¶§ alpha 0.5, Ã¼·ÂÀÌ 0%ÀÏ ¶§ alpha 1.0ÀÌ µÇµµ·Ï ¸ñÇ¥ Åõ¸íµµ ¼³Á¤
+        // ì²´ë ¥ì´ 50%ì¼ ë•Œ alpha 0.5, ì²´ë ¥ì´ 0%ì¼ ë•Œ alpha 1.0ì´ ë˜ë„ë¡ ëª©í‘œ íˆ¬ëª…ë„ ì„¤ì •
         float targetAlpha = Mathf.Max(0f, 0.7f - healthPercent);
 
-        float fadeDuration = 0.1f; // ÆäÀÌµåÀÎ ½Ã°£
-        float lingerDuration = 0.2f; // È¿°ú À¯Áö ½Ã°£
-        float fadeOutDuration = 0.4f; // ÆäÀÌµå¾Æ¿ô ½Ã°£
+        float fadeDuration = 0.1f; // í˜ì´ë“œì¸ ì‹œê°„
+        float lingerDuration = 0.2f; // íš¨ê³¼ ìœ ì§€ ì‹œê°„
+        float fadeOutDuration = 0.4f; // í˜ì´ë“œì•„ì›ƒ ì‹œê°„
 
         Color currentColor = blood_Effect.color;
 
-        // 2. ÆäÀÌµåÀÎ
+        // 2. í˜ì´ë“œì¸
         float timer = 0f;
         while (timer < fadeDuration)
         {
@@ -79,10 +79,10 @@ public class CombatUIController : UIController, IUpdatableUI
         currentColor.a = targetAlpha;
         blood_Effect.color = currentColor;
 
-        // 3. È¿°ú À¯Áö
+        // 3. íš¨ê³¼ ìœ ì§€
         yield return new WaitForSeconds(lingerDuration);
 
-        // 4. ÆäÀÌµå¾Æ¿ô
+        // 4. í˜ì´ë“œì•„ì›ƒ
         timer = 0f;
         while (timer < fadeOutDuration)
         {
@@ -94,18 +94,18 @@ public class CombatUIController : UIController, IUpdatableUI
         currentColor.a = 0;
         blood_Effect.color = currentColor;
 
-        // ÄÚ·çÆ¾ Á¾·á ÈÄ ÂüÁ¶ ÃÊ±âÈ­
+        // ì½”ë£¨í‹´ ì¢…ë£Œ í›„ ì°¸ì¡° ì´ˆê¸°í™”
         bloodEffectCoroutine = null;
     }
 
     #endregion
-    //³Ê´Â ¹¹´Ï?
+    //ë„ˆëŠ” ë­ë‹ˆ?
     public void UpdateUI(Node node)
     {
         combatManager.CombatNodeStart(node);
     }
 
-    //ÇÇ°İ·ü µî Ç¥½Ã
+    //í”¼ê²©ë¥  ë“± í‘œì‹œ
     public void UpdateCombatUI(Player player, Enemy enemy)
     {
         

@@ -5,8 +5,8 @@ using UnityEngine;
 public class AccessoryItem : EquipmentItem
 {
     public float dodgeBonus;
-    //Äù½ºÆ® °ü·Ã ¼³Á¤ Ãß°¡ ÇÊ¿ä.
-    public string questID; // ÀÌ ¾Ç¼¼¼­¸®°¡ °ü·ÃµÈ Äù½ºÆ® ID
+    //í€˜ìŠ¤íŠ¸ ê´€ë ¨ ì„¤ì • ì¶”ê°€ í•„ìš”.
+    public string questID; // ì´ ì•…ì„¸ì„œë¦¬ê°€ ê´€ë ¨ëœ í€˜ìŠ¤íŠ¸ ID
 
     
 }

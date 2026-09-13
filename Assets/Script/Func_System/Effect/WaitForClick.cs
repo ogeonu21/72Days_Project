@@ -8,7 +8,7 @@ public static class WaitForClick
     {
         while (Input.touchCount == 0 && !Input.GetMouseButtonDown(0))
         {
-            yield return null; // ÇÑ ÇÁ·¹ÀÓ ´ë±â
+            yield return null; // í•œ í”„ë ˆìž„ ëŒ€ê¸°
         }
     }
 }

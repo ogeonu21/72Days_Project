@@ -2,18 +2,18 @@
 using UnityEditor;
 using UnityEngine;
 
-// CustomEditor ¾îÆ®¸®ºäÆ®¸¦ »ç¿ëÇØ MeetingEvent Å¬·¡½º¿Í ¿¬°á
+// CustomEditor ì–´íŠ¸ë¦¬ë·°íŠ¸ë¥¼ ì‚¬ìš©í•´ MeetingEvent í´ë˜ìŠ¤ì™€ ì—°ê²°
 [CustomEditor(typeof(MeetingEvent))]
 public class MeetingEventEditor : Editor
 {
-    // SerializedProperty¸¦ »ç¿ëÇØ ÀÎ½ºÆåÅÍÀÇ º¯¼öµéÀ» °ü¸®
+    // SerializedPropertyë¥¼ ì‚¬ìš©í•´ ì¸ìŠ¤í™í„°ì˜ ë³€ìˆ˜ë“¤ì„ ê´€ë¦¬
     SerializedProperty eventCategoryProp;
     SerializedProperty typeProp;
     SerializedProperty whoProp;
 
     private void OnEnable()
     {
-        // ½ºÅ©¸³Æ® È°¼ºÈ­ ½Ã º¯¼öµéÀ» SerializedProperty·Î ÃÊ±âÈ­
+        // ìŠ¤í¬ë¦½íŠ¸ í™œì„±í™” ì‹œ ë³€ìˆ˜ë“¤ì„ SerializedPropertyë¡œ ì´ˆê¸°í™”
         eventCategoryProp = serializedObject.FindProperty("eventCategory");
         typeProp = serializedObject.FindProperty("type");
         whoProp = serializedObject.FindProperty("who");
@@ -21,21 +21,21 @@ public class MeetingEventEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        // SerializedObject¸¦ ¾÷µ¥ÀÌÆ®ÇÏ¿© ÃÖ½Å º¯°æ»çÇ×À» °¡Á®¿È
+        // SerializedObjectë¥¼ ì—…ë°ì´íŠ¸í•˜ì—¬ ìµœì‹  ë³€ê²½ì‚¬í•­ì„ ê°€ì ¸ì˜´
         serializedObject.Update();
 
-        // eventCategory¿Í type ÇÊµå¸¦ ±âº»ÀûÀ¸·Î Ç¥½Ã
+        // eventCategoryì™€ type í•„ë“œë¥¼ ê¸°ë³¸ì ìœ¼ë¡œ í‘œì‹œ
         EditorGUILayout.PropertyField(eventCategoryProp);
         EditorGUILayout.PropertyField(typeProp);
 
-        // typeÀÌ 'ÀüÅõÇÏ±â'ÀÏ ¶§¸¸ who ÇÊµå¸¦ Ç¥½Ã
-        // Enum °ªÀº Á¤¼ö·Î º¯È¯ÇÏ¿© ºñ±³
-        if (typeProp.enumValueIndex == (int)MeetingEvent.meetingEventType.ÀüÅõÇÏ±â)
+        // typeì´ 'ì „íˆ¬í•˜ê¸°'ì¼ ë•Œë§Œ who í•„ë“œë¥¼ í‘œì‹œ
+        // Enum ê°’ì€ ì •ìˆ˜ë¡œ ë³€í™˜í•˜ì—¬ ë¹„êµ
+        if (typeProp.enumValueIndex == (int)MeetingEvent.meetingEventType.ì „íˆ¬í•˜ê¸°)
         {
             EditorGUILayout.PropertyField(whoProp);
         }
 
-        // º¯°æ»çÇ×À» SO¿¡ Àû¿ë
+        // ë³€ê²½ì‚¬í•­ì„ SOì— ì ìš©
         serializedObject.ApplyModifiedProperties();
     }
 }

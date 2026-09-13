@@ -3,13 +3,13 @@ using UnityEngine;
 [System.Serializable]
 public class StatusDataRaw
 {
-    //±âº» Á¤º¸
+    //ê¸°ë³¸ ì •ë³´
     public string Type, ID, Name;
-    //½ºÅÈ Á¤º¸
+    //ìŠ¤íƒ¯ ì •ë³´
     public int STR, DEX, CON;
-    //º¸³Ê½º Á¤º¸
+    //ë³´ë„ˆìŠ¤ ì •ë³´
     public int AttackBonus, HpBonus, DodgeBonus, RangeBonus;
-    //µå¶øÅ×ÀÌºí
+    //ë“œëí…Œì´ë¸”
     public string DropItemCategory;
     public string DropItemID;
     public float ItemDropRate;

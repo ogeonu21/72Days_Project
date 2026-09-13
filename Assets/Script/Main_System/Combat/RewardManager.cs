@@ -17,7 +17,7 @@ public class RewardManager : SingleTon<RewardManager>
 
     private IEnumerator ProcessReward(Enemy enemy, Player player)
     {
-        yield return GameEvent.OnNodeTextUpdate($"´ç½ÅÀº º¸»óÀ¸·Î {enemy.GetExpReward()}ÀÇ °æÇèÄ¡¸¦ È¹µæÇÏ¿´´Ù.");
+        yield return GameEvent.OnNodeTextUpdate($"ë‹¹ì‹ ì€ ë³´ìƒìœ¼ë¡œ {enemy.GetExpReward()}ì˜ ê²½í—˜ì¹˜ë¥¼ íšë“í•˜ì˜€ë‹¤.");
         yield return StartCoroutine(WaitForClick.WaitClick());
 
         player.GetExp(enemy.GetExpReward());
@@ -26,7 +26,7 @@ public class RewardManager : SingleTon<RewardManager>
         if(CalculateFunction.Roll(
             enemy.itemDropRate))
         {
-            yield return GameEvent.OnNodeTextUpdate($"´ç½ÅÀº º¸»óÀ¸·Î {enemy.dropItem.itemName}À» ¾ò¾ú´Ù.");
+            yield return GameEvent.OnNodeTextUpdate($"ë‹¹ì‹ ì€ ë³´ìƒìœ¼ë¡œ {enemy.dropItem.itemName}ì„ ì–»ì—ˆë‹¤.");
             InventoryManager.Instance.AddToInventory(enemy.dropItem);
             yield return StartCoroutine(WaitForClick.WaitClick());
 

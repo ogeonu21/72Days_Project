@@ -11,7 +11,7 @@ public abstract class BaseItem : ScriptableObject
     public int itemValue;
     public ItemCategory itemCategory;
 
-    // ¾ÆÀÌÅÛ »ç¿ë ½Ã È£ÃâµÉ °øÅë ¸Ş¼­µå
+    // ì•„ì´í…œ ì‚¬ìš© ì‹œ í˜¸ì¶œë  ê³µí†µ ë©”ì„œë“œ
     public abstract void Use(Player player);
     
 }

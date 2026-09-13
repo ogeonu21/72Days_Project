@@ -30,15 +30,15 @@ public class StatUpdateEvent : BaseEvent
             {
                 case "str":
                     CharacterManager.Instance.currentPlayer.baseStats.str += changeAmount;
-                    NodeManager.Instance.dumpNode.nodeMessage = $"ÈûÀÌ {changeAmount}¸¸Å­ Áõ°¡Çß´Ù!";
+                    NodeManager.Instance.dumpNode.nodeMessage = $"í˜ì´ {changeAmount}ë§Œí¼ ì¦ê°€í–ˆë‹¤!";
                     break;
                 case "dex":
                     CharacterManager.Instance.currentPlayer.baseStats.dex += changeAmount;
-                    NodeManager.Instance.dumpNode.nodeMessage = $"¹ÎÃ¸¼ºÀÌ {changeAmount}¸¸Å­ Áõ°¡Çß´Ù!";
+                    NodeManager.Instance.dumpNode.nodeMessage = $"ë¯¼ì²©ì„±ì´ {changeAmount}ë§Œí¼ ì¦ê°€í–ˆë‹¤!";
                     break;
                 case "con":
                     CharacterManager.Instance.currentPlayer.baseStats.con += changeAmount;
-                    NodeManager.Instance.dumpNode.nodeMessage = $"Ã¼·ÂÀÌ {changeAmount}¸¸Å­ Áõ°¡Çß´Ù!";
+                    NodeManager.Instance.dumpNode.nodeMessage = $"ì²´ë ¥ì´ {changeAmount}ë§Œí¼ ì¦ê°€í–ˆë‹¤!";
          
                     break;
                 default:

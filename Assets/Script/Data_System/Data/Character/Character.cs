@@ -10,12 +10,12 @@ public class ReadOnlyAttribute : PropertyAttribute { }
 
 public class Character : MonoBehaviour
 {
-    [Header("Ä³¸¯ÅÍ ¾ÆÀÌµð")]
+    [Header("ìºë¦­í„° ì•„ì´ë””")]
     public string ID;
     public string characterName;
 
     #region [UI Component]
-    [Header("UI ¿ä¼Ò")]
+    [Header("UI ìš”ì†Œ")]
     public Slider hpSlider;
     public TMP_Text hpText;
     public TMP_Text nameText;
@@ -23,32 +23,32 @@ public class Character : MonoBehaviour
     #endregion
 
     #region [Stats]
-    [Header("±âº» ½ºÅÈ")]
+    [Header("ê¸°ë³¸ ìŠ¤íƒ¯")]
     public BaseStats baseStats;
     private Stats stats;
 
-    [Header("º¸Á¤Ä¡")]
-    [Tooltip("Àåºñ/¹öÇÁ º¸Á¤Ä¡")]
+    [Header("ë³´ì •ì¹˜")]
+    [Tooltip("ìž¥ë¹„/ë²„í”„ ë³´ì •ì¹˜")]
     public TuningStats tuningStats;
 
-    [Header("ÇöÀç Ã¼·Â")]
+    [Header("í˜„ìž¬ ì²´ë ¥")]
     [SerializeField, ReadOnly] protected int currentHP;
     #endregion
 
     #region [AreaData]
-    //°³º° ºÎÀ§ µ¥ÀÌÅÍº£ÀÌ½º => Enemy °´Ã¼¿¡¼­ °³º° È®·ü °è»êÀ» À§ÇØ Àû¿ë.
+    //ê°œë³„ ë¶€ìœ„ ë°ì´í„°ë² ì´ìŠ¤ => Enemy ê°ì²´ì—ì„œ ê°œë³„ í™•ë¥  ê³„ì‚°ì„ ìœ„í•´ ì ìš©.
     public AreaData[] areaDataDB = {
-        new AreaData("¸Ó¸®", 0.4f, 0.6f, 1.6f),
-        new AreaData("¸ö", 0.9f, 0.15f, 0.7f),
-        new AreaData("ÆÈ", 0.65f, 0.3f, 1.1f),
-        new AreaData("´Ù¸®", 0.8f, 0.2f, 0.9f)
+        new AreaData("ë¨¸ë¦¬", 0.4f, 0.6f, 1.6f),
+        new AreaData("ëª¸", 0.9f, 0.15f, 0.7f),
+        new AreaData("íŒ”", 0.65f, 0.3f, 1.1f),
+        new AreaData("ë‹¤ë¦¬", 0.8f, 0.2f, 0.9f)
     };
     #endregion
 
     #region [Effect]
 
     protected int[] EffectTurn = new int[4];
-    //±âÁ¸ È¸ÇÇÀ² µîµîÀÌ ÇÊ¿äÇÔ.
+    //ê¸°ì¡´ íšŒí”¼ìœ¨ ë“±ë“±ì´ í•„ìš”í•¨.
     #endregion
 
     #region [Events]
@@ -56,7 +56,7 @@ public class Character : MonoBehaviour
     #endregion
 
     #region [initialize]
-    //ÀÐ±â Àü¿ë.
+    //ì½ê¸° ì „ìš©.
     public int CurrentHP => currentHP;
     public int MaxHP => stats.maxHP;
     public int AttackPower => stats.attackPower;
@@ -66,7 +66,7 @@ public class Character : MonoBehaviour
     
     public bool IsDead => currentHP <= 0;
     
-    //HP ¼öÁ¤ÇÏ°í ¼öÁ¤ »ç½ÇÀ» ¾Ë¸².
+    //HP ìˆ˜ì •í•˜ê³  ìˆ˜ì • ì‚¬ì‹¤ì„ ì•Œë¦¼.
     protected void SetCurrentHPAndNotify(int currentHP)
     {
         this.currentHP = currentHP;
@@ -76,16 +76,16 @@ public class Character : MonoBehaviour
 
     #region [State Update Function]
     //Stats Update
-    //Àåºñ º¯°æ, ½ºÅÈ º¯µ¿ ½Ã¿¡ ÀÛµ¿.
+    //ìž¥ë¹„ ë³€ê²½, ìŠ¤íƒ¯ ë³€ë™ ì‹œì— ìž‘ë™.
     public void UpdateStats()
     {
-        //½ºÅÈ º¯µ¿½Ã Ã¼·ÂÈ¸º¹À» À§ÇØ¼­.
+        //ìŠ¤íƒ¯ ë³€ë™ì‹œ ì²´ë ¥íšŒë³µì„ ìœ„í•´ì„œ.
         int tmpMaxHP = MaxHP;
         stats = new Stats(baseStats, tuningStats);
 
-        //½ºÅÈ º¯È­ ÀÌº¥Æ® ¹ß»ý.
+        //ìŠ¤íƒ¯ ë³€í™” ì´ë²¤íŠ¸ ë°œìƒ.
         PlayerEvent.OnStatsChanged();
-        //ÃÖ´ëÃ¼·Â º¯È­¿¡ µû¸¥ ÇöÀçÃ¼·Â º¸Á¤.
+        //ìµœëŒ€ì²´ë ¥ ë³€í™”ì— ë”°ë¥¸ í˜„ìž¬ì²´ë ¥ ë³´ì •.
         Heal(MaxHP - tmpMaxHP);
         UpdateHP_UI();
     }
@@ -111,13 +111,13 @@ public class Character : MonoBehaviour
         }
     }
 
-    //Item »ç¿ë½Ã Àû¿ëÇÏ±â À§ÇÑ Heal ÇÔ¼ö.
+    //Item ì‚¬ìš©ì‹œ ì ìš©í•˜ê¸° ìœ„í•œ Heal í•¨ìˆ˜.
     public virtual void Heal(int amount)
     {
         if (IsDead) return;
         if (amount == 0) return;
         currentHP = Mathf.Min(MaxHP, currentHP + Mathf.Max(0, amount));
-        Debug.Log($"{amount}¸¸Å­ÀÇ Ã¼·ÂÀ» È¸º¹ÇÏ¿´´Ù.");
+        Debug.Log($"{amount}ë§Œí¼ì˜ ì²´ë ¥ì„ íšŒë³µí•˜ì˜€ë‹¤.");
 
         UpdateHP_UI();
     }
@@ -125,15 +125,15 @@ public class Character : MonoBehaviour
     protected virtual void Die()
     {
         onDied?.Invoke();
-        // ÇÊ¿ä½Ã ¾Ö´Ï/ÀÌÆåÆ®/ºñÈ°¼ºÈ­ µî
+        // í•„ìš”ì‹œ ì• ë‹ˆ/ì´íŽ™íŠ¸/ë¹„í™œì„±í™” ë“±
         // gameObject.SetActive(false);
     }
     #endregion
 
     #region [Effect Function]
 
-    //Æ¯¼ö È¿°ú ÅÏ¼ö °è»ê.
-    //Æ¯¼ö È¿°ú ÅÏÀÌ Á¸ÀçÇÑ´Ù¸é -1, ¸¸¾à -1ÇÏ¿© 0ÀÌ µÈ´Ù¸é È¿°ú ÇØÁ¦.
+    //íŠ¹ìˆ˜ íš¨ê³¼ í„´ìˆ˜ ê³„ì‚°.
+    //íŠ¹ìˆ˜ íš¨ê³¼ í„´ì´ ì¡´ìž¬í•œë‹¤ë©´ -1, ë§Œì•½ -1í•˜ì—¬ 0ì´ ëœë‹¤ë©´ íš¨ê³¼ í•´ì œ.
     public void CountEffect()
     {
         for (int i = 0; i < 3; i++)
@@ -144,14 +144,14 @@ public class Character : MonoBehaviour
 
                 switch (i)
                 {
-                    //ÆÈ
+                    //íŒ”
                     case 0:
                         if (EffectTurn[0] == 0)
                         {
                             UpdateTuningStats();
                         }
                         break;
-                    //´Ù¸®
+                    //ë‹¤ë¦¬
                     case 1:
                         if (EffectTurn[1] == 0)
                         {
@@ -159,7 +159,7 @@ public class Character : MonoBehaviour
                         }
                         break;
                     case 2:
-                    //º¹ºÎ Æ¯¼öÈ¿°ú, 3ÀÇ µ¥¹ÌÁö
+                    //ë³µë¶€ íŠ¹ìˆ˜íš¨ê³¼, 3ì˜ ë°ë¯¸ì§€
                         TakeDamage(3);
                         break;
                     default:
@@ -169,25 +169,25 @@ public class Character : MonoBehaviour
         }
     }
 
-    //Æ¯¼ö È¿°ú ÅÏ¼ö Àû¿ë ÇÔ¼ö.
+    //íŠ¹ìˆ˜ íš¨ê³¼ í„´ìˆ˜ ì ìš© í•¨ìˆ˜.
     public void TakeEffect(AreaData data)
     {
         switch (data.label)
         {
-            case "ÆÈ":
+            case "íŒ”":
                 EffectTurn[0] = 3;
                 break;
-            case "´Ù¸®":
+            case "ë‹¤ë¦¬":
                 EffectTurn[1] = 3;
                 break;
-            case "¸ö":
+            case "ëª¸":
                 EffectTurn[2] = 2;
                 break;
             default:
                 break;
         }
         UpdateTuningStats();
-        //ÀÌÆåÆ® È¿°ú Àû¿ë ÇÊ¿ä.
+        //ì´íŽ™íŠ¸ íš¨ê³¼ ì ìš© í•„ìš”.
     }
 
     public void EffectReset()
@@ -218,6 +218,6 @@ public class Character : MonoBehaviour
 
 
 
-    //ÀÌÁ¦ ¿©±â¿¡ °ø°ÝÃ³¸®, Ãß°¡È¿°ú Àû¿ë µîÀ» ±¸Çö.
-    //»ç°Å¸® ÆÇº°Àº combatManager¿¡¼­ ±¸Çö.
+    //ì´ì œ ì—¬ê¸°ì— ê³µê²©ì²˜ë¦¬, ì¶”ê°€íš¨ê³¼ ì ìš© ë“±ì„ êµ¬í˜„.
+    //ì‚¬ê±°ë¦¬ íŒë³„ì€ combatManagerì—ì„œ êµ¬í˜„.
 }

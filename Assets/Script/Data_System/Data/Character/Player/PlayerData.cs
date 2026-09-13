@@ -10,7 +10,7 @@ public class PlayerData
     public TuningStats tuningStats;
     public EquipmentData equipmentData;
 
-    // ÇöÀç »óÅÂ
+    // í˜„ì¬ ìƒíƒœ
     public int currentHP;
     public int exp;
     public int lv;
@@ -18,7 +18,7 @@ public class PlayerData
     public PlayerData()
     {
         id = "Player";
-        displayName = "ÇÃ·¹ÀÌ¾î";
+        displayName = "í”Œë ˆì´ì–´";
         baseStats = new BaseStats(0, 0, 0);
         tuningStats = new TuningStats(0, 0, 0f, 0);
         equipmentData = new EquipmentData();

@@ -4,11 +4,11 @@ using System.Collections;
 public static class PlayerEvent
 {
     
-    //Player ·¹º§¾÷ ÀÌº¥Æ®
+    //Player ë ˆë²¨ì—… ì´ë²¤íŠ¸
     public static event Action OnPlayerLevelUp;
     public static void PlayerLevelUp() => OnPlayerLevelUp?.Invoke();
 
-    //Player ½ºÅÈ º¯°æ ÀÌº¥Æ®
+    //Player ìŠ¤íƒ¯ ë³€ê²½ ì´ë²¤íŠ¸
     public static event Action onStatsChanged;
     public static void OnStatsChanged() => onStatsChanged?.Invoke();
 }

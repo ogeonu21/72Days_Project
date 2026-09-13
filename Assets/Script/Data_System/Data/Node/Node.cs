@@ -5,10 +5,10 @@ using UnityEngine;
 
 public enum WorldLocation
 {
-    ¼­¿ï,
-    ÀÎÃµ,
-    °­¿øµµ,
-    °æ±âµµ
+    ì„œìš¸,
+    ì¸ì²œ,
+    ê°•ì›ë„,
+    ê²½ê¸°ë„
 }
 
 public enum NodeType
@@ -22,14 +22,14 @@ public enum NodeType
 
 public class Node : ScriptableObject
 {
-    [Header("³ëµå ±âº» Á¤º¸")]
+    [Header("ë…¸ë“œ ê¸°ë³¸ ì •ë³´")]
     public NodeType nodeType;
     public string nodeName;
 
     [TextArea(3, 10)]
     public string nodeMessage;
 
-    [Header("»ıÁ¸ ³¯Â¥ ¹× À§Ä¡")]
+    [Header("ìƒì¡´ ë‚ ì§œ ë° ìœ„ì¹˜")]
     public int surviveDate;
     public WorldLocation worldLocation;
 
@@ -47,9 +47,9 @@ public class Choice
     public string choiceText;
     public Node nextNode;
 
-    [Header("»óÅÂ ÇÃ·¡±×")]
+    [Header("ìƒíƒœ í”Œë˜ê·¸")]
     public string requiredFlag;
-    //ÀÌº¥Æ® ¹ß»ı È½¼ö, ¹ß»ı ¿©ºÎ µîÀ» °¨Áö.
+    //ì´ë²¤íŠ¸ ë°œìƒ íšŸìˆ˜, ë°œìƒ ì—¬ë¶€ ë“±ì„ ê°ì§€.
     public int eventStack;
 
     public bool triggersEvent;

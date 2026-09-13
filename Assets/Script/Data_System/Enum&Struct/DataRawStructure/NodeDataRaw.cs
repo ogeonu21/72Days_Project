@@ -8,7 +8,7 @@ public class NodeDataRaw
     public int SurviveDate;
     
     public string NextNode;
-    //ÀüÅõ°ü·Ã NodeData
+    //ì „íˆ¬ê´€ë ¨ NodeData
     public string SuccessNode, FailureNode, CombatEnemyID;
     public string EventCategory, EndingName;
     public string Choice1_Text, Choice1_NextNode, Choice1_EventName;

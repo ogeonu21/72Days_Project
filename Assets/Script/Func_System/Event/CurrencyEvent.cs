@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class CurrencyEvent
 {
-    //ÀçÈ­ º¯°æ ÀÌº¥Æ®
+    //ì¬í™” ë³€ê²½ ì´ë²¤íŠ¸
     public static event Action<CurrencyData> OnCurrencyChanged;
     public static void CurrencyChanged(CurrencyData data) => OnCurrencyChanged?.Invoke(data);
 }

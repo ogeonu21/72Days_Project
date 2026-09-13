@@ -29,11 +29,11 @@ public class GoogleManager : MonoBehaviour
             string id = PlayGamesPlatform.Instance.GetUserId();
             string ImgUrl = PlayGamesPlatform.Instance.GetUserImageUrl();
 
-            Debug.Log("·Î±×ÀÎ ¼º°ø \n" + name);
+            Debug.Log("ë¡œê·¸ì¸ ì„±ê³µ \n" + name);
         }
         else
         {
-            Debug.Log("·Î±×ÀÎ ½ÇÆĞ");
+            Debug.Log("ë¡œê·¸ì¸ ì‹¤íŒ¨");
         }
     }
 

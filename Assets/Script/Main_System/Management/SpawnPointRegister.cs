@@ -12,7 +12,7 @@ public class SpawnPointRegister : MonoBehaviour
         }
         else
         {
-            Debug.LogError("CharacterManager°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù!");
+            Debug.LogError("CharacterManagerê°€ ì¡´ìž¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤!");
         }
     }
 }

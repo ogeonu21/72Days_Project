@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class ItemDataRaw
 {
-    #region [°øÅë]
+    #region [ê³µí†µ]
     public string ItemID;
     public string ItemName;
     public string ItemDesc;
@@ -13,20 +13,20 @@ public class ItemDataRaw
     public string ItemCategory;
     #endregion
 
-    #region [¹«±â]
-    public int Durability; //³»±¸µµ
+    #region [ë¬´ê¸°]
+    public int Durability; //ë‚´êµ¬ë„
     public int AttackBonus;
     public int Range;
     #endregion
 
-    #region [¹æ¾î±¸&¾Ç¼¼»ç¸®]
+    #region [ë°©ì–´êµ¬&ì•…ì„¸ì‚¬ë¦¬]
     public string ArmorType;
     public int HpBonus;
     public float DodgeBonus;
     public string QuestID;
     #endregion
 
-    #region [Æ÷¼Ç]
+    #region [í¬ì…˜]
     public int Health;
     #endregion
 }

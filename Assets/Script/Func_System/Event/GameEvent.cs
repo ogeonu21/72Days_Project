@@ -5,20 +5,20 @@ using UnityEngine;
 
 public static class GameEvent
 {
-    //µ¥¹ÌÁö ÇÇ°İ ÀÌº¥Æ®
+    //ë°ë¯¸ì§€ í”¼ê²© ì´ë²¤íŠ¸
     public static event Action<int, int> OnTakeDamageEffect;
     public static void OnTakeDamage(int currentHP, int maxHP) => OnTakeDamageEffect?.Invoke(currentHP, maxHP);
 
-    //³ëµå º¯°æ ÀÌº¥Æ®
+    //ë…¸ë“œ ë³€ê²½ ì´ë²¤íŠ¸
     public static event Action<Node> OnNodeChanged;
     public static void NotifyNodeChange(Node node) => OnNodeChanged?.Invoke(node);
 
-    //Ä³¸¯ÅÍ UI º¯°æ ÀÌº¥Æ®
+    //ìºë¦­í„° UI ë³€ê²½ ì´ë²¤íŠ¸
     public static event Action<Player, Enemy> OnCharacterUIChanged;
     public static void UpdateCharacterUI(Player player, Enemy enemy) => OnCharacterUIChanged?.Invoke(player, enemy);
 
-    //Node Text º¯°æ ÀÌº¥Æ®
-    //°¢ UIÄÁÆ®·Ñ·¯º° NodeText ÇÒ´ç°ú NodeTextUpdate ±¸µ¶ ÇÊ¿ä
+    //Node Text ë³€ê²½ ì´ë²¤íŠ¸
+    //ê° UIì»¨íŠ¸ë¡¤ëŸ¬ë³„ NodeText í• ë‹¹ê³¼ NodeTextUpdate êµ¬ë… í•„ìš”
     public delegate IEnumerator NodeTextChanged(string text);
     public static event NodeTextChanged NodeTextUpdate;
     public static IEnumerator OnNodeTextUpdate(string text){

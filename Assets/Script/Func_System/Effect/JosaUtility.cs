@@ -2,40 +2,40 @@ using UnityEngine;
 
 public static class JosaUtility
 {
-    // Á¾¼ºÀÌ ÀÖ´ÂÁö È®ÀÎÇÏ´Â À¯Æ¿¸®Æ¼ ÇÔ¼ö
+    // ì¢…ì„±ì´ ìˆëŠ”ì§€ í™•ì¸í•˜ëŠ” ìœ í‹¸ë¦¬í‹° í•¨ìˆ˜
     private static bool HasFinalConsonant(char ch)
     {
-        // ÇÑ±Û ¹üÀ§¸¦ ¹ş¾î³ª¸é false ¹İÈ¯
-        if (ch < '°¡' || ch > 'ÆR')
+        // í•œê¸€ ë²”ìœ„ë¥¼ ë²—ì–´ë‚˜ë©´ false ë°˜í™˜
+        if (ch < 'ê°€' || ch > 'í£')
         {
             return false;
         }
 
-        // À¯´ÏÄÚµå °è»êÀ» ÅëÇØ Á¾¼º ¿©ºÎ È®ÀÎ
-        int offset = ch - '°¡';
+        // ìœ ë‹ˆì½”ë“œ ê³„ì‚°ì„ í†µí•´ ì¢…ì„± ì—¬ë¶€ í™•ì¸
+        int offset = ch - 'ê°€';
         int finalConsonantCode = offset % 28;
         return finalConsonantCode != 0;
     }
 
-    public static string GetJosa_ÀÌ°¡(string word)
+    public static string GetJosa_ì´ê°€(string word)
     {
         if (string.IsNullOrEmpty(word))
         {
-            return "ÀÌ"; 
+            return "ì´"; 
         }
 
         char lastChar = word[word.Length - 1];
-        return HasFinalConsonant(lastChar) ? "ÀÌ" : "°¡";
+        return HasFinalConsonant(lastChar) ? "ì´" : "ê°€";
     }
 
-    public static string GetJosa_Àº´Â(string word)
+    public static string GetJosa_ì€ëŠ”(string word)
     {
         if (string.IsNullOrEmpty(word))
         {
-            return "Àº";
+            return "ì€";
         }
 
         char lastChar = word[word.Length - 1];
-        return HasFinalConsonant(lastChar) ? "Àº" : "´Â";
+        return HasFinalConsonant(lastChar) ? "ì€" : "ëŠ”";
     }
 }

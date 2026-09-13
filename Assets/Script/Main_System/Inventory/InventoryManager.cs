@@ -20,11 +20,11 @@ public class InventoryManager : SingleTon<InventoryManager>
     {
         if (inventoryItems.Contains(item))
         {
-            Debug.Log("<color=green>[Inventory] </color>ÀÌ¹Ì ÀÎº¥Åä¸®¿¡ Á¸ÀçÇÏ´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.");
+            Debug.Log("<color=green>[Inventory] </color>ì´ë¯¸ ì¸ë²¤í† ë¦¬ì— ì¡´ì¬í•˜ëŠ” ì•„ì´í…œì…ë‹ˆë‹¤.");
             return;
         }
         inventoryItems.Add(item);
-        Debug.Log($"<color=green>[Inventory] </color>ÇöÀç ÀÎº¥Åä¸®¿¡ µé¾îÀÖ´Â ¾ÆÀÌÅÛÀº {string.Join(", ", inventoryItems.ConvertAll(i => i.itemName))}ÀÔ´Ï´Ù.");
+        Debug.Log($"<color=green>[Inventory] </color>í˜„ì¬ ì¸ë²¤í† ë¦¬ì— ë“¤ì–´ìˆëŠ” ì•„ì´í…œì€ {string.Join(", ", inventoryItems.ConvertAll(i => i.itemName))}ì…ë‹ˆë‹¤.");
     }
 
     public void RemoveFromInventory(BaseItem item)
@@ -32,11 +32,11 @@ public class InventoryManager : SingleTon<InventoryManager>
         if (inventoryItems.Contains(item))
         {
             inventoryItems.Remove(item);
-            Debug.Log($"<color=green>[Inventory] </color>¾ÆÀÌÅÛÀÌ ÀÎº¥Åä¸®¿¡¼­ Á¦°ÅµÇ¾ú½À´Ï´Ù. ÇöÀç ÀÎº¥Åä¸®¿¡ µé¾îÀÖ´Â ¾ÆÀÌÅÛÀº {string.Join(", ", inventoryItems.ConvertAll(i => i.itemName))}ÀÔ´Ï´Ù.");
+            Debug.Log($"<color=green>[Inventory] </color>ì•„ì´í…œì´ ì¸ë²¤í† ë¦¬ì—ì„œ ì œê±°ë˜ì—ˆìŠµë‹ˆë‹¤. í˜„ì¬ ì¸ë²¤í† ë¦¬ì— ë“¤ì–´ìˆëŠ” ì•„ì´í…œì€ {string.Join(", ", inventoryItems.ConvertAll(i => i.itemName))}ì…ë‹ˆë‹¤.");
         }
         else
         {
-            Debug.Log("<color=green>[Inventory] </color>ÀÎº¥Åä¸®¿¡ Á¸ÀçÇÏÁö ¾Ê´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.");
+            Debug.Log("<color=green>[Inventory] </color>ì¸ë²¤í† ë¦¬ì— ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ì•„ì´í…œì…ë‹ˆë‹¤.");
         }
     }
 

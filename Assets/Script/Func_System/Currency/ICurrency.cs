@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface ICurrency
 {
-    string name { get; } //ÀçÈ­ ÀÌ¸§ (ÀĞ±â Àü¿ë)
+    string name { get; } //ì¬í™” ì´ë¦„ (ì½ê¸° ì „ìš©)
 
     int GetAmount(string currencyName);
 
@@ -12,6 +12,6 @@ public interface ICurrency
 
     void Increase(string currencyName, int amount);
 
-    //Â÷°¨ÀÌ ¼º°øÇß´ÂÁö returnÇØ¾ßÇÔ.
+    //ì°¨ê°ì´ ì„±ê³µí–ˆëŠ”ì§€ returní•´ì•¼í•¨.
     bool Decrease(string currencyName, int amount);
 }

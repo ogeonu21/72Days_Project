@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-// °ÔÀÓ ³» ÀçÈ­ °ü¸® ¸Å´ÏÀú Å¬·¡½º
+// ê²Œì„ ë‚´ ì¬í™” ê´€ë¦¬ ë§¤ë‹ˆì € í´ë˜ìŠ¤
 
 public class CurrencyManager : SingleTon<CurrencyManager>, ICurrency
 {
@@ -16,7 +16,7 @@ public class CurrencyManager : SingleTon<CurrencyManager>, ICurrency
 
     private void InitializeCurrencies()
     {
-        //ÃÊ±âÈ­¸¦ À§ÇØ currencyData ¸®½ºÆ® Ãß°¡.
+        //ì´ˆê¸°í™”ë¥¼ ìœ„í•´ currencyData ë¦¬ìŠ¤íŠ¸ ì¶”ê°€.
         if (currencyList.Count == 0)
         {
             CurrencyData gold = new CurrencyData("Gold", 0);
@@ -41,7 +41,7 @@ public class CurrencyManager : SingleTon<CurrencyManager>, ICurrency
         if (data != null)
         {
             data.SetAmount(newAmount);
-            Debug.Log($"ÀçÈ­ {currencyName}ÀÇ ÀÜ¾×ÀÌ {newAmount}·Î ¼³Á¤µÇ¾ú´Ù.");
+            Debug.Log($"ì¬í™” {currencyName}ì˜ ì”ì•¡ì´ {newAmount}ë¡œ ì„¤ì •ë˜ì—ˆë‹¤.");
         }
         CurrencyEvent.CurrencyChanged(GetCurrencyData(currencyName));
     }
@@ -53,7 +53,7 @@ public class CurrencyManager : SingleTon<CurrencyManager>, ICurrency
         if (data != null)
         {
             data.SetAmount(data.Amount + amount);
-            Debug.Log($"ÀçÈ­ {currencyName}ÀÇ ÀÜ¾×ÀÌ {data.Amount}·Î ¼³Á¤µÇ¾ú´Ù.");
+            Debug.Log($"ì¬í™” {currencyName}ì˜ ì”ì•¡ì´ {data.Amount}ë¡œ ì„¤ì •ë˜ì—ˆë‹¤.");
         }
     }
 
@@ -66,12 +66,12 @@ public class CurrencyManager : SingleTon<CurrencyManager>, ICurrency
         if (data.Amount >= amount)
         {
             data.SetAmount(data.Amount - amount);
-            Debug.Log($"ÀçÈ­ {currencyName}ÀÇ ÀÜ¾×ÀÌ {data.Amount}·Î ¼³Á¤µÇ¾ú´Ù.");
+            Debug.Log($"ì¬í™” {currencyName}ì˜ ì”ì•¡ì´ {data.Amount}ë¡œ ì„¤ì •ë˜ì—ˆë‹¤.");
             return true;
         }
         else
         {
-            Debug.Log("ÀÜ¾× ºÎÁ·. °áÁ¦ ½ÇÆĞ.");
+            Debug.Log("ì”ì•¡ ë¶€ì¡±. ê²°ì œ ì‹¤íŒ¨.");
             return false;
         }
     }

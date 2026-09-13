@@ -12,7 +12,7 @@ public class PotionItem : BaseItem
     {
         if (isConsumable)
         {
-            //ÀÎº¥Åä¸®¿¡¼­ ¾ÆÀÌÅÛ Á¦°Å.
+            //ì¸ë²¤í† ë¦¬ì—ì„œ ì•„ì´í…œ ì œê±°.
             player.Heal(health);
         }
     }

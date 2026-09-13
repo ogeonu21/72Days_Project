@@ -18,7 +18,7 @@ public class Enemy : Character
         baseStats = def.baseStats;
         tuningStats = def.tuningStats;
 
-        //µå¶ø ¾ÆÀÌÅÛ°ú º¸»ó ¼³Á¤;
+        //ë“œë ì•„ì´í…œê³¼ ë³´ìƒ ì„¤ì •;
         if (def.dropItem != null)
         {
             dropItem = def.dropItem;
@@ -34,7 +34,7 @@ public class Enemy : Character
         UpdateLV_UI();
     }
 
-    //°´Ã¼º° ÇÇ°İ È®·ü º¯µ¿À» À§ÇÑ ÇÔ¼ö.
+    //ê°ì²´ë³„ í”¼ê²© í™•ë¥  ë³€ë™ì„ ìœ„í•œ í•¨ìˆ˜.
     private void AreaDataReset()
     {
         for (int i = 0; i < areaDataDB.Length; i++)
@@ -43,18 +43,18 @@ public class Enemy : Character
         }
     }
 
-    //º¸»ó Áö±ŞÀ» À§ÇÑ °æÇèÄ¡ Reward °è»ê.
+    //ë³´ìƒ ì§€ê¸‰ì„ ìœ„í•œ ê²½í—˜ì¹˜ Reward ê³„ì‚°.
     public int GetExpReward()
     {
         int x = Mathf.RoundToInt((baseStats.str + baseStats.dex + baseStats.con) / 3);
-        //°æÇèÄ¡ °è»ê½Ä.
+        //ê²½í—˜ì¹˜ ê³„ì‚°ì‹.
         return  Mathf.RoundToInt(Mathf.Pow(x + 10, 2) / 12 + 2 * (x - 9) + 19);
     }
 
-    //LV UI¸¦ ¾÷µ¥ÀÌÆ®ÇÏ´Â ÇÔ¼ö.
+    //LV UIë¥¼ ì—…ë°ì´íŠ¸í•˜ëŠ” í•¨ìˆ˜.
     public void UpdateLV_UI()
     {
-        //½ºÅÈ 1´ç ·¹º§ 1? ÀÌ°Å´Â Á¶Á¤ÀÌ ÇÊ¿äÇØº¸ÀÎ´Ù.
+        //ìŠ¤íƒ¯ 1ë‹¹ ë ˆë²¨ 1? ì´ê±°ëŠ” ì¡°ì •ì´ í•„ìš”í•´ë³´ì¸ë‹¤.
         int x = Mathf.RoundToInt((baseStats.str + baseStats.dex + baseStats.con));
 
         lvText.text = "LV." + x;
@@ -62,11 +62,11 @@ public class Enemy : Character
 
     public override void UpdateTuningStats()
     {
-        //Æ¯¼ö È¿°ú¿¡ µû¸¥ ½ºÅÈ Á¶Á¤.
+        //íŠ¹ìˆ˜ íš¨ê³¼ì— ë”°ë¥¸ ìŠ¤íƒ¯ ì¡°ì •.
         tuningStats.attackBonus = (EffectTurn[0] > 0 ? -5 : 0);
         tuningStats.dodgeBonus = (EffectTurn[1] > 0 ? -0.05f : 0);
 
-        //ÃÖÁ¾ ½ºÅÈ ¾÷µ¥ÀÌÆ®.
+        //ìµœì¢… ìŠ¤íƒ¯ ì—…ë°ì´íŠ¸.
         UpdateStats();
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-// Currency µ•¿Ã≈Õ ±∏¡∂
+// Currency Îç∞Ïù¥ÌÑ∞ Íµ¨Ï°∞
 
 [System.Serializable]
 public class CurrencyData

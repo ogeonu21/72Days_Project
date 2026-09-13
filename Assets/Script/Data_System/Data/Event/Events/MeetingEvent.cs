@@ -5,9 +5,9 @@ public class MeetingEvent : BaseEvent
 {
     public enum meetingEventType
     {
-        ÀüÅõÇÏ±â,
-        ¹«½ÃÇÏ±â,
-        µµ¿ÍÁÖ±â
+        ì „íˆ¬í•˜ê¸°,
+        ë¬´ì‹œí•˜ê¸°,
+        ë„ì™€ì£¼ê¸°
     }
     public meetingEventType type;
     public CombatNode who;
@@ -17,34 +17,34 @@ public class MeetingEvent : BaseEvent
         if (NodeManager.Instance != null) {
             switch (type)
             {
-                case meetingEventType.ÀüÅõÇÏ±â:
-                    if (who.enemyData.type == "¼±")
+                case meetingEventType.ì „íˆ¬í•˜ê¸°:
+                    if (who.enemyData.type == "ì„ ")
                     {
                         if (GameManager.Instance != null)
                         {
                             GameManager.Instance.ChangeGoodAndEvil(1);
                         }
                     }
-                    Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}°ú(¿Í) ÀüÅõ¸¦ ½ÃÀÛÇÕ´Ï´Ù.");
+                    Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}ê³¼(ì™€) ì „íˆ¬ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤.");
                     who.successNode = nextNode;
                     NodeManager.Instance.GoToNode(who);
                     break;
-                case meetingEventType.¹«½ÃÇÏ±â:
-                    Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}À»(¸¦) ¹«½ÃÇÕ´Ï´Ù.");
+                case meetingEventType.ë¬´ì‹œí•˜ê¸°:
+                    Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}ì„(ë¥¼) ë¬´ì‹œí•©ë‹ˆë‹¤.");
                     NodeManager.Instance.GoToNode(nextNode);
                     break;
-                case meetingEventType.µµ¿ÍÁÖ±â:
-                    //Á¶°Ç »ç¿ë.
-                    //º¸»ó Á¦°ø
+                case meetingEventType.ë„ì™€ì£¼ê¸°:
+                    //ì¡°ê±´ ì‚¬ìš©.
+                    //ë³´ìƒ ì œê³µ
                     if (GameManager.Instance != null)
                     {
                         GameManager.Instance.ChangeGoodAndEvil(-1);
                     }
-                    Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}À»(¸¦) µµ¿ÍÁİ´Ï´Ù.");
+                    Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}ì„(ë¥¼) ë„ì™€ì¤ë‹ˆë‹¤.");
                     NodeManager.Instance.GoToNode(nextNode);
                     break;
                 default:
-                    Debug.LogWarning($"<color=cyan>[Event] </color>¾Ë ¼ö ¾ø´Â EventTypeÀÔ´Ï´Ù.");
+                    Debug.LogWarning($"<color=cyan>[Event] </color>ì•Œ ìˆ˜ ì—†ëŠ” EventTypeì…ë‹ˆë‹¤.");
                     break;
             }
         }

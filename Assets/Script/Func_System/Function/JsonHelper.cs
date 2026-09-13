@@ -3,10 +3,10 @@ using UnityEngine;
 
 public static class JsonHelper
 {
-    // JSON ¹è¿­ ¹®ÀÚ¿­À» ¹Ş¾Æ ½ÇÁ¦ Å¬·¡½º ¹è¿­·Î º¯È¯ÇØÁÖ´Â ÇÔ¼ö
+    // JSON ë°°ì—´ ë¬¸ìì—´ì„ ë°›ì•„ ì‹¤ì œ í´ë˜ìŠ¤ ë°°ì—´ë¡œ ë³€í™˜í•´ì£¼ëŠ” í•¨ìˆ˜
     public static T[] FromJson<T>(string json)
     {
-        // JSON ¹è¿­À» À¯´ÏÆ¼°¡ ÀÎ½ÄÇÒ ¼ö ÀÖ´Â "items" °´Ã¼·Î °¨½Ó
+        // JSON ë°°ì—´ì„ ìœ ë‹ˆí‹°ê°€ ì¸ì‹í•  ìˆ˜ ìˆëŠ” "items" ê°ì²´ë¡œ ê°ìŒˆ
         string newJson = "{ \"items\": " + json + " }";
         Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
         return wrapper.items;

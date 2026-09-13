@@ -3,18 +3,18 @@ using UnityEngine;
 [System.Serializable]
 public class EquipmentItem : BaseItem
 {
-    public int durability; //³»±¸µµ
+    public int durability; //ë‚´êµ¬ë„
 
     // public int weaponDamageAmount;
     // public int weaponAttackDistance;
     public override void Use(Player player)
     {
-        //¾ÆÀÌÅÛ ÀåÂø ÇÔ¼ö.
-        //Æ©´× ¼öÄ¡ ¾÷µ¥ÀÌÆ®.
-        //player¿¡°Ô ÀåÂø ¾ÆÀÌÅÛ Á¤º¸ Á¦°ø ¹× ¼öÄ¡ ¾÷µ¥ÀÌÆ®.
+        //ì•„ì´í…œ ì¥ì°© í•¨ìˆ˜.
+        //íŠœë‹ ìˆ˜ì¹˜ ì—…ë°ì´íŠ¸.
+        //playerì—ê²Œ ì¥ì°© ì•„ì´í…œ ì •ë³´ ì œê³µ ë° ìˆ˜ì¹˜ ì—…ë°ì´íŠ¸.
         if (durability <= 0)
         {
-            Debug.Log("³»±¸µµ°¡ 0ÀÌÇÏÀÔ´Ï´Ù. ÀåÂøÇÒ ¼ö ¾ø½À´Ï´Ù.");
+            Debug.Log("ë‚´êµ¬ë„ê°€ 0ì´í•˜ì…ë‹ˆë‹¤. ì¥ì°©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             Release(player);
             return;
         }
@@ -26,28 +26,28 @@ public class EquipmentItem : BaseItem
         {
             case ItemCategory.Weapon:
                 player.equipmentData.weaponItem = null;
-                //¹«±â ÇØÁ¦ ·ÎÁ÷
+                //ë¬´ê¸° í•´ì œ ë¡œì§
                 //player.equipmentData.weaponId = -1;
                 //palyer.UpdateEquipmentStats();
                 break;
             case ItemCategory.Armor:
                 player.equipmentData.armorItem = null;
-                //¹æ¾î±¸ ÇØÁ¦ ·ÎÁ÷
+                //ë°©ì–´êµ¬ í•´ì œ ë¡œì§
                 break;
             case ItemCategory.Accessory:
                 player.equipmentData.accessoryItem = null;
-                //¾Ç¼¼¼­¸® ÇØÁ¦ ·ÎÁ÷
+                //ì•…ì„¸ì„œë¦¬ í•´ì œ ë¡œì§
                 break;
             case ItemCategory.Potion:
-                // Æ÷¼ÇÀº Àåºñ°¡ ¾Æ´Ï¹Ç·Î ÇØÁ¦ ·ÎÁ÷ÀÌ ÇÊ¿ä ¾øÀ½
+                // í¬ì…˜ì€ ì¥ë¹„ê°€ ì•„ë‹ˆë¯€ë¡œ í•´ì œ ë¡œì§ì´ í•„ìš” ì—†ìŒ
                 break;
             default:
-                Debug.LogWarning("¾Ë ¼ö ¾ø´Â Àåºñ À¯ÇüÀÔ´Ï´Ù.");
+                Debug.LogWarning("ì•Œ ìˆ˜ ì—†ëŠ” ì¥ë¹„ ìœ í˜•ì…ë‹ˆë‹¤.");
                 break;
         }
 
-        //¾ÆÀÌÅÛ ÇØÁ¦.
-        //player¿¡°Ô ¾ÆÀÌÅÛ ÇØÁ¦ÇÏµµ·Ï ¸í·É, ¼öÄ¡ ¾÷µ¥ÀÌÆ®.
+        //ì•„ì´í…œ í•´ì œ.
+        //playerì—ê²Œ ì•„ì´í…œ í•´ì œí•˜ë„ë¡ ëª…ë ¹, ìˆ˜ì¹˜ ì—…ë°ì´íŠ¸.
     }
 }
  

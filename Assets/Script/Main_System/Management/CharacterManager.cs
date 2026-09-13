@@ -3,43 +3,43 @@ using UnityEngine;
 
 public class CharacterManager : SingleTon<CharacterManager>
 {
-    #region [º¯¼ö ±×·ì]
-    [Header("ÇÁ¸®ÆÕ")]
+    #region [ë³€ìˆ˜ ê·¸ë£¹]
+    [Header("í”„ë¦¬íŒ¹")]
     public Player playerPrefab;
     public Enemy enemyPrefab;
 
     public Player currentPlayer { get; private set; }
     public Enemy currentEnemy { get; private set; }
 
-    //ÀÎ½ºÆåÅÍ¸¦ ÅëÇØ ÇÒ´ç¹Ş´Â °ÍÀÌ ¾Æ´Ñ, ÄÚµå·Î µî·Ï¹ŞÀ» º¯¼ö.
+    //ì¸ìŠ¤í™í„°ë¥¼ í†µí•´ í• ë‹¹ë°›ëŠ” ê²ƒì´ ì•„ë‹Œ, ì½”ë“œë¡œ ë“±ë¡ë°›ì„ ë³€ìˆ˜.
     private Transform registeredPlayerParent;
     private Transform registeredEnemyParent;
     #endregion
 
-    #region [ÀÌº¥Æ® ±×·ì]
+    #region [ì´ë²¤íŠ¸ ê·¸ë£¹]
     public Action<Player, Enemy> OnCharacterReady;
     #endregion
 
-    #region [°´Ã¼ »ı¼º]
+    #region [ê°ì²´ ìƒì„±]
     public void RegisterPlayerParent(Transform parent)
     {
         registeredPlayerParent = parent;
-        Debug.Log("ÇÃ·¹ÀÌ¾î »ı¼º À§Ä¡ µî·Ï ¿Ï·á");
+        Debug.Log("í”Œë ˆì´ì–´ ìƒì„± ìœ„ì¹˜ ë“±ë¡ ì™„ë£Œ");
     }
 
     public void RegisterEnemyParent(Transform parent)
     {
         registeredEnemyParent = parent;
-        Debug.Log("Àû »ı¼º À§Ä¡ µî·Ï ¿Ï·á");
+        Debug.Log("ì  ìƒì„± ìœ„ì¹˜ ë“±ë¡ ì™„ë£Œ");
     }
 
     public void SpawnCharacter(PlayerData data, int index)
     {
-        //Player »ı¼º.
+        //Player ìƒì„±.
         #region initialize
         if (registeredPlayerParent == null)
         {
-            Debug.LogError("ÇÃ·¹ÀÌ¾î »ı¼º À§Ä¡ UnFound.");
+            Debug.LogError("í”Œë ˆì´ì–´ ìƒì„± ìœ„ì¹˜ UnFound.");
             return;
         }
 
@@ -60,16 +60,16 @@ public class CharacterManager : SingleTon<CharacterManager>
         else
         {
             currentPlayer.InitializeFromData(data);
-            Debug.Log("ÇÃ·¹ÀÌ¾î »ı¼º ¸ğµå index ¿À·ù! 0:New È¤Àº 1:Load·Î ¼³Á¤ÇÏ½Ã¿À.");
+            Debug.Log("í”Œë ˆì´ì–´ ìƒì„± ëª¨ë“œ index ì˜¤ë¥˜! 0:New í˜¹ì€ 1:Loadë¡œ ì„¤ì •í•˜ì‹œì˜¤.");
         }
 
         currentPlayer.gameObject.SetActive(true);
 
 
-        //Enemy »ı¼º.
+        //Enemy ìƒì„±.
         if (registeredEnemyParent == null)
         {
-            Debug.LogError("Àû »ı¼º À§Ä¡ UnFound.");
+            Debug.LogError("ì  ìƒì„± ìœ„ì¹˜ UnFound.");
             return;
         }
 

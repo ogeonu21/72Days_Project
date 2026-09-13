@@ -5,9 +5,9 @@ using UnityEngine.Events;
 [System.Serializable]
 public struct BaseStats
 {
-    [Min(0)] public int str; //Èû 1´ç °ø°İ·Â +3, Ã¼·Â +5
-    [Min(0)] public int dex; //¹ÎÃ¸ 1´ç °ø°İ·Â +1, È¸ÇÇÀ² + 2%, ¸íÁß·ü + 1.5%;
-    [Min(0)] public int con; //°Ç°­ 1´ç Ã¼·Â +10, Ã¼·Â È¸º¹ +2
+    [Min(0)] public int str; //í˜ 1ë‹¹ ê³µê²©ë ¥ +3, ì²´ë ¥ +5
+    [Min(0)] public int dex; //ë¯¼ì²© 1ë‹¹ ê³µê²©ë ¥ +1, íšŒí”¼ìœ¨ + 2%, ëª…ì¤‘ë¥  + 1.5%;
+    [Min(0)] public int con; //ê±´ê°• 1ë‹¹ ì²´ë ¥ +10, ì²´ë ¥ íšŒë³µ +2
 
     public BaseStats(int str, int dex, int con)
     {
@@ -20,15 +20,15 @@ public struct BaseStats
 [System.Serializable]
 public struct Stats
 {
-    [Min(0)] public int str; //Èû 1´ç °ø°İ·Â +3, Ã¼·Â +5
-    [Min(0)] public int dex; //¹ÎÃ¸ 1´ç °ø°İ·Â +1, È¸ÇÇÀ² + 2%, ¸íÁß·ü + 1.5%;
-    [Min(0)] public int con; //°Ç°­ 1´ç Ã¼·Â +10, Ã¼·Â È¸º¹ +2
+    [Min(0)] public int str; //í˜ 1ë‹¹ ê³µê²©ë ¥ +3, ì²´ë ¥ +5
+    [Min(0)] public int dex; //ë¯¼ì²© 1ë‹¹ ê³µê²©ë ¥ +1, íšŒí”¼ìœ¨ + 2%, ëª…ì¤‘ë¥  + 1.5%;
+    [Min(0)] public int con; //ê±´ê°• 1ë‹¹ ì²´ë ¥ +10, ì²´ë ¥ íšŒë³µ +2
 
-    [Min(1), ReadOnly] public int attackPower; //°ø°İ·Â
-    [Min(10), ReadOnly] public int maxHP; //ÃÖ´ë Ã¼·Â
-    [Range(0f, 1f), ReadOnly] public float dodgeRate; // È¸ÇÇÀ²(0~1) ±âº» È¸ÇÇÀ² 0%
-    [Range(0f, 1f), ReadOnly] public float accuracyRate; //¸íÁß·ü (0~1)
-    [ReadOnly] public int attackRange; // °ø°İ »ç°Å¸® °´Ã¼¿¡ µû¶ó »óÀÌ
+    [Min(1), ReadOnly] public int attackPower; //ê³µê²©ë ¥
+    [Min(10), ReadOnly] public int maxHP; //ìµœëŒ€ ì²´ë ¥
+    [Range(0f, 1f), ReadOnly] public float dodgeRate; // íšŒí”¼ìœ¨(0~1) ê¸°ë³¸ íšŒí”¼ìœ¨ 0%
+    [Range(0f, 1f), ReadOnly] public float accuracyRate; //ëª…ì¤‘ë¥  (0~1)
+    [ReadOnly] public int attackRange; // ê³µê²© ì‚¬ê±°ë¦¬ ê°ì²´ì— ë”°ë¼ ìƒì´
 
     public Stats(BaseStats stats, TuningStats tuning)
     {

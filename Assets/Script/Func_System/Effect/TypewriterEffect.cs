@@ -4,18 +4,18 @@ using TMPro;
 
 public static class TypewriterEffect
 {
-    // ÄÚ·çÆ¾ ÀÚÃ¼¸¦ ¹İÈ¯ÇÏ¿© È£ÃâÇÏ´Â ÂÊ¿¡¼­ Á¦¾îÇÏµµ·Ï ÇÔ
+    // ì½”ë£¨í‹´ ìì²´ë¥¼ ë°˜í™˜í•˜ì—¬ í˜¸ì¶œí•˜ëŠ” ìª½ì—ì„œ ì œì–´í•˜ë„ë¡ í•¨
     public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.05f)
     {
         if (targetTextComponent == null)
         {
-            Debug.LogError("Å¸ÀÌÇÎ È¿°ú¸¦ Àû¿ëÇÒ ÅØ½ºÆ® ÄÄÆ÷³ÍÆ®°¡ nullÀÔ´Ï´Ù.");
+            Debug.LogError("íƒ€ì´í•‘ íš¨ê³¼ë¥¼ ì ìš©í•  í…ìŠ¤íŠ¸ ì»´í¬ë„ŒíŠ¸ê°€ nullì…ë‹ˆë‹¤.");
             yield break;
         }
 
         targetTextComponent.text = "";
 
-        // ÀÌ ·çÇÁ°¡ ³¡³¯ ¶§±îÁö Å¸ÀÌÇÎÀÌ ÁøÇàµÊ
+        // ì´ ë£¨í”„ê°€ ëë‚  ë•Œê¹Œì§€ íƒ€ì´í•‘ì´ ì§„í–‰ë¨
         foreach (char letter in textToType.ToCharArray())
         {
             targetTextComponent.text += letter;
