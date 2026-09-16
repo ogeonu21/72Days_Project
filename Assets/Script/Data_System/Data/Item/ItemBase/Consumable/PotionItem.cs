@@ -7,6 +7,10 @@ public class PotionItem : BaseItem
 
     public int health;
 
+    public override void Equip(Player player)
+    {
+        return;
+    }
 
     public override void Use(Player player)
     {

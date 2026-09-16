@@ -195,7 +195,7 @@ public class Player : Character
                     //기존 장착 아이템 해제.
                     equipmentData.weaponItem.Release(this);
                 }
-                weaponItem.Use(this);
+                weaponItem.Equip(this);
                 equipmentData.weaponItem = weaponItem;
                 break;
             case ItemCategory.Armor:
@@ -205,7 +205,7 @@ public class Player : Character
                     //기존 장착 아이템 해제.
                     equipmentData.armorItem.Release(this);
                 }
-                armorItem.Use(this);
+                armorItem.Equip(this);
                 equipmentData.armorItem = armorItem;
                 break;
             case ItemCategory.Accessory:
@@ -215,7 +215,7 @@ public class Player : Character
                     //기존 장착 아이템 해제.
                     equipmentData.accessoryItem.Release(this);
                 }
-                accessoryItem.Use(this);
+                accessoryItem.Equip(this);
                 equipmentData.accessoryItem = accessoryItem;
                 break;
             default:
@@ -226,6 +226,42 @@ public class Player : Character
         //장착 후 스탯 업데이트.
         UpdateTuningStats();
     }
+    //장비 아이템 장착 해제시 적용
+    public void ReleaseItem(EquipmentItem item)
+    {
+        if(item == null) { return; }
+        switch (item.itemCategory)
+        {
+            case ItemCategory.Weapon:
+                WeaponItem weaponItem = item as WeaponItem;
+                if (equipmentData.weaponItem == weaponItem)
+                {
+                    //장착중인 것이 확인되었으니 장착 해제
+                    equipmentData.weaponItem.Release(this);
+                }
+                break;
+            case ItemCategory.Armor:
+                ArmorItem armorItem = item as ArmorItem;
+                if (equipmentData.armorItem != null)
+                {
+                    equipmentData.armorItem.Release(this);
+                }
+                break;
+            case ItemCategory.Accessory:
+                AccessoryItem accessoryItem = item as AccessoryItem;
+                if (equipmentData.accessoryItem != null)
+                {
+                    equipmentData.accessoryItem.Release(this);
+                }
+                break;
+            default:
+                Debug.LogWarning("알 수 없는 장비 유형입니다.");
+                break;
+        }
+        //장착 해제 후 스탯 업데이트
+        UpdateTuningStats();
+    }
+    
 
     public void RestoreEquipment(EquipmentData restoredEquipment)
     {

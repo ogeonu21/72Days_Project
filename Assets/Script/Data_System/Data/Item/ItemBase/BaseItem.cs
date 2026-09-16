@@ -12,6 +12,7 @@ public abstract class BaseItem : ScriptableObject
     public ItemCategory itemCategory;
 
     // 아이템 사용 시 호출될 공통 메서드
+    public abstract void Equip(Player player);
     public abstract void Use(Player player);
     
 }
