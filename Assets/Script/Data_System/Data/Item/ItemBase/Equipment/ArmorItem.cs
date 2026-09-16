@@ -8,5 +8,4 @@ public class ArmorItem : EquipmentItem
     public int hpBonus;
     public float dodgeBonus;
 
-
 }

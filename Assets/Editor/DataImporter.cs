@@ -397,7 +397,8 @@ public class DataImporter : EditorWindow
             item.itemName = data.ItemName;
             item.itemDescription = data.ItemDesc;
             item.itemCategory = System.Enum.TryParse(data.ItemCategory, out ItemCategory cat) ? cat : ItemCategory.Weapon;
-            //item.itemIcon = data.ItemIcon; ID화 필요
+            // 빈 시트 값으로 에디터에서 지정한 주소를 지우지 않는다.
+            if (!string.IsNullOrWhiteSpace(data.ItemIcon)) item.itemIcon = data.ItemIcon.Trim();
             item.isConsumable = data.Consumable;
             item.itemValue = data.ItemValue;
             

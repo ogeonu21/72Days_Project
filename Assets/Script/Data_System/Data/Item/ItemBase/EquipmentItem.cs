@@ -21,25 +21,29 @@ public class EquipmentItem : BaseItem
     }
     public override void Use(Player player)
     {
-        return;   
+        return;
     }
 
     public void Release(Player player)
     {
+        if (player == null || player.equipmentData == null) return;
+        player.equipmentData.EnsureArmorSlots();
         switch (itemCategory)
         {
             case ItemCategory.Weapon:
-                player.equipmentData.weaponItem = null;
+                if (player.equipmentData.weaponItem == this) player.equipmentData.weaponItem = null;
                 //무기 해제 로직
                 //player.equipmentData.weaponId = -1;
                 //palyer.UpdateEquipmentStats();
                 break;
             case ItemCategory.Armor:
-                player.equipmentData.armorItem = null;
+                if (this is ArmorItem armor && EquipmentData.IsValidArmorType(armor.armorType) &&
+                    player.equipmentData.armorItem[(int)armor.armorType] == armor)
+                    player.equipmentData.armorItem[(int)armor.armorType] = null;
                 //방어구 해제 로직
                 break;
             case ItemCategory.Accessory:
-                player.equipmentData.accessoryItem = null;
+                if (player.equipmentData.accessoryItem == this) player.equipmentData.accessoryItem = null;
                 //악세서리 해제 로직
                 break;
             case ItemCategory.Potion:
@@ -54,4 +58,4 @@ public class EquipmentItem : BaseItem
         //player에게 아이템 해제하도록 명령, 수치 업데이트.
     }
 }
- 
+

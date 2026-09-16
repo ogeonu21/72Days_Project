@@ -15,7 +15,7 @@ MonoBehaviour:
   itemID: Armor_01
   itemName: "\uC57C\uAD6C\uBAA8\uC790"
   itemDescription: "\uC57C\uAD6C\uBE60\uB530\uC640 \uC798 \uC5B4\uC6B8\uB9B0\uB2E4..."
-  itemIcon: {fileID: 0}
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/04_helm.png
   isConsumable: 0
   itemValue: 1100
   itemCategory: 1

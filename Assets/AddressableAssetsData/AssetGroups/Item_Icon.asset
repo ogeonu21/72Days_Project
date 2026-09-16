@@ -1,0 +1,313 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Item_Icon
+  m_EditorClassIdentifier: 
+  m_GroupName: Item_Icon
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ddf2eb78782ff17449d395a74c655f5d
+  m_SerializeEntries:
+  - m_GUID: 4037375dc7463d247863804ab62845a7
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/29_bag.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8092a8f83e8726b42a5f2d8eb56da8e4
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/57_chest.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a06a1561cf0f7a54386a58a724397049
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/32_coin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c09dd93d1c8c27148b4cad97d25a9a44
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/20_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d06656138f94a264caf73188c161a9a1
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/66_wand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b12aef7b7c6db0141b99e4ef29dc9f12
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/56_helm.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c1e10830e50213e4b83bc791e9846adb
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/48_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d12e58722cacf2b4ab8b947585085aac
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/11_cross.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e181467b6b0aa3e4fad9ee1500b5229a
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/36_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 929ebf14b4b3e8343944e2fda867d5a6
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/06_pants.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a29a1fc43396ae645ae1b5c708a4d8c4
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/50_helm.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b259bce8f8c0e374f80aada828bcba93
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/38_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c2feef3d02a21ff44b28d54c362b6b70
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/64_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e2716e5920328714587eabc2bed3f88d
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/40_bow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e2cee2b046a39e344b5bdf82fdfd27f3
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/42_shield.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 639926e03fc31984f932a971b93e2cce
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/71_magic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 83f3f03fad7e7504984dfa2e5caca23e
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/45_crystal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a35a45ead39df5e4ca4d2f1993487336
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/52_chest.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 04f4c12d6d4c33d409f7bfab0469acae
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/60_glowes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 845a0aa88d5ccd4498e06260d1e3f60c
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/09_gem_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c4767f548b169934aa4cd57008a057ed
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/22_Potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d40c0d73ce2f1384894c347fb20b98a1
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/10_gem_purple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e4c59ad6d5829e24396e9650dad45de7
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/46_skin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 45ab5c35e77274643b9dc65e53a4c6d8
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/30_mace.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 55d5211acaeede04781046514939147b
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/65_redcrystals.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 85c4ce378ec8620499f8757fe650b99b
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/49_pick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e5b4aff227c710341a79e96b8b567204
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/02_Ring.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 36170074993a8d94da238b950643a277
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/21_Mana_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a6b05684a54a8254ea80122c8f00601d
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/13_neck.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 17e5a0649f629284f9c28e73326b9a1b
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/12_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 47825a1a0b22c804d91455ad62a710da
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/17_Bottle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 57498e0c095b7ee4b88abdadf8231b60
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/37_leaf.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 67b12a53af7e0f1448c80e53e464fccb
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/62_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 678838842b0794a42a41eb70361d2ed4
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/54_silverbar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 97ad670292c2b1d43ab206cea1d2dfa3
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/15_Silver_ring.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a702e605c5878734a8f50f4325c878bd
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/58_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 08e1ffcd38a1a6643a35d3a89e0962c2
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/19_Mana_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 18edabe7d38f9f44490d91ae11b5757a
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/27_Skull.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 286e9a7515ba02e4f8b40bbd28686466
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/23_Mana_Potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 48cf791942123f54f9e08fa3f2838d5c
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/28_bag.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 294ce061a6ab6044eaf5a9c9473a38dc
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/53_Axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f993ff189f80c6644acaee58ef2fe34a
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/43_shield.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3a0b08cdbe7491c4a8fe8a8e28cf4987
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/31_spade.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6a563d5c3d2eb514b8d1a73b68233439
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/25_Meat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6a4f9b7082fcead43b1c4c50fd1c5c93
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/68_relic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7ac8349432309714ba9bc8838df44b04
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/34_wood.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8a6153cab18c2cf429ff511d0d2f3ff9
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/41_arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: fa642fb4bb5d5a746802548a69fb7994
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/04_helm.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1b377990f17040948b6450eb367704af
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/01_Scroll.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 4bf8d08c18c96b64ea29a82f73e21dfd
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/07_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5b5af956a028fd54b9adeca62d09c6cd
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/03_Torch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7bb8f34640077064c9d5b568a218b17e
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/05_chest.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8b7cf6de7d2c4f84cabc503e3816d6e5
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/44_rope.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bbd139b9b19607a458539b2853a50692
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/35_glowes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5c99ae1e6ada67540bb7da32fb57884d
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/26_apple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7c5186bc47583fb4b8999ed85400ffa7
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/70_magic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8cfc438302e55db488c9722cee5a98a6
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/59_pants.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9c69c06d32a24434f8af564934ed754b
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/72_magic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: dc6e1cb5d696c974c819286fbddab61d
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/39_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1d311e68b56fd7e40b2a833e1aed988f
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/51_pants.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2d400689c05b08a4d90e443ae6f03097
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/33_stone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ed13ba8728d62b348aac179a7d7ffb39
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/47_treasure.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: eda53e894903c2148836dc359ce5d723
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/61_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: eddf03983fc01fd4d8627d6875fede73
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/67_bandage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3ea1b3bec3375a546b8d157916611d47
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/18_Bottle_of_power.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 4ebd6606f414f044da1090cf8eacbb4f
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/69_magic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: decb384908ba89c4886e7d1012ea72dc
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/63_stairway.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0f28069593b50814a962edf881ff3857
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/24_Mushroom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0f6c39ecad0cc284396937721c4cd7d3
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/55_flower.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3f81d5929a7d5dd479e04ae50334ca3b
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/14_Water.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7f0cf4d1a8d41c747aeb2a77a6ed5b55
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/16_Gold_ring.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ffb523c0500edb24b9876f28b9101459
+    m_Address: Assets/ClassicPixelRPGUI/Artwok/Icons/08_gem_green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5d46751e5894a224a9e0da6179eb08a4, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c3b0b76200437734194278d89f7e7b3c, type: 2}
+    - {fileID: 11400000, guid: ea334bf4d1c33394f99bf53470bb1114, type: 2}

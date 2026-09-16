@@ -15,7 +15,7 @@ MonoBehaviour:
   itemID: Weapon_04
   itemName: "\uD68C\uCD08\uB9AC"
   itemDescription: "\uAC00\uBCCD\uB2E4. \uC544\uD504\uC9C0\uB9CC \uC57D\uD560\uC218\uB3C4"
-  itemIcon: {fileID: 0}
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/66_wand.png
   isConsumable: 0
   itemValue: 150
   itemCategory: 0

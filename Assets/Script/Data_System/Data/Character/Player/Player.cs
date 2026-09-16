@@ -64,13 +64,8 @@ public class Player : Character
         // 성향 초기화
         tendency = data.tendency;
         // 장비 초기화
-        equipmentData = new EquipmentData
-        {
-            weaponItem = data.equipmentData?.weaponItem,
-            armorItem = data.equipmentData?.armorItem,
-            accessoryItem = data.equipmentData?.accessoryItem
-        };
-        
+        equipmentData = data.equipmentData?.Copy() ?? new EquipmentData();
+
         // 저장된 tuningStats는 이미 장비 보정을 포함하므로 로드 시 중복 가산하지 않는다.
         UpdateStats();
         SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
@@ -94,12 +89,7 @@ public class Player : Character
         data.exp = this.exp;
         data.lv = this.lv;
         data.tendency = tendency;
-        data.equipmentData = new EquipmentData
-        {
-            weaponItem = equipmentData?.weaponItem,
-            armorItem = equipmentData?.armorItem,
-            accessoryItem = equipmentData?.accessoryItem
-        };
+        data.equipmentData = equipmentData?.Copy() ?? new EquipmentData();
 
         return data;
     }
@@ -178,6 +168,12 @@ public class Player : Character
             return;
         }
         if (equipmentData == null) equipmentData = new EquipmentData();
+        equipmentData.EnsureArmorSlots();
+        if (item is ArmorItem armor && !EquipmentData.IsValidArmorType(armor.armorType))
+        {
+            Debug.LogWarning("유효하지 않은 방어구 부위입니다.");
+            return;
+        }
         if ((item.itemCategory == ItemCategory.Weapon && !(item is WeaponItem)) ||
             (item.itemCategory == ItemCategory.Armor && !(item is ArmorItem)) ||
             (item.itemCategory == ItemCategory.Accessory && !(item is AccessoryItem)))
@@ -200,13 +196,13 @@ public class Player : Character
                 break;
             case ItemCategory.Armor:
                 ArmorItem armorItem = item as ArmorItem;
-                if (equipmentData.armorItem != null)
+                if (equipmentData.armorItem[(int)armorItem.armorType] != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.armorItem.Release(this);
+                    equipmentData.armorItem[(int)armorItem.armorType].Release(this);
                 }
                 armorItem.Equip(this);
-                equipmentData.armorItem = armorItem;
+                equipmentData.armorItem[(int)armorItem.armorType] = armorItem;
                 break;
             case ItemCategory.Accessory:
                 AccessoryItem accessoryItem = item as AccessoryItem;
@@ -222,6 +218,7 @@ public class Player : Character
                 Debug.LogWarning("알 수 없는 장비 유형입니다.");
                 break;
         }
+        //장착 후 인벤토리 UI 업데이트
 
         //장착 후 스탯 업데이트.
         UpdateTuningStats();
@@ -229,12 +226,13 @@ public class Player : Character
     //장비 아이템 장착 해제시 적용
     public void ReleaseItem(EquipmentItem item)
     {
-        if(item == null) { return; }
+        if (item == null || equipmentData == null) return;
+        equipmentData.EnsureArmorSlots();
         switch (item.itemCategory)
         {
             case ItemCategory.Weapon:
                 WeaponItem weaponItem = item as WeaponItem;
-                if (equipmentData.weaponItem == weaponItem)
+                if (weaponItem != null && equipmentData.weaponItem == weaponItem)
                 {
                     //장착중인 것이 확인되었으니 장착 해제
                     equipmentData.weaponItem.Release(this);
@@ -242,14 +240,16 @@ public class Player : Character
                 break;
             case ItemCategory.Armor:
                 ArmorItem armorItem = item as ArmorItem;
-                if (equipmentData.armorItem != null)
+                if (armorItem != null && EquipmentData.IsValidArmorType(armorItem.armorType) &&
+                    equipmentData.armorItem[(int)armorItem.armorType] == armorItem)
                 {
-                    equipmentData.armorItem.Release(this);
+                    //기존 장착 아이템 해제.
+                    equipmentData.armorItem[(int)armorItem.armorType].Release(this);
                 }
                 break;
             case ItemCategory.Accessory:
                 AccessoryItem accessoryItem = item as AccessoryItem;
-                if (equipmentData.accessoryItem != null)
+                if (accessoryItem != null && equipmentData.accessoryItem == accessoryItem)
                 {
                     equipmentData.accessoryItem.Release(this);
                 }
@@ -258,15 +258,17 @@ public class Player : Character
                 Debug.LogWarning("알 수 없는 장비 유형입니다.");
                 break;
         }
+        //장착 해제 후 인벤토리 UI 업데이트
+
         //장착 해제 후 스탯 업데이트
         UpdateTuningStats();
     }
-    
+
 
     public void RestoreEquipment(EquipmentData restoredEquipment)
     {
         int savedHP = currentHP;
-        equipmentData = restoredEquipment ?? new EquipmentData();
+        equipmentData = restoredEquipment?.Copy() ?? new EquipmentData();
         UpdateTuningStats();
         SetCurrentHPAndNotify(savedHP);
     }
@@ -277,10 +279,24 @@ public class Player : Character
     public override void UpdateTuningStats()
     {
         if (equipmentData == null) equipmentData = new EquipmentData();
-        //장비 스탯 적용
+        equipmentData.EnsureArmorSlots();
+
+        //초기화
         tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.attackBonus : 0;
-        tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.hpBonus : 0;
-        tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.dodgeBonus : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.dodgeBonus : 0);
+        tuningStats.hpBonus = 0;
+        tuningStats.dodgeBonus = 0;
+        tuningStats.rangeBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.range : 0;
+
+        //장비 아이템 효과 적용
+        foreach (ArmorItem item in equipmentData.armorItem)
+        {
+            tuningStats.hpBonus += item != null ? item.hpBonus : 0;
+            tuningStats.dodgeBonus += item != null ? item.dodgeBonus : 0;
+        }
+
+        //장신구 아이템 효과 적용
+        tuningStats.dodgeBonus += equipmentData.accessoryItem != null ? equipmentData.accessoryItem.dodgeBonus : 0;
+
 
         //특수 효과에 따른 스탯 조정.
         tuningStats = ApplyStatusEffects(tuningStats);

@@ -15,7 +15,7 @@ MonoBehaviour:
   itemID: Weapon_02
   itemName: "\uC57C\uAD6C\uBE60\uB530"
   itemDescription: "\uB2E8\uB2E8\uD558\uB2E4"
-  itemIcon: {fileID: 0}
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/34_wood.png
   isConsumable: 0
   itemValue: 14200
   itemCategory: 0

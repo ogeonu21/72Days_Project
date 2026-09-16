@@ -25,7 +25,7 @@ public class RewardManager : SingleTon<RewardManager>
 
         if(CalculateFunction.Roll(enemy.itemDropRate))
         {
-            if (InventoryManager.Instance.isInventoryPull)
+            if (!InventoryManager.Instance.CanAdd(enemy.dropItem))
             {
                 yield return GameEvent.OnNodeTextUpdate($"배낭이 꽉 차 더 이상 아이템을 얻을 수 없다.");
             }
