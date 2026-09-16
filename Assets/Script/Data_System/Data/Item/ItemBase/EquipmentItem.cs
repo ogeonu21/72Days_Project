@@ -7,7 +7,7 @@ public class EquipmentItem : BaseItem
 
     // public int weaponDamageAmount;
     // public int weaponAttackDistance;
-    public override void Use(Player player)
+    public override void Equip(Player player)
     {
         //아이템 장착 함수.
         //튜닝 수치 업데이트.
@@ -18,6 +18,10 @@ public class EquipmentItem : BaseItem
             Release(player);
             return;
         }
+    }
+    public override void Use(Player player)
+    {
+        return;   
     }
 
     public void Release(Player player)

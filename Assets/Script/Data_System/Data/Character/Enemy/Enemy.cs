@@ -9,17 +9,17 @@ public class Enemy : Character
     private TuningStats definitionTuning;
     private AreaData[] initialAreas;
 
-    public void InitializeFromData(EnemyData def)
+    public void InitializeFromData(EnemyData data)
     {
-        if (def == null) throw new ArgumentNullException(nameof(def));
+        if (data == null) throw new ArgumentNullException(nameof(data));
 
-        InitializeCharacter(def.id, def.displayName, def.baseStats, def.tuningStats);
-        definitionTuning = def.tuningStats;
+        InitializeCharacter(data.id, data.displayName, data.baseStats, data.tuningStats);
+        definitionTuning = data.tuningStats;
 
         //드랍 아이템과 보상 설정;
-        dropItem = def.dropItem;
-        itemDropRate = dropItem != null ? Mathf.Clamp01(def.itemDropRate) : 0;
-        dropGold = def.dropGold;
+        dropItem = data.dropItem;
+        itemDropRate = dropItem != null ? Mathf.Clamp01(data.itemDropRate) : 0;
+        dropGold = data.dropGold;
 
         AreaDataReset();
 

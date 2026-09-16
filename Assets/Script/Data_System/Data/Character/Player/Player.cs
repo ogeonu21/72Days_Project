@@ -13,8 +13,9 @@ public class Player : Character
     private int exp;
     public int lv;
 
-    //장비 관련 - 추후 구현 예정
+    //장비 관련
     public EquipmentData equipmentData = new EquipmentData();
+    //플레이어 성향
     public int tendency { get; private set; }
     public event Action<int> TendencyChanged;
 
@@ -36,32 +37,40 @@ public class Player : Character
     //public event Action OnPlayerLvUp;
 
     #region [Initialize]
+    // 플레이어 데이터를 새롭게 생성하여 초기화
     public void InitializeFromData(PlayerData data)
     {
         InitializePlayer(data, false);
     }
 
-
-    //인자를 하나 더 받자. initialmode, loadmode.
-
+    // 플레이어 데이터를 로드하여 초기화
     public void LoadFromData(PlayerData data)
     {
         InitializePlayer(data, true);
     }
 
+    //플레이어 데이터를 초기화
     private void InitializePlayer(PlayerData data, bool restoreHealth)
     {
+        // 오류 반환
         if (data == null) throw new ArgumentNullException(nameof(data));
+        // Character 초기화 함수를 불러오는거야.
+        // 공통 분모를 초기화
         InitializeCharacter(data.id, data.displayName, data.baseStats, data.tuningStats);
+        // 플레이어에게만 있는 데이터를 초기화.
+        // 레벨 초기화
         exp = Mathf.Max(0, data.exp);
         lv = Mathf.Max(1, data.lv);
+        // 성향 초기화
         tendency = data.tendency;
+        // 장비 초기화
         equipmentData = new EquipmentData
         {
             weaponItem = data.equipmentData?.weaponItem,
             armorItem = data.equipmentData?.armorItem,
             accessoryItem = data.equipmentData?.accessoryItem
         };
+        
         // 저장된 tuningStats는 이미 장비 보정을 포함하므로 로드 시 중복 가산하지 않는다.
         UpdateStats();
         SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
@@ -127,28 +136,36 @@ public class Player : Character
 
     private void UpdateLv()
     {
+        //요구 경험치 계산
         int requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
+        int previousLv = lv;
 
         while (requiredExpForLvUP > 0 && exp >= requiredExpForLvUP)
         {
+            //경험치와 레벨 처리
             exp -= requiredExpForLvUP;
             lv++;
-
             //10만큼 회복.
             Heal(10);
-
-
-            UpdateLV_UI();
-
-            //레벨업 이벤트 발생.
-            PlayerEvent.PlayerLevelUp();
+            //이거를 다시 계산할 필요가 있나? 있지. 2번 연속으로 레벨업을 한다면?
             requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
+        }
+        if (previousLv < lv)
+        {
+            UpdateLV_UI(lv - previousLv);
+            //레벨업 이벤트 발생.
+            //이벤트를 중복 발생시켜야할듯?
+            PlayerEvent.PlayerLevelUp(lv - previousLv);
         }
     }
 
-    private void UpdateLV_UI()
+    private void UpdateLV_UI(int levelDifference = 0)
     {
         if (lvText != null) lvText.text = "Lv." + lv;
+        if (levelDifference > 0)
+        {
+            Debug.Log($"레벨업! {levelDifference}레벨 상승. 현재 레벨: {lv}");
+        }
     }
     #endregion
 
@@ -178,7 +195,7 @@ public class Player : Character
                     //기존 장착 아이템 해제.
                     equipmentData.weaponItem.Release(this);
                 }
-                weaponItem.Use(this);
+                weaponItem.Equip(this);
                 equipmentData.weaponItem = weaponItem;
                 break;
             case ItemCategory.Armor:
@@ -188,7 +205,7 @@ public class Player : Character
                     //기존 장착 아이템 해제.
                     equipmentData.armorItem.Release(this);
                 }
-                armorItem.Use(this);
+                armorItem.Equip(this);
                 equipmentData.armorItem = armorItem;
                 break;
             case ItemCategory.Accessory:
@@ -198,7 +215,7 @@ public class Player : Character
                     //기존 장착 아이템 해제.
                     equipmentData.accessoryItem.Release(this);
                 }
-                accessoryItem.Use(this);
+                accessoryItem.Equip(this);
                 equipmentData.accessoryItem = accessoryItem;
                 break;
             default:
@@ -209,6 +226,42 @@ public class Player : Character
         //장착 후 스탯 업데이트.
         UpdateTuningStats();
     }
+    //장비 아이템 장착 해제시 적용
+    public void ReleaseItem(EquipmentItem item)
+    {
+        if(item == null) { return; }
+        switch (item.itemCategory)
+        {
+            case ItemCategory.Weapon:
+                WeaponItem weaponItem = item as WeaponItem;
+                if (equipmentData.weaponItem == weaponItem)
+                {
+                    //장착중인 것이 확인되었으니 장착 해제
+                    equipmentData.weaponItem.Release(this);
+                }
+                break;
+            case ItemCategory.Armor:
+                ArmorItem armorItem = item as ArmorItem;
+                if (equipmentData.armorItem != null)
+                {
+                    equipmentData.armorItem.Release(this);
+                }
+                break;
+            case ItemCategory.Accessory:
+                AccessoryItem accessoryItem = item as AccessoryItem;
+                if (equipmentData.accessoryItem != null)
+                {
+                    equipmentData.accessoryItem.Release(this);
+                }
+                break;
+            default:
+                Debug.LogWarning("알 수 없는 장비 유형입니다.");
+                break;
+        }
+        //장착 해제 후 스탯 업데이트
+        UpdateTuningStats();
+    }
+    
 
     public void RestoreEquipment(EquipmentData restoredEquipment)
     {
@@ -234,6 +287,28 @@ public class Player : Character
 
         //최종 스탯 업데이트.
         UpdateStats();
+    }
+    #endregion
+
+    #region [BaseStats Control]
+
+    public void UpdateBaseStats(string name, int amount)
+    {
+        switch (name) {
+            case "str" :
+                baseStats.str += amount;
+                break;
+            case "con" :
+                baseStats.con += amount;
+                break;
+            case "dex" :
+                baseStats.dex += amount;
+                break;
+            default :
+                Debug.Log("<color = blue>[Player.cs]</color> UpdateBaseStats 입력 오류가 발생하였습니다. 정확한 baseStats name을 입력하세요.");
+                break;
+        }
+        UpdateStats(true);
     }
     #endregion
 }

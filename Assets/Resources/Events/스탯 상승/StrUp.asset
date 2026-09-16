@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a78f80712523ba43ae73522325a73a6, type: 3}
   m_Name: StrUp
   m_EditorClassIdentifier: 
-  changeAmount: 1
+  eventCategory: 
+  changeAmount: 10
   statType: str
