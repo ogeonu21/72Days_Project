@@ -1931,11 +1931,13 @@ MonoBehaviour:
       rangeBonus: 0
     equipmentData:
       weaponItem: {fileID: 0}
-      armorItem: {fileID: 0}
+      armorItem:
+      - {fileID: 0}
       accessoryItem: {fileID: 0}
     currentHP: 0
     exp: 0
     lv: 1
+    tendency: 0
 --- !u!4 &1917113160
 Transform:
   m_ObjectHideFlags: 0

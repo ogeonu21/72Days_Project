@@ -170,6 +170,7 @@ public class UIManager : SingleTon<UIManager>
     #region [UI Control]
     public void OpenUI(GameObject UI)
     {
+        if (UI != null && UI.activeSelf) return;
         if (UI != null)
         {
             //타이므 스토푸!!! 근데 시발 원래 이렇게 하면 안되는뎅

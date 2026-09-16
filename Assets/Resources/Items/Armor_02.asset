@@ -15,7 +15,7 @@ MonoBehaviour:
   itemID: Armor_02
   itemName: "\uB450\uD130\uC6B4 \uD328\uB529"
   itemDescription: "\uB365\uC9C0\uB9CC \uD479\uC2E0\uD558\uB2E4"
-  itemIcon: {fileID: 0}
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/52_chest.png
   isConsumable: 0
   itemValue: 15000
   itemCategory: 1
