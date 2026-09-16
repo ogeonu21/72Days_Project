@@ -35,13 +35,13 @@ public static class CharacterRefactorValidation
             int savedHP = player.CurrentHP;
             var snapshot = new SaveGameData { player = PlayerSaveData.FromPlayerData(player.GetCurrentData()) };
             string json = JsonUtility.ToJson(snapshot);
-            check(SaveGameData.TryDeserialize(json, out var restored, out _), "v2 파싱");
+            check(SaveGameData.TryDeserialize(json, out var restored, out _), "현재 저장 버전 파싱");
             player.ResetTendency();
             player.LoadFromData(restored.player.ToPlayerData());
             check(player.tendency == 3 && player.CurrentHP == savedHP, "성향/HP 왕복");
             player.RestoreEquipment(new EquipmentData());
             check(player.CurrentHP == savedHP, "장비 복원 시 임의 회복 없음");
-            check(SaveGameData.TryDeserialize("{\"version\":1,\"goodAndEvil\":-8,\"player\":{\"id\":\"Player\"}}", out restored, out _) && restored.player.tendency == -8 && restored.version == 2f, "구 goodAndEvil 이전");
+            check(SaveGameData.TryDeserialize("{\"version\":1,\"goodAndEvil\":-8,\"player\":{\"id\":\"Player\"}}", out restored, out _) && restored.player.tendency == -8 && restored.version == SaveGameData.CurrentVersion, "구 goodAndEvil 이전");
             check(SaveGameData.TryDeserialize("{\"version\":1.0,\"tendency\":5,\"player\":{\"id\":\"Player\"}}", out restored, out _) && restored.player.tendency == 5, "구 tendency 이전");
             check(!SaveGameData.TryDeserialize("{\"version\":9,\"player\":{}}", out _, out _), "미지원 버전 거부");
             check(!SaveGameData.TryDeserialize("{}", out _, out _), "버전 누락 거부");

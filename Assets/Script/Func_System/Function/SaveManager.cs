@@ -66,15 +66,9 @@ public class SaveManager : SingleTon<SaveManager>
             return false;
         }
 
-        playerData = data.player != null ? data.player.ToPlayerData() : new PlayerData();
-        itemData = new ItemData { inventoryItems = LoadItems(data.inventoryItemIds) };
+        if (!TryRestoreItems(data, out itemData, out equipmentData, out error)) return false;
+        playerData = data.player.ToPlayerData();
         currencies = LoadCurrencies(data.currencies);
-        equipmentData = new EquipmentData
-        {
-            weaponItem = LoadItem<WeaponItem>(data.weaponItemId),
-            armorItem = LoadItem<ArmorItem>(data.armorItemId),
-            accessoryItem = LoadItem<AccessoryItem>(data.accessoryItemId)
-        };
         playerData.equipmentData = equipmentData;
         return true;
     }
@@ -89,8 +83,15 @@ public class SaveManager : SingleTon<SaveManager>
             return;
         }
 
-        SaveGameData data = CreateSnapshot(player, node);
-        WriteAtomically(JsonUtility.ToJson(data, true));
+        try
+        {
+            SaveGameData data = CreateSnapshot(player, node);
+            WriteAtomically(JsonUtility.ToJson(data, true));
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"[SaveManager] 저장 데이터 생성 실패(기존 파일 유지): {exception.Message}");
+        }
     }
 
     private SaveGameData CreateSnapshot(Player player, Node node)
@@ -98,10 +99,7 @@ public class SaveManager : SingleTon<SaveManager>
         SaveGameData data = new SaveGameData
         {
             currentNodeId = node.name,
-            player = PlayerSaveData.FromPlayerData(player.GetCurrentData()),
-            weaponItemId = GetItemId(player.equipmentData != null ? player.equipmentData.weaponItem : null),
-            armorItemId = GetItemId(player.equipmentData != null ? player.equipmentData.armorItem : null),
-            accessoryItemId = GetItemId(player.equipmentData != null ? player.equipmentData.accessoryItem : null)
+            player = PlayerSaveData.FromPlayerData(player.GetCurrentData())
         };
 
         if (CurrencyManager.Instance != null && CurrencyManager.Instance.currencyList != null)
@@ -115,17 +113,8 @@ public class SaveManager : SingleTon<SaveManager>
             }
         }
 
-        if (InventoryManager.Instance != null && InventoryManager.Instance.inventoryItems != null)
-        {
-            foreach (BaseItem item in InventoryManager.Instance.inventoryItems)
-            {
-                string itemId = GetItemId(item);
-                if (!string.IsNullOrWhiteSpace(itemId))
-                {
-                    data.inventoryItemIds.Add(itemId);
-                }
-            }
-        }
+        CaptureItems(data, InventoryManager.Instance != null ? InventoryManager.Instance.inventoryItems : null,
+            player.equipmentData);
 
         return data;
     }
@@ -160,6 +149,8 @@ public class SaveManager : SingleTon<SaveManager>
 
     private static string GetItemId(BaseItem item)
     {
+        if (item != null && string.IsNullOrWhiteSpace(item.itemID))
+            throw new InvalidOperationException("ID가 없는 아이템은 저장할 수 없습니다.");
         return item != null ? item.itemID : null;
     }
 
@@ -168,32 +159,119 @@ public class SaveManager : SingleTon<SaveManager>
         return string.IsNullOrWhiteSpace(nodeId) ? null : Resources.Load<Node>($"Nodes/{nodeId}");
     }
 
-    private static T LoadItem<T>(string itemId) where T : BaseItem
+    private static BaseItem LoadItem(string itemId)
     {
-        return string.IsNullOrWhiteSpace(itemId) ? null : Resources.Load<T>($"Items/{itemId}");
+        return string.IsNullOrWhiteSpace(itemId) ? null : Resources.Load<BaseItem>($"Items/{itemId}");
     }
 
-    private static List<BaseItem> LoadItems(List<string> itemIds)
+    public static void CaptureItems(SaveGameData data, IEnumerable<BaseItem> items, EquipmentData equipment)
     {
-        List<BaseItem> items = new List<BaseItem>();
-        if (itemIds == null)
+        data.inventoryItems = new List<InventoryItemSaveData>();
+        if (items != null)
         {
-            return items;
-        }
-
-        foreach (string itemId in itemIds)
-        {
-            BaseItem item = Resources.Load<BaseItem>($"Items/{itemId}");
-            if (item == null)
+            foreach (BaseItem item in items)
             {
-                Debug.LogWarning($"[SaveManager] 인벤토리 아이템을 찾지 못했습니다: {itemId}");
-                continue;
+                if (item == null) throw new InvalidOperationException("인벤토리에 누락된 아이템이 있습니다.");
+                int quantity = item is ConsumableItem consumable ? consumable.quantity : 1;
+                if (quantity < 0) throw new InvalidOperationException("소모품 수량이 음수입니다.");
+                if (quantity == 0) continue;
+                data.inventoryItems.Add(new InventoryItemSaveData { itemId = GetItemId(item), quantity = quantity });
             }
-
-            items.Add(item);
         }
+        data.weaponItemId = GetItemId(equipment?.weaponItem);
+        data.accessoryItemId = GetItemId(equipment?.accessoryItem);
+        data.armorItemIds = new string[EquipmentData.ArmorSlotCount];
+        data.legacyArmorItemId = null;
+        if (equipment?.armorItem == null) return;
+        for (int i = 0; i < equipment.armorItem.Length; i++)
+        {
+            ArmorItem armor = equipment.armorItem[i];
+            if (armor == null) continue;
+            if (i >= EquipmentData.ArmorSlotCount || (int)armor.armorType != i)
+                throw new InvalidOperationException("방어구 부위와 장착 슬롯이 일치하지 않습니다.");
+            data.armorItemIds[i] = GetItemId(armor);
+        }
+    }
 
-        return items;
+    // 정의 로드와 검증을 끝낸 후에만 결과를 전달한다. 실패한 아이템을 조용히 버리지 않는다.
+    public static bool TryRestoreItems(SaveGameData data, out ItemData itemData,
+        out EquipmentData equipmentData, out string error, Func<string, BaseItem> itemLoader = null)
+    {
+        itemData = null;
+        equipmentData = null;
+        error = null;
+        try
+        {
+            if (data == null) throw new FormatException("저장 데이터가 없습니다.");
+            Func<string, BaseItem> loader = itemLoader ?? LoadItem;
+            var restoredItems = new ItemData();
+            var restoredEquipment = new EquipmentData
+            {
+                weaponItem = LoadEquipment<WeaponItem>(data.weaponItemId, ItemCategory.Weapon, loader),
+                accessoryItem = LoadEquipment<AccessoryItem>(data.accessoryItemId, ItemCategory.Accessory, loader)
+            };
+            if (data.armorItemIds == null || data.armorItemIds.Length != EquipmentData.ArmorSlotCount)
+                throw new FormatException("방어구 슬롯은 4개여야 합니다.");
+            for (int i = 0; i < EquipmentData.ArmorSlotCount; i++)
+            {
+                var armor = LoadEquipment<ArmorItem>(data.armorItemIds[i], ItemCategory.Armor, loader);
+                if (armor != null && (int)armor.armorType != i)
+                    throw new FormatException($"방어구 슬롯/부위 불일치: {armor.itemID}");
+                restoredEquipment.armorItem[i] = armor;
+            }
+            if (!string.IsNullOrWhiteSpace(data.legacyArmorItemId))
+            {
+                var armor = LoadEquipment<ArmorItem>(data.legacyArmorItemId, ItemCategory.Armor, loader);
+                if (!EquipmentData.IsValidArmorType(armor.armorType))
+                    throw new FormatException("구 방어구의 부위가 올바르지 않습니다.");
+                restoredEquipment.armorItem[(int)armor.armorType] = armor;
+            }
+            if (data.inventoryItems != null)
+            {
+                foreach (var entry in data.inventoryItems)
+                {
+                    if (entry == null || string.IsNullOrWhiteSpace(entry.itemId) || entry.quantity <= 0)
+                        throw new FormatException("인벤토리 ID 또는 수량이 올바르지 않습니다.");
+                    BaseItem item = LoadRequiredItem(entry.itemId, loader);
+                    if (item is ConsumableItem)
+                    {
+                        if (restoredItems.consumableQuantities.TryGetValue(entry.itemId, out int previous))
+                        {
+                            restoredItems.consumableQuantities[entry.itemId] = checked(previous + entry.quantity);
+                            continue;
+                        }
+                        restoredItems.consumableQuantities.Add(entry.itemId, entry.quantity);
+                    }
+                    else if (entry.quantity != 1)
+                        throw new FormatException("장비 항목의 수량은 1이어야 합니다.");
+                    restoredItems.inventoryItems.Add(item);
+                }
+            }
+            itemData = restoredItems;
+            equipmentData = restoredEquipment;
+            return true;
+        }
+        catch (Exception exception)
+        {
+            error = "아이템 복원 실패: " + exception.Message;
+            return false;
+        }
+    }
+
+    private static BaseItem LoadRequiredItem(string id, Func<string, BaseItem> loader)
+    {
+        BaseItem item = loader(id);
+        if (item == null || item.itemID != id) throw new FormatException($"아이템을 찾지 못했습니다: {id}");
+        return item;
+    }
+
+    private static T LoadEquipment<T>(string id, ItemCategory category, Func<string, BaseItem> loader) where T : EquipmentItem
+    {
+        if (string.IsNullOrWhiteSpace(id)) return null;
+        var item = LoadRequiredItem(id, loader) as T;
+        if (item == null || item.itemCategory != category || item.durability <= 0)
+            throw new FormatException($"장비 타입 또는 내구도가 올바르지 않습니다: {id}");
+        return item;
     }
 
     private static List<CurrencyData> LoadCurrencies(List<CurrencySaveData> savedCurrencies)

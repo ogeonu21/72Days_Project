@@ -10,8 +10,8 @@ public enum ItemCategory
 
 public enum ArmorType
 {
-    Helmet,
-    Chestplate,
-    Boots,
-    Gloves
+    Helmet = 0,
+    Chestplate = 1,
+    Boots = 2,
+    Gloves = 3
 }
