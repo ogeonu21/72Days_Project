@@ -21,12 +21,16 @@ public class Character : MonoBehaviour
 
     #region [Stats]
     [Header("기본 스탯")]
+    // BaseStats는 보정 능력치 적용 이전
     public BaseStats baseStats;
-    private Stats stats;
-
+    // Stats는 보정 능력치 적용 이후
+    
     [Header("보정치")]
     [Tooltip("장비/버프 보정치")]
     public TuningStats tuningStats;
+
+    [Header("최종 능력치")]
+    private Stats stats;
 
     [Header("현재 체력")]
     [SerializeField, ReadOnly] protected int currentHP;
@@ -77,11 +81,15 @@ public class Character : MonoBehaviour
     //장비 변경, 스탯 변동 시에 작동.
     public void UpdateStats()
     {
-        int previousMaxHP = MaxHP;
+        //int previousMaxHP = MaxHP;
         bool wasAlive = !IsDead;
         stats = new Stats(baseStats, tuningStats);
         // 최대 체력 증가분만 보충하고 감소 시에는 새 상한으로 제한한다.
-        currentHP = wasAlive ? Mathf.Clamp(currentHP + Mathf.Max(0, MaxHP - previousMaxHP), 0, MaxHP) : 0;
+        // 하지만, 만약 장비를 꼈다 뺏다 하는 식의 버그성 플레이를 하려한다면? 그로인해서 최대체력을 속이려 한다면?
+        // 레벨업으로 인한 체력 회복만 가능하도록, 혹은 장비를 처음 착용했을 때만 회복하도록
+        // 현재는 스탯 변경으로 인한 회복만 가능하도록 하자.
+        // 당장은 스탯 변동에도 현재 체력을 건드리지 않는다.
+        // currentHP = wasAlive ? Mathf.Clamp(currentHP + Mathf.Max(0, MaxHP - previousMaxHP), 0, MaxHP) : 0;
         UpdateHP_UI();
         OnStatsChanged();
     }
@@ -116,7 +124,7 @@ public class Character : MonoBehaviour
 
     public virtual void TakeDamage(int amount)
     {
-        if (IsDead || amount <= 0) return;
+        if (IsDead || amount < 0) return;
         currentHP = Mathf.Max(0, currentHP - amount);
 
         UpdateHP_UI();
@@ -130,8 +138,7 @@ public class Character : MonoBehaviour
     //Item 사용시 적용하기 위한 Heal 함수.
     public virtual void Heal(int amount)
     {
-        if (IsDead) return;
-        if (amount <= 0) return;
+        if (IsDead || amount < 0) return;
         currentHP = (int)Math.Min(MaxHP, (long)currentHP + amount);
         Debug.Log($"{amount}만큼의 체력을 회복하였다.");
 

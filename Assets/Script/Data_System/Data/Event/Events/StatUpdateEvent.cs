@@ -29,6 +29,7 @@ public class StatUpdateEvent : BaseEvent
             switch (statType)
             {
                 case "str":
+                    //데이터를 직접적으로 건드리잖아. 이게 맞아?
                     CharacterManager.Instance.currentPlayer.baseStats.str += changeAmount;
                     NodeManager.Instance.dumpNode.nodeMessage = $"힘이 {changeAmount}만큼 증가했다!";
                     break;

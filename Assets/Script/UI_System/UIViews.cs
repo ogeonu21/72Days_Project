@@ -34,6 +34,7 @@ public sealed class LevelUpModal
             Debug.LogError("[LevelUpModal] 레벨업 화면 참조가 없습니다.");
             return;
         }
+        // 타이므 스토프!!!
         previousTimeScale = Time.timeScale;
         isOpen = true;
         Time.timeScale = 0;

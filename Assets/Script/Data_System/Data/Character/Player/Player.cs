@@ -13,8 +13,9 @@ public class Player : Character
     private int exp;
     public int lv;
 
-    //장비 관련 - 추후 구현 예정
+    //장비 관련
     public EquipmentData equipmentData = new EquipmentData();
+    //플레이어 성향
     public int tendency { get; private set; }
     public event Action<int> TendencyChanged;
 
@@ -36,32 +37,40 @@ public class Player : Character
     //public event Action OnPlayerLvUp;
 
     #region [Initialize]
+    // 플레이어 데이터를 새롭게 생성하여 초기화
     public void InitializeFromData(PlayerData data)
     {
         InitializePlayer(data, false);
     }
 
-
-    //인자를 하나 더 받자. initialmode, loadmode.
-
+    // 플레이어 데이터를 로드하여 초기화
     public void LoadFromData(PlayerData data)
     {
         InitializePlayer(data, true);
     }
 
+    //플레이어 데이터를 초기화
     private void InitializePlayer(PlayerData data, bool restoreHealth)
     {
+        // 오류 반환
         if (data == null) throw new ArgumentNullException(nameof(data));
+        // Character 초기화 함수를 불러오는거야.
+        // 공통 분모를 초기화
         InitializeCharacter(data.id, data.displayName, data.baseStats, data.tuningStats);
+        // 플레이어에게만 있는 데이터를 초기화.
+        // 레벨 초기화
         exp = Mathf.Max(0, data.exp);
         lv = Mathf.Max(1, data.lv);
+        // 성향 초기화
         tendency = data.tendency;
+        // 장비 초기화
         equipmentData = new EquipmentData
         {
             weaponItem = data.equipmentData?.weaponItem,
             armorItem = data.equipmentData?.armorItem,
             accessoryItem = data.equipmentData?.accessoryItem
         };
+        
         // 저장된 tuningStats는 이미 장비 보정을 포함하므로 로드 시 중복 가산하지 않는다.
         UpdateStats();
         SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
@@ -127,28 +136,39 @@ public class Player : Character
 
     private void UpdateLv()
     {
+        //요구 경험치 계산
         int requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
+        int previousLv = lv;
 
         while (requiredExpForLvUP > 0 && exp >= requiredExpForLvUP)
         {
+            //경험치와 레벨 처리
             exp -= requiredExpForLvUP;
             lv++;
 
             //10만큼 회복.
             Heal(10);
 
-
-            UpdateLV_UI();
-
-            //레벨업 이벤트 발생.
-            PlayerEvent.PlayerLevelUp();
+            
+            //이거를 다시 계산할 필요가 있나? 있지. 2번 연속으로 레벨업을 한다면?
             requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
+        }
+        if (previousLv < lv)
+        {
+            UpdateLV_UI(lv - previousLv);
+            //레벨업 이벤트 발생.
+            //이벤트를 중복 발생시켜야할듯?
+            PlayerEvent.PlayerLevelUp(lv - previousLv);
         }
     }
 
-    private void UpdateLV_UI()
+    private void UpdateLV_UI(int levelDifference = 0)
     {
         if (lvText != null) lvText.text = "Lv." + lv;
+        if (levelDifference > 0)
+        {
+            Debug.Log($"레벨업! {levelDifference}레벨 상승. 현재 레벨: {lv}");
+        }
     }
     #endregion
 

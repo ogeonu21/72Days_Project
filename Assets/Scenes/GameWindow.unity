@@ -448,7 +448,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 964507477}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: EventExecute
+        m_MethodName: StatUpEventExecute
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 4dadd6731b87ce748bfaf372cad08439, type: 2}
@@ -619,7 +619,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 964507477}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: EventExecute
+        m_MethodName: StatUpEventExecute
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 543a20beffda24d4ab5090012cbafe6f, type: 2}
@@ -11565,7 +11565,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 964507477}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: EventExecute
+        m_MethodName: StatUpEventExecute
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: e4797bbc9a369304bbf030dc472edb05, type: 2}

@@ -23,6 +23,9 @@ public class UIManager : SingleTon<UIManager>
     private LevelUpModal levelUpModal;
     private CharacterManager characterSource;
 
+    //플레이어의 레벨업 이벤트를 반복실행하기 위한 특별 변수. 레벨 변동량을 받아와서 eventExecute를 반복실행
+    private int levelDifference = 0;
+
     #region [UI 그룹]
     [Header("Level Up UI")]
     [SerializeField] private GameObject levelUpUI;
@@ -116,20 +119,33 @@ public class UIManager : SingleTon<UIManager>
     #endregion
 
     #region [Lv UI Control]
-    private void UpdateLevelUpUI()
+    private void UpdateLevelUpUI(int levelDifference)
     {
+        this.levelDifference = levelDifference;
         levelUpModal.Open();
     }
-
-    public void EventExecute(BaseEvent baseEvent)
+    //이게 왜 이벤트 UI에 연결되어있지?
+    public void StatUpEventExecute(BaseEvent baseEvent)
     {
         if (baseEvent == null)
         {
             Debug.LogWarning("[UIManager] 실행할 레벨업 이벤트가 없습니다.");
             return;
         }
-        levelUpModal.Close();
-        baseEvent.Execute();
+        //레벨 변동량이 1보다 큰지 체크. 레벨 변동량이 0보다 크다는 것은 해당 이벤트를 실행할 수 있는 권한이 있다는 의미.
+    
+        if (this.levelDifference > 0)
+        {
+            this.levelDifference--;
+            baseEvent.Execute();
+        }
+        //레벨 변동량이 0이라면, 즉 이벤트 실행 권한을 모두 소진했다면 창을 닫음.
+        if (this.levelDifference == 0)
+        {
+            levelUpModal.Close();   
+        }
+        //이런 시발! 시간 스케일링 때문에 실행이 안되는 것이었나!
+        
         
     }
     #endregion
