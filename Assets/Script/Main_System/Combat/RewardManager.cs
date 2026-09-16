@@ -23,11 +23,16 @@ public class RewardManager : SingleTon<RewardManager>
         player.GetExp(enemy.GetExpReward());
         CurrencyManager.Instance.Increase("Gold", enemy.dropGold);
 
-        if(CalculateFunction.Roll(
-            enemy.itemDropRate))
+        if(CalculateFunction.Roll(enemy.itemDropRate))
         {
-            yield return GameEvent.OnNodeTextUpdate($"당신은 보상으로 {enemy.dropItem.itemName}을 얻었다.");
-            InventoryManager.Instance.AddToInventory(enemy.dropItem);
+            if (InventoryManager.Instance.isInventoryPull)
+            {
+                yield return GameEvent.OnNodeTextUpdate($"배낭이 꽉 차 더 이상 아이템을 얻을 수 없다.");
+            }
+            else{
+                yield return GameEvent.OnNodeTextUpdate($"당신은 보상으로 {enemy.dropItem.itemName}을 얻었다.");
+                InventoryManager.Instance.AddToInventory(enemy.dropItem);
+            }
             yield return StartCoroutine(WaitForClick.WaitClick());
 
         }

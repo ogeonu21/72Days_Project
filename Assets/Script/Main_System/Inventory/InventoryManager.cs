@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryManager : SingleTon<InventoryManager>
 {
     public List<BaseItem> inventoryItems = new List<BaseItem>();
+    private int maxInventorySlot = 20;
+    public bool isInventoryPull;
 
     protected override void Awake()
     {
@@ -18,13 +21,24 @@ public class InventoryManager : SingleTon<InventoryManager>
 
     public void AddToInventory(BaseItem item)
     {
-        if (inventoryItems.Contains(item))
+        //아이템을 이미 보유하고 있고, 사용성 아이템일때.
+        if (inventoryItems.Contains(item) && item.isConsumable)
         {
-            Debug.Log("<color=green>[Inventory] </color>이미 인벤토리에 존재하는 아이템입니다.");
+            ConsumableItem consumableItem = item as ConsumableItem;
+            consumableItem.quantity++;
             return;
         }
+
+        //인벤토리가 꽉차있다면
+        if(isInventoryPull){
+            Debug.Log("<color=green>[Inventory] </color>인벤토리가 꽉 차 더이상 아이템을 획득할 수 없습니다.");
+            return;
+        }
+
         inventoryItems.Add(item);
-        Debug.Log($"<color=green>[Inventory] </color>현재 인벤토리에 들어있는 아이템은 {string.Join(", ", inventoryItems.ConvertAll(i => i.itemName))}입니다.");
+
+        isInventoryPull = (inventoryItems.Count == maxInventorySlot) ? true : false;
+        //인벤토리UI 업데이트
     }
 
     public void RemoveFromInventory(BaseItem item)
@@ -38,6 +52,14 @@ public class InventoryManager : SingleTon<InventoryManager>
         {
             Debug.Log("<color=green>[Inventory] </color>인벤토리에 존재하지 않는 아이템입니다.");
         }
+
+        isInventoryPull = (inventoryItems.Count == maxInventorySlot) ? true : false;
+        //인벤토리UI 업데이트
+    }
+
+    public void UpdateItemUI(BaseItem item)
+    {
+        
     }
 
 }
