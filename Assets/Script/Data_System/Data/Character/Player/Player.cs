@@ -1,8 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System.Security.AccessControl;
 
 public class Player : Character
 {
@@ -17,7 +14,21 @@ public class Player : Character
     public int lv;
 
     //장비 관련 - 추후 구현 예정
-    public EquipmentData equipmentData; 
+    public EquipmentData equipmentData = new EquipmentData();
+    public int tendency { get; private set; }
+    public event Action<int> TendencyChanged;
+
+    public void ChangeTendency(int amount)
+    {
+        tendency += amount;
+        TendencyChanged?.Invoke(tendency);
+    }
+
+    public void ResetTendency()
+    {
+        tendency = 0;
+        TendencyChanged?.Invoke(tendency);
+    }
 
     #endregion
 
@@ -27,20 +38,7 @@ public class Player : Character
     #region [Initialize]
     public void InitializeFromData(PlayerData data)
     {
-        if (data == null) return;
-
-        ID = string.IsNullOrWhiteSpace(data.id) ? ID : data.id;
-        characterName = string.IsNullOrWhiteSpace(data.displayName) ? characterName : data.displayName;
-
-        baseStats = data.baseStats;
-        tuningStats = data.tuningStats;
-
-        exp = data.exp;
-        lv = data.lv;
-
-        UpdateStats();
-        SetCurrentHPAndNotify(MaxHP);
-        UpdateLV_UI();
+        InitializePlayer(data, false);
     }
 
 
@@ -48,19 +46,25 @@ public class Player : Character
 
     public void LoadFromData(PlayerData data)
     {
-        if (data == null) return;
+        InitializePlayer(data, true);
+    }
 
-        ID = string.IsNullOrWhiteSpace(data.id) ? ID : data.id;
-        characterName = string.IsNullOrWhiteSpace(data.displayName) ? characterName : data.displayName;
-
-        baseStats = data.baseStats;
-        tuningStats = data.tuningStats;
-
-        exp = data.exp;
-        lv = data.lv;
-
+    private void InitializePlayer(PlayerData data, bool restoreHealth)
+    {
+        if (data == null) throw new ArgumentNullException(nameof(data));
+        InitializeCharacter(data.id, data.displayName, data.baseStats, data.tuningStats);
+        exp = Mathf.Max(0, data.exp);
+        lv = Mathf.Max(1, data.lv);
+        tendency = data.tendency;
+        equipmentData = new EquipmentData
+        {
+            weaponItem = data.equipmentData?.weaponItem,
+            armorItem = data.equipmentData?.armorItem,
+            accessoryItem = data.equipmentData?.accessoryItem
+        };
+        // 저장된 tuningStats는 이미 장비 보정을 포함하므로 로드 시 중복 가산하지 않는다.
         UpdateStats();
-        SetCurrentHPAndNotify(data.currentHP);
+        SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
         UpdateLV_UI();
     }
     #endregion
@@ -80,6 +84,13 @@ public class Player : Character
         data.currentHP = this.currentHP;
         data.exp = this.exp;
         data.lv = this.lv;
+        data.tendency = tendency;
+        data.equipmentData = new EquipmentData
+        {
+            weaponItem = equipmentData?.weaponItem,
+            armorItem = equipmentData?.armorItem,
+            accessoryItem = equipmentData?.accessoryItem
+        };
 
         return data;
     }
@@ -87,9 +98,16 @@ public class Player : Character
 
     #region [Override]
 
+    protected override void OnStatsChanged()
+    {
+        base.OnStatsChanged();
+        PlayerEvent.OnStatsChanged();
+    }
+
     //데미지 피격 함수.
     public override void TakeDamage(int amount)
     {
+        if (IsDead || amount <= 0) return;
         base.TakeDamage(amount);
 
         GameEvent.OnTakeDamage(currentHP, MaxHP);
@@ -101,6 +119,7 @@ public class Player : Character
     //경험치를 올리는 함수.
     public void GetExp(int exp)
     {
+        if (exp <= 0) return;
         this.exp += exp;
         UpdateLv();
     }
@@ -110,7 +129,7 @@ public class Player : Character
     {
         int requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
 
-        if (exp >= requiredExpForLvUP)
+        while (requiredExpForLvUP > 0 && exp >= requiredExpForLvUP)
         {
             exp -= requiredExpForLvUP;
             lv++;
@@ -123,21 +142,30 @@ public class Player : Character
 
             //레벨업 이벤트 발생.
             PlayerEvent.PlayerLevelUp();
+            requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
         }
     }
 
     private void UpdateLV_UI()
     {
-        lvText.text = "Lv." + lv;
+        if (lvText != null) lvText.text = "Lv." + lv;
     }
     #endregion
 
     #region [Equipment Control]
     public void EquipItem(EquipmentItem item)
     {
-        if (item == null)
+        if (item == null || item.durability <= 0)
         {
             Debug.LogWarning("장착할 아이템이 없습니다.");
+            return;
+        }
+        if (equipmentData == null) equipmentData = new EquipmentData();
+        if ((item.itemCategory == ItemCategory.Weapon && !(item is WeaponItem)) ||
+            (item.itemCategory == ItemCategory.Armor && !(item is ArmorItem)) ||
+            (item.itemCategory == ItemCategory.Accessory && !(item is AccessoryItem)))
+        {
+            Debug.LogWarning("장비 종류와 실제 데이터 타입이 일치하지 않습니다.");
             return;
         }
         //장착 아이템 정보 업데이트.
@@ -184,8 +212,10 @@ public class Player : Character
 
     public void RestoreEquipment(EquipmentData restoredEquipment)
     {
+        int savedHP = currentHP;
         equipmentData = restoredEquipment ?? new EquipmentData();
         UpdateTuningStats();
+        SetCurrentHPAndNotify(savedHP);
     }
 
     #endregion
@@ -193,14 +223,14 @@ public class Player : Character
     #region [Tuning Control]
     public override void UpdateTuningStats()
     {
+        if (equipmentData == null) equipmentData = new EquipmentData();
         //장비 스탯 적용
         tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.attackBonus : 0;
         tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.hpBonus : 0;
         tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.dodgeBonus : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.dodgeBonus : 0);
 
         //특수 효과에 따른 스탯 조정.
-        tuningStats.attackBonus = tuningStats.attackBonus + (EffectTurn[0] > 0 ? -5 : 0);
-        tuningStats.dodgeBonus = tuningStats.dodgeBonus + (EffectTurn[1] > 0 ? -0.05f : 0);
+        tuningStats = ApplyStatusEffects(tuningStats);
 
         //최종 스탯 업데이트.
         UpdateStats();

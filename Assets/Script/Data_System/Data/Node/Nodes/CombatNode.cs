@@ -10,5 +10,5 @@ public class CombatNode : Node
     public string combatEnemyID;
     public Node successNode;
     public Node failureNode;
-    public EnemyDefinition enemyData;
+    public EnemyData enemyData;
 }

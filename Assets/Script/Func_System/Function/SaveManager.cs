@@ -36,20 +36,7 @@ public class SaveManager : SingleTon<SaveManager>
 
         try
         {
-            data = JsonUtility.FromJson<SaveGameData>(File.ReadAllText(savePath));
-            if (data == null || data.version <= 0)
-            {
-                error = "지원하지 않는 이전 저장 형식입니다. 새 게임을 시작한 뒤 다시 저장해 주세요.";
-                return false;
-            }
-
-            if (data.version != SaveGameData.CurrentVersion)
-            {
-                error = $"지원하지 않는 저장 버전입니다. (파일: {data.version}, 지원: {SaveGameData.CurrentVersion})";
-                return false;
-            }
-
-            return true;
+            return SaveGameData.TryDeserialize(File.ReadAllText(savePath), out data, out error);
         }
         catch (Exception exception)
         {
@@ -59,12 +46,11 @@ public class SaveManager : SingleTon<SaveManager>
     }
 
     public bool TryRestoreGame(out PlayerData playerData, out ItemData itemData, out List<CurrencyData> currencies,
-        out int goodAndEvil, out Node currentNode, out EquipmentData equipmentData, out string error)
+        out Node currentNode, out EquipmentData equipmentData, out string error)
     {
         playerData = null;
         itemData = null;
         currencies = null;
-        goodAndEvil = 0;
         currentNode = null;
         equipmentData = null;
 
@@ -83,7 +69,6 @@ public class SaveManager : SingleTon<SaveManager>
         playerData = data.player != null ? data.player.ToPlayerData() : new PlayerData();
         itemData = new ItemData { inventoryItems = LoadItems(data.inventoryItemIds) };
         currencies = LoadCurrencies(data.currencies);
-        goodAndEvil = data.goodAndEvil;
         equipmentData = new EquipmentData
         {
             weaponItem = LoadItem<WeaponItem>(data.weaponItemId),
@@ -113,7 +98,6 @@ public class SaveManager : SingleTon<SaveManager>
         SaveGameData data = new SaveGameData
         {
             currentNodeId = node.name,
-            goodAndEvil = GameManager.Instance != null ? GameManager.Instance.goodAndEvil : 0,
             player = PlayerSaveData.FromPlayerData(player.GetCurrentData()),
             weaponItemId = GetItemId(player.equipmentData != null ? player.equipmentData.weaponItem : null),
             armorItemId = GetItemId(player.equipmentData != null ? player.equipmentData.armorItem : null),

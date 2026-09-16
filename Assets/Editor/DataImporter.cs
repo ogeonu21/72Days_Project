@@ -71,7 +71,7 @@ public class DataImporter : EditorWindow
         foreach (var row in stats)
         {
             CheckId(row?.ID, enemyIds, "Characters");
-            CheckType("Characters", row.ID, typeof(EnemyDefinition));
+            CheckType("Characters", row.ID, typeof(EnemyData));
             if (float.IsNaN(row.ItemDropRate) || float.IsInfinity(row.ItemDropRate) || row.ItemDropRate < 0 || row.ItemDropRate > 1 || (row.ItemDropRate > 0 && string.IsNullOrWhiteSpace(row.DropItemID)))
                 throw new InvalidOperationException(row.ID + ": 드롭 확률 또는 아이템 설정 오류");
             if (!string.IsNullOrEmpty(row.DropItemID) && !itemIds.Contains(row.DropItemID) && Resources.Load<BaseItem>("Items/" + row.DropItemID) == null)
@@ -95,7 +95,7 @@ public class DataImporter : EditorWindow
             {
                 CheckLink(row.NodeID, row.SuccessNode, nodeIds);
                 CheckLink(row.NodeID, row.FailureNode, nodeIds);
-                if (string.IsNullOrWhiteSpace(row.CombatEnemyID) || (!enemyIds.Contains(row.CombatEnemyID) && Resources.Load<EnemyDefinition>("Characters/" + row.CombatEnemyID) == null))
+                if (string.IsNullOrWhiteSpace(row.CombatEnemyID) || (!enemyIds.Contains(row.CombatEnemyID) && Resources.Load<EnemyData>("Characters/" + row.CombatEnemyID) == null))
                     throw new InvalidOperationException(row.NodeID + ": 전투 적 누락");
             }
             if (row.NodeType != nameof(NodeType.StoryNode) && row.NodeType != nameof(NodeType.EventNode)) continue;
@@ -240,7 +240,7 @@ public class DataImporter : EditorWindow
                     mn.nextNode = FindNode(data.NextNode);
                     break;
                 case CombatNode cn:
-                    cn.enemyData = Resources.Load<EnemyDefinition>($"Characters/{data.CombatEnemyID}");
+                    cn.enemyData = Resources.Load<EnemyData>($"Characters/{data.CombatEnemyID}");
                     cn.successNode = FindNode(data.SuccessNode);
                     cn.failureNode = FindNode(data.FailureNode);
                     break;
@@ -325,10 +325,10 @@ public class DataImporter : EditorWindow
         if (string.IsNullOrEmpty(data.ID)) continue;
         
         string path = $"Assets/Resources/Characters/{data.ID}.asset";
-        EnemyDefinition def = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(path);
+        EnemyData def = AssetDatabase.LoadAssetAtPath<EnemyData>(path);
         if (def == null)
         {
-            def = ScriptableObject.CreateInstance<EnemyDefinition>();
+            def = ScriptableObject.CreateInstance<EnemyData>();
             AssetDatabase.CreateAsset(def, path);
             Undo.RegisterCreatedObjectUndo(def, "캐릭터 생성");
         }

@@ -14,6 +14,7 @@ public class PlayerData
     public int currentHP;
     public int exp;
     public int lv;
+    public int tendency;
 
     public PlayerData()
     {

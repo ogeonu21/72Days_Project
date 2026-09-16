@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 
@@ -53,6 +50,7 @@ public class Character : MonoBehaviour
 
     #region [Events]
     public event Action onDied;
+    public event Action StatsChanged;
     #endregion
 
     #region [initialize]
@@ -69,7 +67,7 @@ public class Character : MonoBehaviour
     //HP 수정하고 수정 사실을 알림.
     protected void SetCurrentHPAndNotify(int currentHP)
     {
-        this.currentHP = currentHP;
+        this.currentHP = Mathf.Clamp(currentHP, 0, MaxHP);
         UpdateHP_UI();
     }
     #endregion
@@ -79,15 +77,33 @@ public class Character : MonoBehaviour
     //장비 변경, 스탯 변동 시에 작동.
     public void UpdateStats()
     {
-        //스탯 변동시 체력회복을 위해서.
-        int tmpMaxHP = MaxHP;
+        int previousMaxHP = MaxHP;
+        bool wasAlive = !IsDead;
         stats = new Stats(baseStats, tuningStats);
-
-        //스탯 변화 이벤트 발생.
-        PlayerEvent.OnStatsChanged();
-        //최대체력 변화에 따른 현재체력 보정.
-        Heal(MaxHP - tmpMaxHP);
+        // 최대 체력 증가분만 보충하고 감소 시에는 새 상한으로 제한한다.
+        currentHP = wasAlive ? Mathf.Clamp(currentHP + Mathf.Max(0, MaxHP - previousMaxHP), 0, MaxHP) : 0;
         UpdateHP_UI();
+        OnStatsChanged();
+    }
+
+    protected virtual void OnStatsChanged() => StatsChanged?.Invoke();
+
+    protected void InitializeCharacter(string id, string displayName, BaseStats initialStats, TuningStats initialTuning)
+    {
+        if (!string.IsNullOrWhiteSpace(id)) ID = id;
+        if (!string.IsNullOrWhiteSpace(displayName)) characterName = displayName;
+        baseStats = initialStats;
+        tuningStats = initialTuning;
+        Array.Clear(EffectTurn, 0, EffectTurn.Length);
+        currentHP = 0;
+        stats = new Stats(baseStats, tuningStats);
+    }
+
+    protected TuningStats ApplyStatusEffects(TuningStats value)
+    {
+        if (EffectTurn[0] > 0) value.attackBonus -= 5;
+        if (EffectTurn[1] > 0) value.dodgeBonus -= 0.05f;
+        return value;
     }
 
     public virtual void UpdateTuningStats()
@@ -100,7 +116,7 @@ public class Character : MonoBehaviour
 
     public virtual void TakeDamage(int amount)
     {
-        if (IsDead) return;
+        if (IsDead || amount <= 0) return;
         currentHP = Mathf.Max(0, currentHP - amount);
 
         UpdateHP_UI();
@@ -115,8 +131,8 @@ public class Character : MonoBehaviour
     public virtual void Heal(int amount)
     {
         if (IsDead) return;
-        if (amount == 0) return;
-        currentHP = Mathf.Min(MaxHP, currentHP + Mathf.Max(0, amount));
+        if (amount <= 0) return;
+        currentHP = (int)Math.Min(MaxHP, (long)currentHP + amount);
         Debug.Log($"{amount}만큼의 체력을 회복하였다.");
 
         UpdateHP_UI();
@@ -203,7 +219,7 @@ public class Character : MonoBehaviour
     #region [UI Update]
     protected void UpdateHP_UI()
     {
-        nameText.text = characterName;
+        if (nameText != null) nameText.text = characterName;
 
         if (hpSlider != null && MaxHP > 0)
         {

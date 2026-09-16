@@ -20,9 +20,9 @@ public class MeetingEvent : BaseEvent
                 case meetingEventType.전투하기:
                     if (who.enemyData.type == "선")
                     {
-                        if (GameManager.Instance != null)
+                        if (CharacterManager.Instance != null && CharacterManager.Instance.currentPlayer != null)
                         {
-                            GameManager.Instance.ChangeGoodAndEvil(1);
+                            CharacterManager.Instance.currentPlayer.ChangeTendency(1);
                         }
                     }
                     Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}과(와) 전투를 시작합니다.");
@@ -36,9 +36,9 @@ public class MeetingEvent : BaseEvent
                 case meetingEventType.도와주기:
                     //조건 사용.
                     //보상 제공
-                    if (GameManager.Instance != null)
+                    if (CharacterManager.Instance != null && CharacterManager.Instance.currentPlayer != null)
                     {
-                        GameManager.Instance.ChangeGoodAndEvil(-1);
+                        CharacterManager.Instance.currentPlayer.ChangeTendency(-1);
                     }
                     Debug.Log($"<color=cyan>[Event] </color>{who.enemyData.name}을(를) 도와줍니다.");
                     NodeManager.Instance.GoToNode(nextNode);

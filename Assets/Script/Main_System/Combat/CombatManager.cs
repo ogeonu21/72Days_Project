@@ -83,11 +83,11 @@ public class CombatManager : SingleTon<CombatManager>
         
         if (node.enemyData != null)
         {
-            enemy?.InitializeFromDefinition(node.enemyData);
+            enemy?.InitializeFromData(node.enemyData);
         }
         else
         {
-            Debug.LogWarning($"{node.combatEnemyID} : EnemyDefinition UnFound");
+            Debug.LogWarning($"{node.combatEnemyID} : EnemyData UnFound");
         }
 
         CombatUIUpdate?.Invoke(player, enemy);

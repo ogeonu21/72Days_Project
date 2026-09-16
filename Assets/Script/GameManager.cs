@@ -17,7 +17,6 @@ public class GameManager : SingleTon<GameManager>
 
 
 
-    public int goodAndEvil { get; private set; }
     #endregion
 
     #region [initialization]
@@ -75,7 +74,6 @@ public class GameManager : SingleTon<GameManager>
                 //새로운 Data 생성.
                 playerData = new PlayerData();
                 itemData = new ItemData();
-                ResetGoodAndEvil();
                 //currencyManager 초기화 함수.
                 CurrencyManager.Instance.InitializeManager();
 
@@ -97,7 +95,6 @@ public class GameManager : SingleTon<GameManager>
                         out PlayerData loadedPlayerData,
                         out ItemData loadedItemData,
                         out List<CurrencyData> loadedCurrencies,
-                        out int loadedGoodAndEvil,
                         out Node loadedNode,
                         out EquipmentData loadedEquipmentData,
                         out string loadError))
@@ -108,8 +105,6 @@ public class GameManager : SingleTon<GameManager>
                     return;
                 }
 
-                ResetGoodAndEvil();
-                ChangeGoodAndEvil(loadedGoodAndEvil);
 
                 this.playerData = loadedPlayerData;
                 this.itemData = loadedItemData;
@@ -138,7 +133,6 @@ public class GameManager : SingleTon<GameManager>
                 
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 1);
-                CharacterManager.Instance.currentPlayer.RestoreEquipment(loadedEquipmentData);
                 InventoryManager.Instance.MakeNew(itemData);
                 NodeManager.Instance.GoToNode(loadedNode);
             }
@@ -165,17 +159,5 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [선행, 악행 수치 관리]
-    public void ChangeGoodAndEvil(int amount)
-    {
-        this.goodAndEvil += amount;
-        //
-    }
-    public void ResetGoodAndEvil()
-    {
-        this.goodAndEvil = 0;
-    }
-
-    #endregion
 
 }

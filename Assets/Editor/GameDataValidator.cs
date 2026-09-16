@@ -39,10 +39,10 @@ public sealed class GameDataValidator : IPreprocessBuildWithReport
             if (string.IsNullOrWhiteSpace(item.itemID) || !ids.Add(item.itemID)) errors.Add(path + ": 아이템 ID 누락/중복");
             if (item.name != item.itemID) errors.Add(path + ": 파일명과 아이템 ID 불일치");
         }
-        foreach (string guid in AssetDatabase.FindAssets("t:EnemyDefinition", new[] { "Assets/Resources/Characters" }))
+        foreach (string guid in AssetDatabase.FindAssets("t:EnemyData", new[] { "Assets/Resources/Characters" }))
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
-            var enemy = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(path);
+            var enemy = AssetDatabase.LoadAssetAtPath<EnemyData>(path);
             if (enemy.itemDropRate > 0 && enemy.dropItem == null) errors.Add(path + ": 드롭 확률은 있으나 아이템 누락");
         }
         return errors;
