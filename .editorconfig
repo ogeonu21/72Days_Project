@@ -1,0 +1,4 @@
+root = true
+
+[*.{cs,md,txt,json,xml,yaml,yml,shader,cginc,gradle,properties,asmdef,ps1,uxml,uss,csv,html,css,js}]
+charset = utf-8

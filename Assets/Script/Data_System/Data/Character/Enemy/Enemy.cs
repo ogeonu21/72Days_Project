@@ -1,22 +1,25 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 public class Enemy : Character
 {
+    public BaseItem dropItem;
+    public float itemDropRate;
+    public int dropGold;
+    private TuningStats definitionTuning;
+    private AreaData[] initialAreas;
 
-    //±»ÀÌ °Çµå·Á¾ß ÇÒ±î? ÀÌ´ë·Îµµ ÃæºĞÈ÷ ÀÛµ¿ÇÏ´Âµ¥...
-    //ÄÚµå È¿À²¼º°ú º¸±â ±ò²ûÇÑ°Å´Â ÅëÇÕÀÌ ¸Â±â´Â ÇÑµ¥...
-    public void InitializeFromDefinition(EnemyDefinition def)
+    public void InitializeFromData(EnemyData def)
     {
-        if (def == null) return;
+        if (def == null) throw new ArgumentNullException(nameof(def));
 
-        ID = string.IsNullOrWhiteSpace(def.id) ? ID : def.id;
-        characterName = string.IsNullOrWhiteSpace(def.displayName) ? characterName : def.displayName;
+        InitializeCharacter(def.id, def.displayName, def.baseStats, def.tuningStats);
+        definitionTuning = def.tuningStats;
 
-        baseStats = def.baseStats;
-        tuningStats = def.tuningStats;
+        //ë“œë ì•„ì´í…œê³¼ ë³´ìƒ ì„¤ì •;
+        dropItem = def.dropItem;
+        itemDropRate = dropItem != null ? Mathf.Clamp01(def.itemDropRate) : 0;
+        dropGold = def.dropGold;
 
         AreaDataReset();
 
@@ -26,39 +29,40 @@ public class Enemy : Character
         UpdateLV_UI();
     }
 
-    //°´Ã¼º° ÇÇ°İ È®·ü º¯µ¿À» À§ÇÑ ÇÔ¼ö.
+    //ê°ì²´ë³„ í”¼ê²© í™•ë¥  ë³€ë™ì„ ìœ„í•œ í•¨ìˆ˜.
     private void AreaDataReset()
     {
+        if (initialAreas == null) initialAreas = (AreaData[])areaDataDB.Clone();
+        areaDataDB = (AreaData[])initialAreas.Clone();
         for (int i = 0; i < areaDataDB.Length; i++)
         {
             areaDataDB[i].hitRate = areaDataDB[i].hitRate * UnityEngine.Random.Range(0.9f, 1.1f);
         }
     }
 
-    //º¸»ó Áö±ŞÀ» À§ÇÑ °æÇèÄ¡ Reward °è»ê.
+    //ë³´ìƒ ì§€ê¸‰ì„ ìœ„í•œ ê²½í—˜ì¹˜ Reward ê³„ì‚°.
     public int GetExpReward()
     {
         int x = Mathf.RoundToInt((baseStats.str + baseStats.dex + baseStats.con) / 3);
-        //°æÇèÄ¡ °è»ê½Ä.
+        //ê²½í—˜ì¹˜ ê³„ì‚°ì‹.
         return  Mathf.RoundToInt(Mathf.Pow(x + 10, 2) / 12 + 2 * (x - 9) + 19);
     }
 
-    //LV UI¸¦ ¾÷µ¥ÀÌÆ®ÇÏ´Â ÇÔ¼ö.
+    //LV UIë¥¼ ì—…ë°ì´íŠ¸í•˜ëŠ” í•¨ìˆ˜.
     public void UpdateLV_UI()
     {
-        //½ºÅÈ 1´ç ·¹º§ 1? ÀÌ°Å´Â Á¶Á¤ÀÌ ÇÊ¿äÇØº¸ÀÎ´Ù.
+        //ìŠ¤íƒ¯ 1ë‹¹ ë ˆë²¨ 1? ì´ê±°ëŠ” ì¡°ì •ì´ í•„ìš”í•´ë³´ì¸ë‹¤.
         int x = Mathf.RoundToInt((baseStats.str + baseStats.dex + baseStats.con));
 
-        lvText.text = "LV." + x;
+        if (lvText != null) lvText.text = "LV." + x;
     }
 
     public override void UpdateTuningStats()
     {
-        //Æ¯¼ö È¿°ú¿¡ µû¸¥ ½ºÅÈ Á¶Á¤.
-        tuningStats.attackBonus = (EffectTurn[0] > 0 ? -5 : 0);
-        tuningStats.dodgeBonus = (EffectTurn[1] > 0 ? -0.05f : 0);
+        //íŠ¹ìˆ˜ íš¨ê³¼ì— ë”°ë¥¸ ìŠ¤íƒ¯ ì¡°ì •.
+        tuningStats = ApplyStatusEffects(definitionTuning);
 
-        //ÃÖÁ¾ ½ºÅÈ ¾÷µ¥ÀÌÆ®.
+        //ìµœì¢… ìŠ¤íƒ¯ ì—…ë°ì´íŠ¸.
         UpdateStats();
     }
 }

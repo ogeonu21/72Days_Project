@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StoryManager : SingleTon<StoryManager>
 {
-    #region º¯¼ö±×·ì
+    #region ë³€ìˆ˜ê·¸ë£¹
     
 
     #endregion
@@ -15,8 +15,8 @@ public class StoryManager : SingleTon<StoryManager>
 
 
     #region [Progress Manage]
-   //½ºÅä¸® ¸Å´ÏÀú¿¡ ÀÖ¾î¾ß ÇÏ´Â °ÍÀÌ ÀÖ³ª?
-    //³ªÁß¿¡ ½ºÅä¸® ÀÌµ¿¿¡ ÀÖ¾î Á¦¾àÀ» °Å´Â ¿ëµµ·Î ÀÖ¾î¾ßÇÏ³ª?
+   //ìŠ¤í† ë¦¬ ë§¤ë‹ˆì €ì— ìˆì–´ì•¼ í•˜ëŠ” ê²ƒì´ ìˆë‚˜?
+    //ë‚˜ì¤‘ì— ìŠ¤í† ë¦¬ ì´ë™ì— ìˆì–´ ì œì•½ì„ ê±°ëŠ” ìš©ë„ë¡œ ìˆì–´ì•¼í•˜ë‚˜?
     #endregion
 
 

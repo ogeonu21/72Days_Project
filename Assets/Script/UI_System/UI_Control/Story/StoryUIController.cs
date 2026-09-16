@@ -8,17 +8,20 @@ public class StoryUIController : UIController, IUpdatableUI
 {
     public TMP_Text dialogueText;
     public Button[] choiceButtons;
+    private ChoiceListPresenter choiceListPresenter;
 
     protected override void OnEnable()
     {
         base.OnEnable();
         NodeText = dialogueText;
+        choiceListPresenter = choiceListPresenter ?? new ChoiceListPresenter(choiceButtons);
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
         NodeText = null;
+        choiceListPresenter?.Clear();
     }
 
     public void UpdateUI(Node node)
@@ -35,47 +38,21 @@ public class StoryUIController : UIController, IUpdatableUI
 
     public IEnumerator UpdateMainStoryNode(MainStoryNode node)
     {
-        foreach (var btn in choiceButtons)
-        {
-            btn.gameObject.SetActive(false);
-            btn.onClick.RemoveAllListeners(); // ±âÁ¸ ¸®½º³Ê Á¦°Å
-        }
+        choiceListPresenter.Clear();
 
         yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-        //¾ê´Â µû·Î MainStoryUIController³ª ±×·±°Å¸¦ ¸¸µé±â°¡ Èûµå³×.
-        NodeManager.Instance.GoToNode(node.nextNode);
+        //ì–˜ëŠ” ë”°ë¡œ MainStoryUIControllerë‚˜ ê·¸ëŸ°ê±°ë¥¼ ë§Œë“¤ê¸°ê°€ íž˜ë“œë„¤.
+        NodeManager.Instance.AdvanceMainStory(node);
     }
 
     public IEnumerator UpdateStoryNode(StoryNode node)
     {
 
-        foreach (var btn in choiceButtons)
-        {
-            btn.gameObject.SetActive(false);
-            btn.onClick.RemoveAllListeners(); // ±âÁ¸ ¸®½º³Ê Á¦°Å
-        }
-
-        //dialogue Text Ãâ·Â.
+        //dialogue Text ì¶œë ¥.
         yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
-
-        if (node.choices != null && node.choices.Count > 0)
-        {
-            for (int i = 0; i < node.choices.Count && i < choiceButtons.Length; i++)
-            {
-                if (node.choices[i].choiceText != "" || node.choices[i].nextNode != null)
-                {
-                    int index = i;
-                    var choice = node.choices[i];
-
-                    choiceButtons[i].gameObject.SetActive(true);
-                    choiceButtons[i].GetComponentInChildren<TMP_Text>().text = choice.choiceText;
-                    choiceButtons[i].onClick.AddListener(() => NodeManager.Instance.GoToNode(choice.nextNode));
-                }
-            }
-        }
+        choiceListPresenter.Present(node.choices, choice => NodeManager.Instance.SelectStoryChoice(choice));
     }
 }
-    

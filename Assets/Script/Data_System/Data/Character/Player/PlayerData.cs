@@ -8,18 +8,21 @@ public class PlayerData
 
     public BaseStats baseStats; // str, dex, con
     public TuningStats tuningStats;
+    public EquipmentData equipmentData;
 
-    // ÇöÀç »óÅÂ
+    // í˜„ì¬ ìƒíƒœ
     public int currentHP;
     public int exp;
     public int lv;
+    public int tendency;
 
     public PlayerData()
     {
         id = "Player";
-        displayName = "ÇÃ·¹ÀÌ¾î";
+        displayName = "í”Œë ˆì´ì–´";
         baseStats = new BaseStats(0, 0, 0);
         tuningStats = new TuningStats(0, 0, 0f, 0);
+        equipmentData = new EquipmentData();
 
         exp = 0;
         lv = 1;

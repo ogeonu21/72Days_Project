@@ -15,7 +15,7 @@ MonoBehaviour:
   nodeType: 2
   nodeName: Combat_01
   nodeMessage: "\uC804\uD22C\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uB2F9\uC2E0\uC758 \uC0C1\uB300\uB294
-    \uB178\uC219\uC790 \uAE40\uD5CC\uC77C\uC774\uB2E4. \uC0DD\uC874\uD558\uB77C."
+    \uB178\uC219\uC790 \uAE40\uD5CC\uC77C\uC774\uB2E4."
   surviveDate: 1
   worldLocation: 0
   combatEnemyID: E_000

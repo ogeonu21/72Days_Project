@@ -7,17 +7,16 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : SingleTon<GameManager>
 {
-    #region [º¯¼ö °ü¸®]
-    [Header("ÇÃ·¹ÀÌ¾î Á¤º¸")]
+    #region [ë³€ìˆ˜ ê´€ë¦¬]
+    [Header("í”Œë ˆì´ì–´ ì •ë³´")]
     public PlayerData playerData;
     public ItemData itemData;
 
-    [Header("°ÔÀÓ »óÅÂ Á¤º¸")]
+    [Header("ê²Œì„ ìƒíƒœ ì •ë³´")]
     private GameState currentState;
 
 
 
-    public int goodAndEvil { get; private set; }
     #endregion
 
     #region [initialization]
@@ -29,7 +28,7 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [ÀÌº¥Æ® °ü¸®]
+    #region [ì´ë²¤íŠ¸ ê´€ë¦¬]
     public event Action<GameState> OnGameStateChanged;
 
     void OnEnable()
@@ -43,7 +42,7 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [ÁøÇà °ü¸®]
+    #region [ì§„í–‰ ê´€ë¦¬]
     public void BackToMain()
     {
         GameEvent.SaveGame();
@@ -69,20 +68,19 @@ public class GameManager : SingleTon<GameManager>
         {
             if (currentState == GameState.New)
             {
-                Debug.Log("»õ·Î¿î ¼¼°è¸¦ ½ÃÀÛÇÏ±â À§ÇØ ÇÙÀ» ¶³±¸´Â ÁßÀÔ´Ï´Ù...");
-                //ÄÚ·çÆ¾À» ÀÌ¿ëÇÑ ·Îµù¹Ù Ãß°¡µµ °¡´É.
+                Debug.Log("<color=red>[GameManager] </color>ìƒˆë¡œìš´ ì„¸ê³„ë¥¼ ì‹œì‘í•˜ê¸° ìœ„í•´ í•µì„ ë–¨êµ¬ëŠ” ì¤‘ì…ë‹ˆë‹¤...");
+                //ì½”ë£¨í‹´ì„ ì´ìš©í•œ ë¡œë”©ë°” ì¶”ê°€ë„ ê°€ëŠ¥.
 
-                //»õ·Î¿î Data »ı¼º.
+                //ìƒˆë¡œìš´ Data ìƒì„±.
                 playerData = new PlayerData();
                 itemData = new ItemData();
-                ResetGoodAndEvil();
-                //currencyManager ÃÊ±âÈ­ ÇÔ¼ö.
+                //currencyManager ì´ˆê¸°í™” í•¨ìˆ˜.
                 CurrencyManager.Instance.InitializeManager();
 
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 0);
-                InventoryManager.Instance.MakeNew(itemData); //???? ÀÌ°Å ¾ğÁ¦ ¸¸µé¾úÁö??
-                //½ÃÀÛ ³ëµå °íÁ¤. ÀÌ°Íµµ ¼öÁ¤ÇØ¾ßÇÔ.
+                InventoryManager.Instance.MakeNew(itemData); //???? ì´ê±° ì–¸ì œ ë§Œë“¤ì—ˆì§€??
+                //ì‹œì‘ ë…¸ë“œ ê³ ì •. ì´ê²ƒë„ ìˆ˜ì •í•´ì•¼í•¨.
                 var node = Resources.Load<Node>($"Nodes/Main_01");
                 
 
@@ -90,35 +88,45 @@ public class GameManager : SingleTon<GameManager>
             }
             else if (currentState == GameState.Load)
             {
-                Debug.Log("ÀúÀåµÈ ¼¼°è¸¦ ºÒ·¯¿À´Â ÁßÀÔ´Ï´Ù...");
+                Debug.Log("<color=red>[GameManager] </color>ì €ì¥ëœ ì„¸ê³„ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘ì…ë‹ˆë‹¤...");
 
-                //ÀúÀåµÈ Data ·Îµå
-                SaveData data = SaveManager.Instance.LoadData();
-                ResetGoodAndEvil();
-                ChangeGoodAndEvil(data.goodAndEvil);
+                //ì €ì¥ëœ Data ë¡œë“œ
+                if (!SaveManager.Instance.TryRestoreGame(
+                        out PlayerData loadedPlayerData,
+                        out ItemData loadedItemData,
+                        out List<CurrencyData> loadedCurrencies,
+                        out Node loadedNode,
+                        out EquipmentData loadedEquipmentData,
+                        out string loadError))
+                {
+                    Debug.LogWarning($"[GameManager] ì €ì¥ ê²Œì„ì„ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤: {loadError}");
+                    UpdateGameState(GameState.Main);
+                    SceneManager.LoadScene("MainWindow");
+                    return;
+                }
 
-                this.playerData = data.playerData;
-                this.itemData = data.itemData;
+
+                this.playerData = loadedPlayerData;
+                this.itemData = loadedItemData;
                 
-                CurrencyManager.Instance.currencyList = data.currencyList;
+                CurrencyManager.Instance.currencyList = loadedCurrencies;
 
-                Debug.Log($"{CurrencyManager.Instance.GetAmount("Gold")}°¡ Á¸ÀçÇÔÀÌ È®ÀÎ!");
-                Debug.Log(data.currencyList.Count);
+                Debug.Log($"<color=red>[GameManager] </color> ëˆ {CurrencyManager.Instance.GetAmount("Gold")} ì›ì´ ì¡´ì¬í•¨ì´ í™•ì¸ë˜ì—ˆìŠµë‹ˆë‹¤");
 
-                foreach (CurrencyData d in data.currencyList)
+                foreach (CurrencyData d in loadedCurrencies)
                 {
                     if (d == null)
                     {
-                        Debug.Log("°¨ÁöµÇÁö ¾ÊÀ½.");
+                        Debug.Log("<color=red>[GameManager] </color>ê°ì§€ë˜ì§€ ì•ŠìŒ.");
                     }
-                    Debug.Log($"{d.Name}ÀÌ¸§À» Áö´Ñ ÀçÈ­¸¦ È£ÃâÇÏ¿´´Ù. ÀÜ¾× : {d.Amount}");
-                    GameEvent.CurrencyChanged(d);
+                    Debug.Log($"<color=red>[GameManager] </color>{d.Name}ì´ë¦„ì„ ì§€ë‹Œ ì¬í™”ë¥¼ í˜¸ì¶œí•˜ì˜€ë‹¤. ì”ì•¡ : {d.Amount}ì›");
+                    CurrencyEvent.CurrencyChanged(d);
                 }
 
 
                 if (playerData.currentHP == 0)
                 {
-                    Debug.Log("Á×Àº ÇÃ·¹ÀÌ¾î¸¦ ºÒ·¯¿Ã ¼ö´Â ¾ø´Ù.");
+                    Debug.Log("<color=red>[GameManager] </color>ì£½ì€ í”Œë ˆì´ì–´ë¥¼ ë¶ˆëŸ¬ì˜¬ ìˆ˜ëŠ” ì—†ë‹¤.");
                     BackToMain();
                     return;
                 }
@@ -126,37 +134,24 @@ public class GameManager : SingleTon<GameManager>
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 1);
                 InventoryManager.Instance.MakeNew(itemData);
-                NodeManager.Instance.GoToNode(data.currentNode);
+                NodeManager.Instance.GoToNode(loadedNode);
             }
         }
     }
 
-    // public void SaveGame()
-    // {
-    //     SaveData data = new SaveData();
-
-    //     data.playerData = CharacterManagerInstance.currentPlayer.GetCurrentData();
-    //     data.currentNode = NodeManager.Instance.currentNode;
-    //     data.goodAndEvil = GameManager.goodAndEvil;
-    //     data.currencyList = CurrencyManager.Instance.currencyList;
-    //     data.itemData = InventoryManager.Instance.inventoryItems;
-
-    //     SaveManager.Instance.SaveData(data);
-    // }
-
     public void QuitGame()
     {
-        Debug.Log("°ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù...");
+        Debug.Log("<color=red>[GameManager] </color>ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤...");
 
-        //ÃßÈÄ °¡´ÉÇÏ´Ù¸é ¼¼ÀÌºê ¿Ï·á ÈÄ Á¾·áÇÒ ¼ö ÀÖµµ·Ï º¯°æ.
+        //ì¶”í›„ ê°€ëŠ¥í•˜ë‹¤ë©´ ì„¸ì´ë¸Œ ì™„ë£Œ í›„ ì¢…ë£Œí•  ìˆ˜ ìˆë„ë¡ ë³€ê²½.
         Application.Quit();
     }
 
 
     #endregion
 
-    #region [GameState °ü¸®]
-    //°ÔÀÓ State °ü¸®
+    #region [GameState ê´€ë¦¬]
+    //ê²Œì„ State ê´€ë¦¬
     public void UpdateGameState(GameState newState)
     {
         currentState = newState;
@@ -164,17 +159,5 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [¼±Çà, ¾ÇÇà ¼öÄ¡ °ü¸®]
-    public void ChangeGoodAndEvil(int amount)
-    {
-        this.goodAndEvil += amount;
-        //
-    }
-    public void ResetGoodAndEvil()
-    {
-        this.goodAndEvil = 0;
-    }
-
-    #endregion
 
 }

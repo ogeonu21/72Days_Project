@@ -4,33 +4,57 @@ using UnityEngine;
 
 public class CameraResolution : MonoBehaviour
 {
+    private Camera targetCamera;
+    private int lastWidth;
+    private int lastHeight;
+
     private void Awake()
     {
-        // ÇöÀç GameObject¿¡ ºÎÂøµÈ Camera ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿À´Â ÄÚµå
-        Camera cam = GetComponent<Camera>();
+        targetCamera = GetComponent<Camera>();
+        if (targetCamera == null)
+        {
+            Debug.LogError("[CameraResolution] Camera ì°¸ì¡°ê°€ ì—†ìŠµë‹ˆë‹¤.", this);
+            enabled = false;
+            return;
+        }
+        UpdateViewport();
+    }
 
-        // ÇöÀç Ä«¸Þ¶óÀÇ ºäÆ÷Æ® ¿µ¿ªÀ» °¡Á®¿À´Â ÄÚµå
-        Rect viewportRect = cam.rect;
+    private void Update()
+    {
+        if (lastWidth != Screen.width || lastHeight != Screen.height) UpdateViewport();
+    }
 
-        // ¿øÇÏ´Â °¡·Î ¼¼·Î ºñÀ²À» °è»êÇÏ´Â ÄÚµå
+    private void UpdateViewport()
+    {
+        if (Screen.width <= 0 || Screen.height <= 0) return;
+        lastWidth = Screen.width;
+        lastHeight = Screen.height;
+        // í˜„ìž¬ GameObjectì— ë¶€ì°©ëœ Camera ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì ¸ì˜¤ëŠ” ì½”ë“œ
+        Camera cam = targetCamera;
+
+        // í˜„ìž¬ ì¹´ë©”ë¼ì˜ ë·°í¬íŠ¸ ì˜ì—­ì„ ê°€ì ¸ì˜¤ëŠ” ì½”ë“œ
+        Rect viewportRect = new Rect(0, 0, 1, 1);
+
+        // ì›í•˜ëŠ” ê°€ë¡œ ì„¸ë¡œ ë¹„ìœ¨ì„ ê³„ì‚°í•˜ëŠ” ì½”ë“œ
         float screenAspectRatio = (float)Screen.width / Screen.height;
-        float targetAspectRatio = 9f / 16f; // ¿øÇÏ´Â °íÁ¤ ºñÀ² ¼³Á¤ (¿¹: 16:9)
+        float targetAspectRatio = 9f / 16f; // ì›í•˜ëŠ” ê³ ì • ë¹„ìœ¨ ì„¤ì • (ì˜ˆ: 16:9)
 
-        // È­¸é °¡·Î ¼¼·Î ºñÀ²¿¡ µû¶ó ºäÆ÷Æ® ¿µ¿ªÀ» Á¶Á¤ÇÏ´Â ÄÚµå
+        // í™”ë©´ ê°€ë¡œ ì„¸ë¡œ ë¹„ìœ¨ì— ë”°ë¼ ë·°í¬íŠ¸ ì˜ì—­ì„ ì¡°ì •í•˜ëŠ” ì½”ë“œ
         if (screenAspectRatio < targetAspectRatio)
         {
-            // È­¸éÀÌ ´õ '³ô´Ù'¸é (¼¼·Î°¡ ´õ ±æ´Ù¸é) ¼¼·Î¸¦ Á¶ÀýÇÏ´Â ÄÚµå
+            // í™”ë©´ì´ ë” 'ë†’ë‹¤'ë©´ (ì„¸ë¡œê°€ ë” ê¸¸ë‹¤ë©´) ì„¸ë¡œë¥¼ ì¡°ì ˆí•˜ëŠ” ì½”ë“œ
             viewportRect.height = screenAspectRatio / targetAspectRatio;
             viewportRect.y = (1f - viewportRect.height) / 2f;
         }
         else
         {
-            // È­¸éÀÌ ´õ '³Ð´Ù'¸é (°¡·Î°¡ ´õ ±æ´Ù¸é) °¡·Î¸¦ Á¶ÀýÇÏ´Â ÄÚµå.
+            // í™”ë©´ì´ ë” 'ë„“ë‹¤'ë©´ (ê°€ë¡œê°€ ë” ê¸¸ë‹¤ë©´) ê°€ë¡œë¥¼ ì¡°ì ˆí•˜ëŠ” ì½”ë“œ.
             viewportRect.width = targetAspectRatio / screenAspectRatio;
             viewportRect.x = (1f - viewportRect.width) / 2f;
         }
 
-        // Á¶Á¤µÈ ºäÆ÷Æ® ¿µ¿ªÀ» Ä«¸Þ¶ó¿¡ ¼³Á¤ÇÏ´Â ÄÚµå
+        // ì¡°ì •ëœ ë·°í¬íŠ¸ ì˜ì—­ì„ ì¹´ë©”ë¼ì— ì„¤ì •í•˜ëŠ” ì½”ë“œ
         cam.rect = viewportRect;
     }
 }

@@ -19,7 +19,11 @@ MonoBehaviour:
     str: 2
     dex: 1
     con: 1
-  attackBonus: 1
-  hpBonus: 3
-  dodgeBonus: 0.07
-  rangeBonus: 0
+  tuningStats:
+    attackBonus: 1
+    hpBonus: 3
+    dodgeBonus: 0
+    rangeBonus: 0
+  dropItem: {fileID: 11400000, guid: 07c5ad52308c38f4ca53e7434bd269f0, type: 2}
+  itemDropRate: 0.6
+  dropGold: 100

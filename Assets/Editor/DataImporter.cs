@@ -1,460 +1,446 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Networking;
 using System.IO;
 using System.Collections.Generic;
-using System.Globalization;
+using System;
+using System.Threading.Tasks;
 
 public class DataImporter : EditorWindow
 {
-    
-    private static TextAsset statsCSVFile;
-    private static TextAsset nodeCSVFile;
-    private static string path = "Assets/Resources/";
-    private static string statsCSVFileName = "StatsData.csv";
-    private static string nodeCSVFileName = "NodeData.csv";
-    private static Dictionary<string, Node> nodeMap = new Dictionary<string, Node>();
+    private const string baseURL = "https://script.google.com/macros/s/AKfycbzd47uZXwCe472lYE247EzI4jabj9fhZOIRgXUVL6f74683LiMpo7T4NnMFDc2G76VG-Q/exec";    
+    private static Dictionary<string, Node> nodeMap = new Dictionary<string, Node>(StringComparer.OrdinalIgnoreCase);
 
-    [MenuItem("Tools/Import CSV")]
-    public static void ImportCSV()
+    [MenuItem("Tools/Update All Game Data")]
+    public static async void UpdateAllGameData()
     {
-        // 1. path¿Í fileName º¯¼ö°¡ staticÀÌ¹Ç·Î Á¢±Ù °¡´É
-        statsCSVFile = AssetDatabase.LoadAssetAtPath<TextAsset>(Path.Combine(path, statsCSVFileName));
-        if (statsCSVFile != null)
+        if (importing || EditorApplication.isPlayingOrWillChangePlaymode) return;
+        importing = true;
+        try
         {
-            ImportStatsCSV(statsCSVFile.text);
-        }
-        else
-        {
-            Debug.Log("½ºÅÈ CSV ÆÄÀÏÀÌ ¾ø½À´Ï´Ù. ÀÌ¸§ÀÌ " + statsCSVFileName + "ÀÎÁö È®ÀÎÇÏ¼¼¿ä.");
-        }
-        nodeCSVFile = AssetDatabase.LoadAssetAtPath<TextAsset>(Path.Combine(path, nodeCSVFileName));
-        if (nodeCSVFile != null)
-        {
-            ImportNodeCSV(nodeCSVFile.text);
-        }
-        else
-        {
-            Debug.Log("³ëµå CSV ÆÄÀÏÀÌ ¾ø½À´Ï´Ù. ÀÌ¸§ÀÌ " + nodeCSVFileName + "ÀÎÁö È®ÀÎÇÏ¼¼¿ä.");
-        }
-    }
-
-
-    #region [Stats Import]
-    private static void ImportStatsCSV(string csv)
-    {
-        string[] lines = csv.Split('\n');
-
-        for (int i = 3; i < lines.Length; i++) // Ã¹ ÁÙ°ú µÑÂ° ÁÙÀº Á¦¿Ü
-        {
-            string line = lines[i].Trim();
-            if (string.IsNullOrWhiteSpace(line)) continue;
-
-            string[] parts = line.Split(',');
-            if (parts.Length < 10)
-            {
-                Debug.LogWarning($"¶óÀÎ ¹«½ÃµÊ (µ¥ÀÌÅÍ ºÎÁ·): {line}");
-                continue;
-            }
-
-            #region [Data Parsing]
-            string type = parts[0].Trim();
-            string id = parts[1].Trim();
-            string name = parts[2].Trim();
-
-            if (string.IsNullOrWhiteSpace(id)) continue;
-
-            // ¾ÈÀüÇÏ°Ô ÆÄ½Ì
-            // ¹®È­±Ç¿¡ µû¸¥ ¼Ò¼öÁ¡(´å/ÄŞ¸¶) ¹®Á¦¸¦ ÇØ°áÇÏ·Á¸é InvariantCulture¸¦ »ç¿ëÇÏ´Â °ÍÀÌ ÁÁ½À´Ï´Ù.
-            int.TryParse(parts[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int str);
-            int.TryParse(parts[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int dex);
-            int.TryParse(parts[5], NumberStyles.Integer, CultureInfo.InvariantCulture, out int con);
-            int.TryParse(parts[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int attackBonus);
-            int.TryParse(parts[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out int hpBonus);
-            // float ÆÄ½Ì ½Ã CultureInfo.InvariantCulture¸¦ Àû¿ëÇÏ¿© ¼Ò¼öÁ¡ ¿À·ù ¹æÁö
-            float.TryParse(parts[8], NumberStyles.Float, CultureInfo.InvariantCulture, out float dodgeBonus);
-            int.TryParse(parts[9], NumberStyles.Integer, CultureInfo.InvariantCulture, out int rangeBonus);
-            #endregion
-
-            #region [Update SO]
-            string soPath = $"Assets/Resources/Characters/{id}.asset"; // Áö¿ª º¯¼ö ÀÌ¸§ º¯°æ (¸â¹ö path¿ÍÀÇ È¥µ¿ ¹æÁö)
-            var def = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(soPath);
-            bool created = false;
-            if (def == null)
-            {
-                // EnemyDefinition, BaseStats, TuningStats Å¸ÀÔÀÌ ÇÁ·ÎÁ§Æ®¿¡ Á¤ÀÇµÇ¾î ÀÖ¾î¾ß ÇÔ.
-                def = ScriptableObject.CreateInstance<EnemyDefinition>();
-                created = true;
-            }
-
-            // def.baseStats ¹× def.tuningStats¿¡ ´ëÇÑ Å¬·¡½º Á¤ÀÇ°¡ ÇÊ¿ä
-            def.type = type;
-            def.id = id;
-            def.displayName = string.IsNullOrEmpty(name) ? id : name;
-            def.baseStats = new BaseStats(str, dex, con);
-            def.tuningStats = new TuningStats(attackBonus, hpBonus, dodgeBonus, rangeBonus);
-            #endregion
-
-            if (created) AssetDatabase.CreateAsset(def, soPath);
-            else EditorUtility.SetDirty(def);
-
-        }
-
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-        Debug.Log("CSV µ¥ÀÌÅÍ import ¿Ï·á.");
-    }
-
-    #endregion
-
-    #region [Nodes Import]
-    
-    private static void ImportNodeCSV(string csv)
-    {
-        // ±âÁ¸ ³ëµå ¿¡¼Â »èÁ¦
-        string[] oldGuids = AssetDatabase.FindAssets("t:Node", new[] { "Assets/Resources/Nodes" });
-        foreach (string guid in oldGuids)
-        {
-            string oldPath = AssetDatabase.GUIDToAssetPath(guid);
-            AssetDatabase.DeleteAsset(oldPath);
-        }
-
-        string[] lines = csv.Split('\n');
-
-        // 1. ¸ğµç ³ëµå µ¥ÀÌÅÍ¸¦ ÀĞ°í ÀÎ½ºÅÏ½º »ı¼º
-        ParseNodes(lines);
-
-        // 2. ³ëµåµé °£ÀÇ ¿¬°á ¼³Á¤
-        LinkNodes(lines);
-
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-
-        Debug.Log("³ëµå ÆÄ½Ì ¹× ¿¬°áÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù. ");
-    }
-
-    #region [Node Parsing]
-
-    private static void ParseNodes(string[] lines)
-    {
-        nodeMap.Clear(); // ¸Ê ÃÊ±âÈ­
-
-        // CSV ÆÄÀÏ ±¸Á¶¸¦ °¡Á¤ÇÏ°í ÀÛ¼ºµÈ ÄÚµå
-        // lines[2], lines[3], lines[4], lines[5], lines[6]¿¡ µ¥ÀÌÅÍ°¡ ÀÖ¾î¾ß ÇÔ.
-        string[] nodeTypeLine = lines[2].Split(',');
-        string[] nodeNameLine = lines[3].Split(',');
-        string[] nodeMessageLine = lines[4].Split(',');
-        string[] surviveDateLine = lines[5].Split(',');
-        string[] worldLocationLine = lines[6].Split(',');
-
-        for (int i = 3; i < nodeNameLine.Length; i++)
-        {
-            // ÀÎµ¦½º i°¡ ¹è¿­ÀÇ ¹üÀ§¸¦ ¹ş¾î³ª´ÂÁö È®ÀÎÇÏ´Â ¹æ¾î ·ÎÁ÷ Ãß°¡
-            if (i >= nodeTypeLine.Length || i >= nodeMessageLine.Length || i >= surviveDateLine.Length || i >= worldLocationLine.Length)
-            {
-                Debug.LogWarning($"³ëµå µ¥ÀÌÅÍ ÆÄ½Ì Áß ¶óÀÎ ÀÎµ¦½º°¡ ºÎÁ·ÇÕ´Ï´Ù. ¿­: {i}");
-                continue;
-            }
-            
-            string nodeName = nodeNameLine[i].Trim();
-            if (string.IsNullOrEmpty(nodeName)) continue;
-
-            NodeType type;
-            // Enum.TryParse »ç¿ë ½Ã ¼º°ø ¿©ºÎ¸¦ Ã¼Å©ÇÕ´Ï´Ù.
-            if (!System.Enum.TryParse(nodeTypeLine[i].Trim(), out type))
-            {
-                Debug.LogError($"¾Ë ¼ö ¾ø´Â ³ëµå Å¸ÀÔÀÔ´Ï´Ù: {nodeTypeLine[i].Trim()} (³ëµå ÀÌ¸§: {nodeName})");
-                continue;
-            }
-
-            //³ëµå »ı¼º
-            Node node = CreateNodeInstance(type);
-
-            if (node == null)
-            {
-                Debug.LogError($"¾Ë ¼ö ¾ø´Â ³ëµå Å¸ÀÔÀ¸·Î ÀÎÇØ ÀÎ½ºÅÏ½º »ı¼ºÀÌ ½ÇÆĞÇß½À´Ï´Ù: {type} (³ëµå ÀÌ¸§: {nodeName})");
-                continue;
-            }
-
-            //³ëµå ±âº»°ª Ã¤¿ì±â
-            node.nodeType = type;
-            node.nodeName = nodeName;
-            node.nodeMessage = nodeMessageLine[i].Trim();
-            
-            // surviveDate ÆÄ½Ì ½ÇÆĞ¸¦ Ã³¸®ÇÕ´Ï´Ù.
-            if (!int.TryParse(surviveDateLine[i].Trim(), out node.surviveDate))
-            {
-                 Debug.LogWarning($"³ëµå {nodeName}ÀÇ surviveDate ÆÄ½Ì¿¡ ½ÇÆĞÇß½À´Ï´Ù. ±âº»°ª 0 »ç¿ë.");
-            }
-            
-            // WorldLocation Enum ÆÄ½Ì ½ÇÆĞ¸¦ Ã³¸®ÇÕ´Ï´Ù.
+            string items = await Fetch("ItemData");
+            string stats = await Fetch("StatusData");
+            string nodes = await Fetch("NodeData");
+            ValidateSnapshot(items, stats, nodes);
+            if (!EditorUtility.DisplayDialog("ë°ì´í„° ê°€ì ¸ì˜¤ê¸° ë¯¸ë¦¬ë³´ê¸°",
+                $"ì•„ì´í…œ {JsonHelper.FromJson<ItemDataRaw>(items).Length}ê°œ, ìºë¦­í„° {JsonHelper.FromJson<StatusDataRaw>(stats).Length}ê°œ, ë…¸ë“œ {JsonHelper.FromJson<NodeDataRaw>(nodes).Length}ê°œ ê°±ì‹ \nê¸°ì¡´ GUID ìœ ì§€. ì ìš©í• ê¹Œìš”?", "ì ìš©", "ì·¨ì†Œ")) return;
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            Undo.IncrementCurrentGroup();
+            int undoGroup = Undo.GetCurrentGroup();
+            Undo.SetCurrentGroupName("ê²Œì„ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°");
             try
             {
-                node.worldLocation = (WorldLocation)System.Enum.Parse(typeof(WorldLocation), worldLocationLine[i].Trim());
+                ImportItems(items);
+                ImportStats(stats);
+                RunImportSequence(nodes);
+                AssetDatabase.SaveAssets();
+                Undo.CollapseUndoOperations(undoGroup);
             }
-            catch (System.ArgumentException)
+            catch
             {
-                Debug.LogError($"³ëµå {nodeName}ÀÇ WorldLocation °ªÀÌ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù: {worldLocationLine[i].Trim()}");
-                // ±âº»°ª ÇÒ´ç µîÀÇ ·ÎÁ÷ Ãß°¡ °í·Á
+                Undo.RevertAllDownToGroup(undoGroup);
+                AssetDatabase.SaveAssets();
+                throw;
             }
+            Debug.Log("[DataImporter] ë°ì´í„° ì ìš© ì™„ë£Œ.");
+        }
+        catch (Exception ex) { Debug.LogError("[DataImporter] ê°€ì ¸ì˜¤ê¸° ì‹¤íŒ¨: " + ex.Message); }
+        finally { importing = false; }
+    }
+    private static bool importing;
 
-            string path = $"Assets/Resources/Nodes/{nodeName}.asset";
-            AssetDatabase.CreateAsset(node, path);
-            nodeMap[nodeName] = node;
+    // Validate the entire snapshot before touching any asset.
+    public static void ValidateSnapshot(string itemJson, string statusJson, string nodeJson)
+    {
+        var items = ParseRows<ItemDataRaw>(itemJson);
+        var stats = ParseRows<StatusDataRaw>(statusJson);
+        var nodes = ParseRows<NodeDataRaw>(nodeJson);
+        var itemIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var enemyIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var nodeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var row in items)
+        {
+            CheckId(row?.ItemID, itemIds, "Items");
+            var sample = CreateItemInstance(row.ItemCategory);
+            if (sample == null) throw new InvalidOperationException(row.ItemID + ": ì˜ëª»ëœ ì•„ì´í…œ ì¢…ë¥˜");
+            try { CheckType("Items", row.ItemID, sample.GetType()); }
+            finally { DestroyImmediate(sample); }
+            if (row.ItemCategory == "Armor" && (!Enum.TryParse(row.ArmorType, out ArmorType armor) || !Enum.IsDefined(typeof(ArmorType), armor)))
+                throw new InvalidOperationException(row.ItemID + ": ì˜ëª»ëœ ë°©ì–´êµ¬ ì¢…ë¥˜");
+        }
+        foreach (var row in stats)
+        {
+            CheckId(row?.ID, enemyIds, "Characters");
+            CheckType("Characters", row.ID, typeof(EnemyData));
+            if (float.IsNaN(row.ItemDropRate) || float.IsInfinity(row.ItemDropRate) || row.ItemDropRate < 0 || row.ItemDropRate > 1 || (row.ItemDropRate > 0 && string.IsNullOrWhiteSpace(row.DropItemID)))
+                throw new InvalidOperationException(row.ID + ": ë“œë¡­ í™•ë¥  ë˜ëŠ” ì•„ì´í…œ ì„¤ì • ì˜¤ë¥˜");
+            if (!string.IsNullOrEmpty(row.DropItemID) && !itemIds.Contains(row.DropItemID) && Resources.Load<BaseItem>("Items/" + row.DropItemID) == null)
+                throw new InvalidOperationException(row.ID + ": ë“œë¡­ ì•„ì´í…œ ëˆ„ë½ " + row.DropItemID);
+        }
+        foreach (var row in nodes)
+        {
+            CheckId(row?.NodeID, nodeIds, "Nodes");
+            if (!Enum.TryParse(row.NodeType, out NodeType type) || !Enum.IsDefined(typeof(NodeType), type) || type.ToString() != row.NodeType)
+                throw new InvalidOperationException(row.NodeID + ": ì˜ëª»ëœ ë…¸ë“œ ì¢…ë¥˜");
+            var sample = CreateNodeInstance(type);
+            try { CheckType("Nodes", row.NodeID, sample.GetType()); }
+            finally { DestroyImmediate(sample); }
+            if (!Enum.TryParse(row.WorldLocation, out WorldLocation location) || !Enum.IsDefined(typeof(WorldLocation), location))
+                throw new InvalidOperationException(row.NodeID + ": ì˜ëª»ëœ ì§€ì—­");
+        }
+        foreach (var row in nodes)
+        {
+            if (row.NodeType == nameof(NodeType.MainStoryNode)) CheckLink(row.NodeID, row.NextNode, nodeIds);
+            if (row.NodeType == nameof(NodeType.CombatNode))
+            {
+                CheckLink(row.NodeID, row.SuccessNode, nodeIds);
+                CheckLink(row.NodeID, row.FailureNode, nodeIds);
+                if (string.IsNullOrWhiteSpace(row.CombatEnemyID) || (!enemyIds.Contains(row.CombatEnemyID) && Resources.Load<EnemyData>("Characters/" + row.CombatEnemyID) == null))
+                    throw new InvalidOperationException(row.NodeID + ": ì „íˆ¬ ì  ëˆ„ë½");
+            }
+            if (row.NodeType != nameof(NodeType.StoryNode) && row.NodeType != nameof(NodeType.EventNode)) continue;
+            string[] labels = { row.Choice1_Text, row.Choice2_Text, row.Choice3_Text };
+            string[] links = { row.Choice1_NextNode, row.Choice2_NextNode, row.Choice3_NextNode };
+            string[] events = { row.Choice1_EventName, row.Choice2_EventName, row.Choice3_EventName };
+            int count = 0;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(labels[i]))
+                {
+                    if (!string.IsNullOrEmpty(links[i]) || !string.IsNullOrEmpty(events[i])) throw new InvalidOperationException(row.NodeID + ": ì„ íƒì§€ ë¬¸êµ¬ ëˆ„ë½");
+                    continue;
+                }
+                count++;
+                CheckLink(row.NodeID, links[i], nodeIds);
+                if ((row.NodeType == nameof(NodeType.EventNode) || !string.IsNullOrEmpty(events[i])) &&
+                    (string.IsNullOrEmpty(events[i]) || Resources.Load<BaseEvent>($"Events/{row.EventCategory}/{events[i]}") == null))
+                    throw new InvalidOperationException(row.NodeID + ": ì„ íƒì§€ ì´ë²¤íŠ¸ ëˆ„ë½ " + events[i]);
+            }
+            if (count == 0) throw new InvalidOperationException(row.NodeID + ": ì„ íƒì§€ ì—†ìŒ");
         }
     }
+
+    private static T[] ParseRows<T>(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json) || !json.TrimStart().StartsWith("[")) throw new InvalidOperationException("JSON ë°°ì—´ ì‘ë‹µì´ ì•„ë‹™ë‹ˆë‹¤.");
+        var rows = JsonHelper.FromJson<T>(json);
+        if (rows == null || rows.Length == 0) throw new InvalidOperationException("ë¹ˆ ì‹œíŠ¸ëŠ” ì ìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+        return rows;
+    }
+
+    private static void CheckId(string id, HashSet<string> ids, string folder)
+    {
+        if (string.IsNullOrWhiteSpace(id) || id != id.Trim() || id.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 || id == "." || id == ".." || !ids.Add(id))
+            throw new InvalidOperationException(folder + ": ì˜ëª»ë˜ì—ˆê±°ë‚˜ ì¤‘ë³µëœ ID " + id);
+    }
+
+    private static void CheckType(string folder, string id, Type type)
+    {
+        string path = $"Assets/Resources/{folder}/{id}.asset";
+        var existing = AssetDatabase.LoadMainAssetAtPath(path);
+        if (existing != null && existing.GetType() != type) throw new InvalidOperationException(path + ": íƒ€ì… ë³€ê²½ ë¶ˆê°€ (GUID ë³´í˜¸)");
+    }
+
+    private static void CheckLink(string source, string target, HashSet<string> ids)
+    {
+        if (string.IsNullOrWhiteSpace(target) || (!ids.Contains(target) && Resources.Load<Node>("Nodes/" + target) == null))
+            throw new InvalidOperationException("Assets/Resources/Nodes/" + source + ".asset: ì—°ê²° ëˆ„ë½ " + target);
+    }
+    #region [Helpers]
+    private static async Task<string> Fetch(string sheetName)
+    {
+        string url = $"{baseURL}?sheetName={sheetName}";
+        using UnityWebRequest www = UnityWebRequest.Get(url);
+        www.timeout = 30;
+        var op = www.SendWebRequest();
+        while (!op.isDone) await Task.Delay(50);
+        if (www.result != UnityWebRequest.Result.Success)
+            throw new InvalidOperationException(sheetName + ": " + www.error);
+        return www.downloadHandler.text;
+    }
+    #endregion
+    
+    #region [Import Node]
+
+    private static void RunImportSequence(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return;
+
+        CreateOrReconstructNodeAssets(json);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        // [ë‹¨ê³„ 2] ë§µ ì¬êµ¬ì¶• (ì°¸ì¡° ì—°ê²°ì„ ìœ„í•´ ë©”ëª¨ë¦¬ì— ë¡œë“œ)
+        RebuildNodeMap();
+
+        // [ë‹¨ê³„ 3] í´ë˜ìŠ¤ë³„ ì „ìš© í•„ë“œ ë° ë…¸ë“œ ê°„ ì°¸ì¡° ì—°ê²°
+        LinkAllReferences(json);
+        
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+
+    private static void CreateOrReconstructNodeAssets(string json)
+    {
+        var nodeDataList = JsonHelper.FromJson<NodeDataRaw>(json);
+        string folderPath = "Assets/Resources/Nodes";
+        if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+        foreach (var data in nodeDataList)
+        {
+            if (string.IsNullOrEmpty(data.NodeID)) continue;
+
+            string path = $"{folderPath}/{data.NodeID}.asset";
+            if (!System.Enum.TryParse(data.NodeType, out NodeType targetType)) continue;
+
+            Node existingNode = AssetDatabase.LoadAssetAtPath<Node>(path);
+
+            if (existingNode != null && existingNode.GetType().Name != targetType.ToString())
+            {
+                Debug.Log($"<color=yellow>[Replace]</color> {data.NodeID}: {existingNode.GetType().Name} -> {targetType}");
+                throw new InvalidOperationException(path + ": ë…¸ë“œ íƒ€ì… ë³€ê²½ì€ ë³„ë„ ë§ˆì´ê·¸ë ˆì´ì…˜ì´ í•„ìš”í•©ë‹ˆë‹¤.");
+            }
+
+            if (existingNode == null)
+            {
+                existingNode = CreateNodeInstance(targetType);
+                AssetDatabase.CreateAsset(existingNode, path);
+                Undo.RegisterCreatedObjectUndo(existingNode, "ë…¸ë“œ ìƒì„±");
+            }
+
+            Undo.RecordObject(existingNode, "ë…¸ë“œ ê°±ì‹ ");
+            existingNode.nodeType = targetType; // ì¸ìŠ¤í™í„° ë³€ìˆ˜ í• ë‹¹
+            existingNode.nodeName = data.NodeID;
+            existingNode.nodeMessage = data.NodeMessage;
+            existingNode.surviveDate = data.SurviveDate;
+
+            if (System.Enum.TryParse(data.WorldLocation, out WorldLocation loc))
+                existingNode.worldLocation = loc;
+
+            if (existingNode is CombatNode cn) cn.combatEnemyID = data.CombatEnemyID;
+            else if (existingNode is EventNode en) en.eventCategory = data.EventCategory;
+            else if (existingNode is EndingNode edn) edn.endingName = data.EndingName;
+
+            EditorUtility.SetDirty(existingNode);
+        }
+    }
+
+    private static void LinkAllReferences(string json)
+    {
+        var nodeDataList = JsonHelper.FromJson<NodeDataRaw>(json);
+        foreach (var data in nodeDataList)
+        {
+            if (!nodeMap.TryGetValue(data.NodeID, out Node node)) continue;
+            Undo.RecordObject(node, "ë…¸ë“œ ì—°ê²°");
+
+            // í´ë˜ìŠ¤ íƒ€ì…ì— ë§ì¶° ì •í™•í•œ ì°¸ì¡° í•„ë“œ ì—°ê²°
+            switch (node)
+            {
+                case MainStoryNode mn:
+                    mn.nextNode = FindNode(data.NextNode);
+                    break;
+                case CombatNode cn:
+                    cn.enemyData = Resources.Load<EnemyData>($"Characters/{data.CombatEnemyID}");
+                    cn.successNode = FindNode(data.SuccessNode);
+                    cn.failureNode = FindNode(data.FailureNode);
+                    break;
+                case StoryNode sn:
+                    sn.choices = CreateChoiceList(data);
+                    break;
+                case EventNode en:
+                    en.choices = CreateChoiceList(data);
+                    break;
+            }
+            EditorUtility.SetDirty(node);
+        }
+    }
+
+    private static void RebuildNodeMap()
+    {
+        nodeMap.Clear();
+        string path = "Assets/Resources/Nodes";
+        if (!Directory.Exists(path)) return;
+
+        string[] files = Directory.GetFiles(path, "*.asset");
+        foreach (string file in files)
+        {
+            Node n = AssetDatabase.LoadAssetAtPath<Node>(file);
+            if (n != null) nodeMap[n.name] = n;
+        }
+    }
+
     
 
+    #region [Node Helpers]
+    private static List<Choice> CreateChoiceList(NodeDataRaw data)
+    {
+        List<Choice> list = new List<Choice>();
+        AddChoice(list, data.Choice1_Text, data.Choice1_NextNode, data.Choice1_EventName, data.EventCategory);
+        AddChoice(list, data.Choice2_Text, data.Choice2_NextNode, data.Choice2_EventName, data.EventCategory);
+        AddChoice(list, data.Choice3_Text, data.Choice3_NextNode, data.Choice3_EventName, data.EventCategory);
+        return list;
+    }
+
+    private static void AddChoice(List<Choice> list, string txt, string nxtID, string evt, string cat)
+    {
+        if (string.IsNullOrEmpty(txt)) return;
+        Choice c = new Choice 
+        { 
+            choiceText = txt, 
+            nextNode = FindNode(nxtID)
+        };
+        if (!string.IsNullOrEmpty(evt))
+            c.baseEvent = Resources.Load<BaseEvent>($"Events/{cat}/{evt}");
+        list.Add(c);
+    }
+
+    private static Node FindNode(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return null;
+        return nodeMap.TryGetValue(id.Trim(), out Node result) ? result : null;
+    }
+
+    
     private static Node CreateNodeInstance(NodeType type)
     {
-        // ¸ğµç Node ÆÄ»ı Å¬·¡½º(MainStoryNode, StoryNode, CombatNode, EventNode, EndingNode)°¡ ScriptableObject¸¦ »ó¼ÓÇÏ°í Á¤ÀÇµÇ¾î ÀÖ¾î¾ß ÇÔ.
-        switch (type)
+        return type switch
         {
-            case NodeType.MainStoryNode: return ScriptableObject.CreateInstance<MainStoryNode>();
-            case NodeType.StoryNode: return ScriptableObject.CreateInstance<StoryNode>();
-            case NodeType.CombatNode: return ScriptableObject.CreateInstance<CombatNode>();
-            case NodeType.EventNode: return ScriptableObject.CreateInstance<EventNode>();
-            case NodeType.EndingNode: return ScriptableObject.CreateInstance<EndingNode>();
-            default: return null;
-        }
-    }
-
-    #endregion
-
-    #region [Node Parsing2]
-
-
-    private static void LinkMainStoryNode(MainStoryNode mainStoryNode, string[] lines, int col)
-    {
-        // lines[8]¿¡ ´ÙÀ½ ³ëµå ÀÌ¸§ÀÌ ÀÖ´Ù°í °¡Á¤
-        string[] nextNodeNameLine = lines.Length > 8 ? lines[8].Split(',') : null;
-        if (nextNodeNameLine == null || nextNodeNameLine.Length <= col) return;
-
-        string nextNodeName = nextNodeNameLine[col].Trim();
-        if (nodeMap.ContainsKey(nextNodeName))
-        {
-            mainStoryNode.nextNode = nodeMap[nextNodeName];
-            EditorUtility.SetDirty(mainStoryNode); // º¯°æ »çÇ× ÀúÀå
-        }
-    }
-    
-    private static void LinkStoryNode(StoryNode storyNode, string[] lines, int col)
-    {
-        int howManyChoices = 0;
-        
-        // lines[11]ÀÇ col¿¡ ¼±ÅÃÁö °³¼ö°¡ ÀÖ´Ù°í °¡Á¤
-        if (lines.Length > 11 && lines[11].Split(',').Length > col && 
-            !string.IsNullOrEmpty(lines[11].Split(',')[col].Trim()))
-        {
-            int.TryParse(lines[11].Split(',')[col].Trim(), out howManyChoices);
-        }
-
-        // ¼±ÅÃÁö µ¥ÀÌÅÍ°¡ 6ÁÙ °£°İÀ¸·Î ÀÖ´Ù°í °¡Á¤: 12, 13, 14, 15, 16, 17... (12 + j*6)
-        for (int j = 0; j < howManyChoices; j++)
-        {
-            int choiceTextRow = 12 + (j * 6);
-            int nextNodeRow = 13 + (j * 6);
-            
-            // ¹è¿­ ¹üÀ§ ÃÊ°ú ¹æÁö
-            if (choiceTextRow >= lines.Length || nextNodeRow >= lines.Length) break;
-            
-            string[] choiceTextParts = lines[choiceTextRow].Split(',');
-            string[] nextNodeParts = lines[nextNodeRow].Split(',');
-            
-            if (choiceTextParts.Length <= col || nextNodeParts.Length <= col) continue;
-
-            Choice choice = new Choice();
-            choice.choiceText = choiceTextParts[col].Trim();
-            
-            string nextNodeName = nextNodeParts[col].Trim();
-            if (nodeMap.ContainsKey(nextNodeName))
-            {
-                choice.nextNode = nodeMap[nextNodeName];
-            }
-            storyNode.choices.Add(choice);
-        }
-        EditorUtility.SetDirty(storyNode); // º¯°æ »çÇ× ÀúÀå
-    }
-    
-    private static void LinkCombatNode(CombatNode combatNode, string[] lines, int col)
-    {
-        // lines[31], lines[32], lines[33]¿¡ µ¥ÀÌÅÍ°¡ ÀÖ´Ù°í °¡Á¤
-        if (lines.Length <= 33) return;
-        
-        // lines[31] - combatEnemyID
-        string[] enemyIDParts = lines[31].Split(',');
-        if (enemyIDParts.Length > col)
-        {
-            combatNode.combatEnemyID = enemyIDParts[col].Trim();
-            combatNode.enemyData = Resources.Load<EnemyDefinition>($"Characters/{combatNode.combatEnemyID}");
-    
-            if (combatNode.enemyData == null)
-            {
-                Debug.LogWarning($"ºñ»óºñ»óºñ»óºñ»óºñ»óºñ»ó {combatNode.nodeName}¿¡¼­ EnemyDefinition(ID: {combatNode.combatEnemyID})¸¦ ¸øÃ£À½ ºñ»óºñ»óºñ»ó!!!!");
-            }
-        }
-
-        // lines[32] - successNode
-        string[] successNodeParts = lines[32].Split(',');
-        if (successNodeParts.Length > col)
-        {
-            string successNodeName = successNodeParts[col].Trim();
-            if (nodeMap.ContainsKey(successNodeName))
-            {
-                combatNode.successNode = nodeMap[successNodeName];
-            }
-        }
-        
-        // lines[33] - failureNode
-        string[] failureNodeParts = lines[33].Split(',');
-        if (failureNodeParts.Length > col)
-        {
-            string failureNodeName = failureNodeParts[col].Trim();
-            if (nodeMap.ContainsKey(failureNodeName))
-            {
-                combatNode.failureNode = nodeMap[failureNodeName];
-            }
-        }
-
-        EditorUtility.SetDirty(combatNode); // º¯°æ »çÇ× ÀúÀå
-    }
-    
-    private static void LinkEventNode(EventNode eventNode, string[] lines, int col)
-    {
-        // lines[35]¿¡ ÀÌº¥Æ® Ä«Å×°í¸®
-        if (lines.Length <= 41) return;
-        
-        string[] eventCatParts = lines[35].Split(',');
-        if (eventCatParts.Length > col)
-        {
-            eventNode.eventCategory = eventCatParts[col].Trim();
-        }
-        
-        EditorUtility.SetDirty(eventNode); // º¯°æ »çÇ× ÀúÀå
-
-        int howManyChoices = 0;
-        
-        // lines[37]¿¡ ¼±ÅÃÁö °³¼ö
-        if (lines.Length > 37 && lines[37].Split(',').Length > col && 
-            !string.IsNullOrEmpty(lines[37].Split(',')[col].Trim()))
-        {
-            int.TryParse(lines[37].Split(',')[col].Trim(), out howManyChoices);
-        }
-
-        // ¼±ÅÃÁö µ¥ÀÌÅÍ°¡ 6ÁÙ °£°İÀ¸·Î ÀÖ´Ù°í °¡Á¤: 38, 39, 40, 41, 42, 43... (38 + j*6)
-        for (int j = 0; j < howManyChoices; j++)
-        {
-            int choiceTextRow = 38 + (j * 6);
-            int nextNodeRow = 39 + (j * 6);
-            int eventNameRow = 41 + (j * 6);
-            
-            // ¹è¿­ ¹üÀ§ ÃÊ°ú ¹æÁö
-            if (choiceTextRow >= lines.Length || nextNodeRow >= lines.Length || eventNameRow >= lines.Length) break;
-            
-            string[] choiceTextParts = lines[choiceTextRow].Split(',');
-            string[] nextNodeParts = lines[nextNodeRow].Split(',');
-            string[] eventNameParts = lines[eventNameRow].Split(',');
-            
-            if (choiceTextParts.Length <= col || nextNodeParts.Length <= col || eventNameParts.Length <= col) continue;
-
-            Choice choice = new Choice();
-            choice.choiceText = choiceTextParts[col].Trim();
-            
-            string nextNodeName = nextNodeParts[col].Trim();
-            if (nodeMap.ContainsKey(nextNodeName))
-            {
-                choice.nextNode = nodeMap[nextNodeName];
-            }
-
-            string eventName = eventNameParts[col].Trim();
-            
-            // Event Ä«Å×°í¸®¸¦ Ãß°¡
-            choice.baseEvent = Resources.Load<BaseEvent>($"Events/{eventNode.eventCategory}/{eventName}");
-            
-            if (choice.baseEvent == null && !string.IsNullOrEmpty(eventName))
-            {
-                Debug.LogWarning($"ÀÌº¥Æ® ³ëµå {eventNode.nodeName}ÀÇ ¼±ÅÃÁö {j+1}¿¡¼­ ÀÌº¥Æ® µ¥ÀÌÅÍ(°æ·Î: Events/{eventNode.eventCategory}/{eventName})¸¦ ·ÎµåÇÏÁö ¸øÇß½À´Ï´Ù.");
-            }
-
-            eventNode.choices.Add(choice);
-        }
-        EditorUtility.SetDirty(eventNode); // º¯°æ »çÇ× ÀúÀå
-    }
-    
-    private static void LinkEndingNode(EndingNode endingNode, string[] lines, int col)
-    {
-        // lines[57]¿¡ ¿£µù ÀÌ¸§ÀÌ ÀÖ´Ù°í °¡Á¤
-        if (lines.Length <= 57) return;
-
-        string[] endingNameParts = lines[57].Split(',');
-        if (endingNameParts.Length > col)
-        {
-            endingNode.endingName = endingNameParts[col].Trim();
-        }
-        EditorUtility.SetDirty(endingNode); // º¯°æ »çÇ× ÀúÀå
+            NodeType.MainStoryNode => CreateInstance<MainStoryNode>(),
+            NodeType.StoryNode => CreateInstance<StoryNode>(),
+            NodeType.CombatNode => CreateInstance<CombatNode>(),
+            NodeType.EventNode => CreateInstance<EventNode>(),
+            NodeType.EndingNode => CreateInstance<EndingNode>(),
+            _ => CreateInstance<MainStoryNode>()
+        };
     }
     #endregion
-
-    #region [Node Link]
-    private static void LinkNodes(string[] lines)
-    {
-        // lines[2], lines[3]¿¡ ³ëµå Å¸ÀÔ°ú ÀÌ¸§ÀÌ ÀÖ´Ù°í °¡Á¤
-        if (lines.Length < 4) return;
-        
-        string[] nodeTypeLine = lines[2].Split(',');
-        string[] nodeNameLine = lines[3].Split(',') ;
-
-        int nodeCount = nodeNameLine.Length;
-
-        //³ëµåÀÇ °³¼ö¸¸Å­ ÇÑ ¹ø µ¹±â.
-        for (int i = 3; i < nodeCount; i++) // CSV ¿­ ÀÎµ¦½º i (Column Index)
-        {
-            // ÀÎµ¦½º i°¡ ¹è¿­ÀÇ ¹üÀ§¸¦ ¹ş¾î³ª´ÂÁö È®ÀÎÇÏ´Â ¹æ¾î ·ÎÁ÷ Ãß°¡
-            if (i >= nodeTypeLine.Length)
-            {
-                Debug.LogWarning($"LinkNodes ÆÄ½Ì Áß ¶óÀÎ ÀÎµ¦½º°¡ ºÎÁ·ÇÕ´Ï´Ù. ¿­: {i}");
-                continue;
-            }
-            
-            string nodeName = nodeNameLine[i].Trim();
-            if (string.IsNullOrEmpty(nodeName)) continue;
-
-            NodeType type;
-            if (!System.Enum.TryParse(nodeTypeLine[i].Trim(), out type))
-            {
-                // ParseNodes¿¡¼­ ÀÌ¹Ì ·Î±×¸¦ ³²°åÀ¸¹Ç·Î ¿©±â¼­´Â ·Î±×¸¦ »ı·«ÇÏ°í °Ç³Ê¶İ´Ï´Ù.
-                continue;
-            }
-
-            // ParseNodes¿¡¼­ ÀÌ¹Ì »ı¼ºÇÏ°í ¸Ê¿¡ ³Ö¾ú´ÂÁö È®ÀÎ
-            if (!nodeMap.ContainsKey(nodeName))
-            {
-                 Debug.LogError($"LinkNodes: ÀÌÀü¿¡ ÆÄ½ÌµÈ ³ëµå {nodeName}À» nodeMap¿¡¼­ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
-                 continue;
-            }
-
-            Node node = nodeMap[nodeName];
-
-            switch (type)
-            {
-                case NodeType.MainStoryNode:
-                    LinkMainStoryNode(node as MainStoryNode, lines, i);
-                    break;
-                case NodeType.StoryNode:
-                    LinkStoryNode(node as StoryNode, lines, i);
-                    break;
-                case NodeType.CombatNode:
-                    LinkCombatNode(node as CombatNode, lines, i);
-                    break;
-                case NodeType.EventNode:
-                    LinkEventNode(node as EventNode, lines, i);
-                    break;
-                case NodeType.EndingNode:
-                    LinkEndingNode(node as EndingNode, lines, i);
-                    break;
-            }
-        }
-    }
     #endregion
 
+    #region [Import Stats]
+    private static void ImportStats(string json)
+{
+    var stats = JsonHelper.FromJson<StatusDataRaw>(json);
+    foreach (var data in stats)
+    {
+        if (string.IsNullOrEmpty(data.ID)) continue;
+        
+        string path = $"Assets/Resources/Characters/{data.ID}.asset";
+        EnemyData def = AssetDatabase.LoadAssetAtPath<EnemyData>(path);
+        if (def == null)
+        {
+            def = ScriptableObject.CreateInstance<EnemyData>();
+            AssetDatabase.CreateAsset(def, path);
+            Undo.RegisterCreatedObjectUndo(def, "ìºë¦­í„° ìƒì„±");
+        }
+        Undo.RecordObject(def, "ìºë¦­í„° ê°±ì‹ ");
+
+        // ê¸°ë³¸ ì •ë³´ ê°±ì‹ 
+        def.type = data.Type; 
+        def.id = data.ID; 
+        def.displayName = data.Name;
+        def.baseStats = new BaseStats(data.STR, data.DEX, data.CON);
+        def.tuningStats = new TuningStats(data.AttackBonus, data.HpBonus, data.DodgeBonus, data.RangeBonus);
+
+        // --- [ë“œë ì•„ì´í…œ ì—°ê²° ë¡œì§: ì—°ê²°ë§Œ ìˆ˜í–‰] ---
+        if (!string.IsNullOrEmpty(data.DropItemID))
+        {
+            string itemPath = $"Assets/Resources/Items/{data.DropItemID}.asset";
+            BaseItem itemAsset = AssetDatabase.LoadAssetAtPath<BaseItem>(itemPath);
+
+            if (itemAsset != null)
+            {
+                def.dropItem = itemAsset;
+            }
+            else
+            {
+                // ì•„ì´í…œ ì—ì…‹ ìì²´ê°€ ì—†ëŠ” ê²½ìš°
+                Debug.LogWarning($"<color=orange>[Missing Item]</color> {data.ID}ì˜ ë“œë ì•„ì´í…œ {data.DropItemID} ì—ì…‹ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ItemDataë¥¼ ë¨¼ì € ì„í¬íŠ¸í–ˆëŠ”ì§€ í™•ì¸í•˜ì„¸ìš”.");
+                def.dropItem = null;
+            }
+            
+            def.itemDropRate = data.ItemDropRate;
+        }
+        else
+        {
+            def.dropItem = null; // ì•„ì´í…œ IDê°€ ë¹„ì–´ìˆìœ¼ë©´ ì°¸ì¡° ì œê±°
+        }
+
+        def.itemDropRate = data.ItemDropRate;
+        def.dropGold = data.DropGold;
+        EditorUtility.SetDirty(def);
+    }
+}
+
+    
+    #endregion
+    #region [Import Items]
+    private static void ImportItems(string json)
+    {
+        var items = JsonHelper.FromJson<ItemDataRaw>(json);
+        foreach(var data in items)
+        {
+            if (string.IsNullOrEmpty(data.ItemID)) continue;
+            string path = $"Assets/Resources/Items/{data.ItemID}.asset";
+            BaseItem item = AssetDatabase.LoadAssetAtPath<BaseItem>(path);
+            if (item != null && item.GetType().Name != data.ItemCategory + "Item")
+            {
+                throw new InvalidOperationException(path + ": ì•„ì´í…œ íƒ€ì… ë³€ê²½ì€ ë³„ë„ ë§ˆì´ê·¸ë ˆì´ì…˜ì´ í•„ìš”í•©ë‹ˆë‹¤.");
+            }
+            if (item == null)
+            {
+                item = CreateItemInstance(data.ItemCategory);
+                AssetDatabase.CreateAsset(item, path);
+                Undo.RegisterCreatedObjectUndo(item, "ì•„ì´í…œ ìƒì„±");
+            }
+            Undo.RecordObject(item, "ì•„ì´í…œ ê°±ì‹ ");
+            item.itemID = data.ItemID;
+            item.itemName = data.ItemName;
+            item.itemDescription = data.ItemDesc;
+            item.itemCategory = System.Enum.TryParse(data.ItemCategory, out ItemCategory cat) ? cat : ItemCategory.Weapon;
+            //item.itemIcon = data.ItemIcon; IDí™” í•„ìš”
+            item.isConsumable = data.Consumable;
+            item.itemValue = data.ItemValue;
+            
+            if (item is WeaponItem w)
+            {
+                w.durability = data.Durability;
+                w.attackBonus = data.AttackBonus;
+                w.range = data.Range;
+            }
+            else if (item is ArmorItem a)
+            {
+                a.durability = data.Durability;
+                a.armorType = System.Enum.TryParse(data.ArmorType, out ArmorType at) ? at : ArmorType.Helmet;
+                a.hpBonus = data.HpBonus;
+                a.dodgeBonus = data.DodgeBonus;
+            }
+            else if (item is AccessoryItem ac)
+            {
+                ac.dodgeBonus = data.DodgeBonus;
+                ac.questID = data.QuestID;
+            }
+            else if (item is PotionItem p)
+            {
+                p.health = data.Health;
+            }
+
+            EditorUtility.SetDirty(item);
+        }
+    }
+
+    private static BaseItem CreateItemInstance(string categoryStr)
+    {
+        if (!System.Enum.TryParse(categoryStr, out ItemCategory category) || category.ToString() != categoryStr) return null;
+
+        BaseItem item = category switch
+        {
+            ItemCategory.Weapon => CreateInstance<WeaponItem>(),
+            ItemCategory.Armor => CreateInstance<ArmorItem>(),
+            ItemCategory.Accessory => CreateInstance<AccessoryItem>(),
+            ItemCategory.Potion => CreateInstance<PotionItem>(),
+            _ => null
+        };
+        return item;
+    }
     #endregion
 }

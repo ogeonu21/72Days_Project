@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-//·£´ı °ª ÆÇÁ¤, °è»ê ÇÔ¼ö ¸ğÀ½ Å¬·¡½º.
+//ëœë¤ ê°’ íŒì •, ê³„ì‚° í•¨ìˆ˜ ëª¨ìŒ í´ë˜ìŠ¤.
 public static class CalculateFunction
 {
     public static bool Roll(float f)

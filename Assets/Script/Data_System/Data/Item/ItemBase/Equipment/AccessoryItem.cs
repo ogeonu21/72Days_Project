@@ -4,8 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AccessoryItem", menuName = "Items/Equipment/Accessory")]
 public class AccessoryItem : EquipmentItem
 {
-    public float bonusDodge;
-    //Äù½ºÆ® °ü·Ã ¼³Á¤ Ãß°¡ ÇÊ¿ä.
+    public float dodgeBonus;
+    //í€˜ìŠ¤íŠ¸ ê´€ë ¨ ì„¤ì • ì¶”ê°€ í•„ìš”.
+    public string questID; // ì´ ì•…ì„¸ì„œë¦¬ê°€ ê´€ë ¨ëœ í€˜ìŠ¤íŠ¸ ID
 
     
 }

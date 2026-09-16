@@ -1,23 +1,34 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System.Security.AccessControl;
 
 public class Player : Character
 {
-    #region [°æÇèÄ¡ ¹èÀ²]
+    #region [ê²½í—˜ì¹˜ ë°°ìœ¨]
     private const float BASE_EXP = 12.1f;
-    private const float EXP_GROWTH_RATE = 1.33f;
+    private const float EXP_GROWTH_RATE = 1.08f;
     #endregion
 
-    #region [ÇÃ·¹ÀÌ¾î °æÇèÄ¡ & Àåºñ µ¥ÀÌÅÍ]
-    //·¹º§ °ü·Ã
+    #region [í”Œë ˆì´ì–´ ê²½í—˜ì¹˜ & ì¥ë¹„ ë°ì´í„°]
+    //ë ˆë²¨ ê´€ë ¨
     private int exp;
     public int lv;
 
-    //Àåºñ °ü·Ã - ÃßÈÄ ±¸Çö ¿¹Á¤
-    public EquipmentData equipmentData;
+    //ì¥ë¹„ ê´€ë ¨ - ì¶”í›„ êµ¬í˜„ ì˜ˆì •
+    public EquipmentData equipmentData = new EquipmentData();
+    public int tendency { get; private set; }
+    public event Action<int> TendencyChanged;
+
+    public void ChangeTendency(int amount)
+    {
+        tendency += amount;
+        TendencyChanged?.Invoke(tendency);
+    }
+
+    public void ResetTendency()
+    {
+        tendency = 0;
+        TendencyChanged?.Invoke(tendency);
+    }
 
     #endregion
 
@@ -27,46 +38,39 @@ public class Player : Character
     #region [Initialize]
     public void InitializeFromData(PlayerData data)
     {
-        if (data == null) return;
-
-        ID = string.IsNullOrWhiteSpace(data.id) ? ID : data.id;
-        characterName = string.IsNullOrWhiteSpace(data.displayName) ? characterName : data.displayName;
-
-        baseStats = data.baseStats;
-        tuningStats = data.tuningStats;
-
-        exp = data.exp;
-        lv = data.lv;
-
-        UpdateStats();
-        SetCurrentHPAndNotify(MaxHP);
-        UpdateLV_UI();
+        InitializePlayer(data, false);
     }
 
 
-    //ÀÎÀÚ¸¦ ÇÏ³ª ´õ ¹ŞÀÚ. initialmode, loadmode.
+    //ì¸ìë¥¼ í•˜ë‚˜ ë” ë°›ì. initialmode, loadmode.
 
     public void LoadFromData(PlayerData data)
     {
-        if (data == null) return;
+        InitializePlayer(data, true);
+    }
 
-        ID = string.IsNullOrWhiteSpace(data.id) ? ID : data.id;
-        characterName = string.IsNullOrWhiteSpace(data.displayName) ? characterName : data.displayName;
-
-        baseStats = data.baseStats;
-        tuningStats = data.tuningStats;
-
-        exp = data.exp;
-        lv = data.lv;
-
+    private void InitializePlayer(PlayerData data, bool restoreHealth)
+    {
+        if (data == null) throw new ArgumentNullException(nameof(data));
+        InitializeCharacter(data.id, data.displayName, data.baseStats, data.tuningStats);
+        exp = Mathf.Max(0, data.exp);
+        lv = Mathf.Max(1, data.lv);
+        tendency = data.tendency;
+        equipmentData = new EquipmentData
+        {
+            weaponItem = data.equipmentData?.weaponItem,
+            armorItem = data.equipmentData?.armorItem,
+            accessoryItem = data.equipmentData?.accessoryItem
+        };
+        // ì €ì¥ëœ tuningStatsëŠ” ì´ë¯¸ ì¥ë¹„ ë³´ì •ì„ í¬í•¨í•˜ë¯€ë¡œ ë¡œë“œ ì‹œ ì¤‘ë³µ ê°€ì‚°í•˜ì§€ ì•ŠëŠ”ë‹¤.
         UpdateStats();
-        SetCurrentHPAndNotify(data.currentHP);
+        SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
         UpdateLV_UI();
     }
     #endregion
 
     #region [Data]
-    //ÇöÀç ÇÃ·¹ÀÌ¾î Á¤º¸¸¦ ÀúÀåÇÏ±â À§ÇÑ ÇÔ¼ö.
+    //í˜„ì¬ í”Œë ˆì´ì–´ ì •ë³´ë¥¼ ì €ì¥í•˜ê¸° ìœ„í•œ í•¨ìˆ˜.
     public PlayerData GetCurrentData()
     {
         PlayerData data = new PlayerData();
@@ -80,6 +84,13 @@ public class Player : Character
         data.currentHP = this.currentHP;
         data.exp = this.exp;
         data.lv = this.lv;
+        data.tendency = tendency;
+        data.equipmentData = new EquipmentData
+        {
+            weaponItem = equipmentData?.weaponItem,
+            armorItem = equipmentData?.armorItem,
+            accessoryItem = equipmentData?.accessoryItem
+        };
 
         return data;
     }
@@ -87,9 +98,16 @@ public class Player : Character
 
     #region [Override]
 
-    //µ¥¹ÌÁö ÇÇ°İ ÇÔ¼ö.
+    protected override void OnStatsChanged()
+    {
+        base.OnStatsChanged();
+        PlayerEvent.OnStatsChanged();
+    }
+
+    //ë°ë¯¸ì§€ í”¼ê²© í•¨ìˆ˜.
     public override void TakeDamage(int amount)
     {
+        if (IsDead || amount <= 0) return;
         base.TakeDamage(amount);
 
         GameEvent.OnTakeDamage(currentHP, MaxHP);
@@ -98,9 +116,10 @@ public class Player : Character
 
     #region [LV Control]
 
-    //°æÇèÄ¡¸¦ ¿Ã¸®´Â ÇÔ¼ö.
+    //ê²½í—˜ì¹˜ë¥¼ ì˜¬ë¦¬ëŠ” í•¨ìˆ˜.
     public void GetExp(int exp)
     {
+        if (exp <= 0) return;
         this.exp += exp;
         UpdateLv();
     }
@@ -110,76 +129,93 @@ public class Player : Character
     {
         int requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
 
-        if (exp >= requiredExpForLvUP)
+        while (requiredExpForLvUP > 0 && exp >= requiredExpForLvUP)
         {
             exp -= requiredExpForLvUP;
             lv++;
 
-            //10¸¸Å­ È¸º¹.
+            //10ë§Œí¼ íšŒë³µ.
             Heal(10);
 
 
             UpdateLV_UI();
 
-            //·¹º§¾÷ ÀÌº¥Æ® ¹ß»ı.
-            GameEvent.PlayerLevelUp();
+            //ë ˆë²¨ì—… ì´ë²¤íŠ¸ ë°œìƒ.
+            PlayerEvent.PlayerLevelUp();
+            requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
         }
     }
 
     private void UpdateLV_UI()
     {
-        lvText.text = "Lv." + lv;
+        if (lvText != null) lvText.text = "Lv." + lv;
     }
     #endregion
 
     #region [Equipment Control]
     public void EquipItem(EquipmentItem item)
     {
-        if (item == null)
+        if (item == null || item.durability <= 0)
         {
-            Debug.LogWarning("ÀåÂøÇÒ ¾ÆÀÌÅÛÀÌ ¾ø½À´Ï´Ù.");
+            Debug.LogWarning("ì¥ì°©í•  ì•„ì´í…œì´ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
-        //ÀåÂø ¾ÆÀÌÅÛ Á¤º¸ ¾÷µ¥ÀÌÆ®.
-        switch (item.equipmentType)
+        if (equipmentData == null) equipmentData = new EquipmentData();
+        if ((item.itemCategory == ItemCategory.Weapon && !(item is WeaponItem)) ||
+            (item.itemCategory == ItemCategory.Armor && !(item is ArmorItem)) ||
+            (item.itemCategory == ItemCategory.Accessory && !(item is AccessoryItem)))
         {
-            case EquipmentType.Weapon:
+            Debug.LogWarning("ì¥ë¹„ ì¢…ë¥˜ì™€ ì‹¤ì œ ë°ì´í„° íƒ€ì…ì´ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+            return;
+        }
+        //ì¥ì°© ì•„ì´í…œ ì •ë³´ ì—…ë°ì´íŠ¸.
+        switch (item.itemCategory)
+        {
+            case ItemCategory.Weapon:
                 WeaponItem weaponItem = item as WeaponItem;
                 if (equipmentData.weaponItem != null)
                 {
-                    //±âÁ¸ ÀåÂø ¾ÆÀÌÅÛ ÇØÁ¦.
+                    //ê¸°ì¡´ ì¥ì°© ì•„ì´í…œ í•´ì œ.
                     equipmentData.weaponItem.Release(this);
                 }
                 weaponItem.Use(this);
                 equipmentData.weaponItem = weaponItem;
                 break;
-            case EquipmentType.Armor:
+            case ItemCategory.Armor:
                 ArmorItem armorItem = item as ArmorItem;
                 if (equipmentData.armorItem != null)
                 {
-                    //±âÁ¸ ÀåÂø ¾ÆÀÌÅÛ ÇØÁ¦.
+                    //ê¸°ì¡´ ì¥ì°© ì•„ì´í…œ í•´ì œ.
                     equipmentData.armorItem.Release(this);
                 }
                 armorItem.Use(this);
                 equipmentData.armorItem = armorItem;
                 break;
-            case EquipmentType.Accessory:
+            case ItemCategory.Accessory:
                 AccessoryItem accessoryItem = item as AccessoryItem;
                 if (equipmentData.accessoryItem != null)
                 {
-                    //±âÁ¸ ÀåÂø ¾ÆÀÌÅÛ ÇØÁ¦.
+                    //ê¸°ì¡´ ì¥ì°© ì•„ì´í…œ í•´ì œ.
                     equipmentData.accessoryItem.Release(this);
                 }
                 accessoryItem.Use(this);
                 equipmentData.accessoryItem = accessoryItem;
                 break;
             default:
-                Debug.LogWarning("¾Ë ¼ö ¾ø´Â Àåºñ À¯ÇüÀÔ´Ï´Ù.");
+                Debug.LogWarning("ì•Œ ìˆ˜ ì—†ëŠ” ì¥ë¹„ ìœ í˜•ì…ë‹ˆë‹¤.");
                 break;
         }
 
-        //ÀåÂø ÈÄ ½ºÅÈ ¾÷µ¥ÀÌÆ®.
+        //ì¥ì°© í›„ ìŠ¤íƒ¯ ì—…ë°ì´íŠ¸.
         UpdateTuningStats();
+    }
+
+    public void RestoreEquipment(EquipmentData restoredEquipment)
+    {
+        int savedHP = currentHP;
+        equipmentData = restoredEquipment ?? new EquipmentData();
+        UpdateTuningStats();
+        SetCurrentHPAndNotify(savedHP);
     }
 
     #endregion
@@ -187,18 +223,17 @@ public class Player : Character
     #region [Tuning Control]
     public override void UpdateTuningStats()
     {
-        //Àåºñ ½ºÅÈ Àû¿ë
-        tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.bonusAttackPower : 0;
-        tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.bonusHp : 0;
-        tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.bonusDodge : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.bonusDodge : 0);
+        if (equipmentData == null) equipmentData = new EquipmentData();
+        //ì¥ë¹„ ìŠ¤íƒ¯ ì ìš©
+        tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.attackBonus : 0;
+        tuningStats.hpBonus = equipmentData.armorItem != null ? equipmentData.armorItem.hpBonus : 0;
+        tuningStats.dodgeBonus = (equipmentData.armorItem != null ? equipmentData.armorItem.dodgeBonus : 0) + (equipmentData.accessoryItem != null ? equipmentData.accessoryItem.dodgeBonus : 0);
 
-        //Æ¯¼ö È¿°ú¿¡ µû¸¥ ½ºÅÈ Á¶Á¤.
-        tuningStats.attackBonus = tuningStats.attackBonus + (EffectTurn[0] > 0 ? -5 : 0);
-        tuningStats.dodgeBonus = tuningStats.dodgeBonus + (EffectTurn[1] > 0 ? -0.05f : 0);
+        //íŠ¹ìˆ˜ íš¨ê³¼ì— ë”°ë¥¸ ìŠ¤íƒ¯ ì¡°ì •.
+        tuningStats = ApplyStatusEffects(tuningStats);
 
-        //ÃÖÁ¾ ½ºÅÈ ¾÷µ¥ÀÌÆ®.
+        //ìµœì¢… ìŠ¤íƒ¯ ì—…ë°ì´íŠ¸.
         UpdateStats();
     }
     #endregion
 }
-

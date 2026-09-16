@@ -15,6 +15,6 @@ MonoBehaviour:
   nodeType: 0
   nodeName: Main_01
   nodeMessage: "\uBA54\uC778 \uC2A4\uD1A0\uB9AC \uD655\uC778."
-  surviveDate: 0
+  surviveDate: 1
   worldLocation: 0
   nextNode: {fileID: 11400000, guid: f73ee6d1247126c498ddbc0033abfe88, type: 2}
