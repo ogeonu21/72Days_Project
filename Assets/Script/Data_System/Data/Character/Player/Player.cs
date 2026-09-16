@@ -145,11 +145,8 @@ public class Player : Character
             //경험치와 레벨 처리
             exp -= requiredExpForLvUP;
             lv++;
-
             //10만큼 회복.
             Heal(10);
-
-            
             //이거를 다시 계산할 필요가 있나? 있지. 2번 연속으로 레벨업을 한다면?
             requiredExpForLvUP = Mathf.RoundToInt(BASE_EXP * Mathf.Pow(EXP_GROWTH_RATE, lv + 1));
         }
@@ -253,6 +250,28 @@ public class Player : Character
         tuningStats = ApplyStatusEffects(tuningStats);
 
         //최종 스탯 업데이트.
+        UpdateStats();
+    }
+    #endregion
+
+    #region [BaseStats Control]
+
+    public void UpdateBaseStats(string name, int amount)
+    {
+        switch (name) {
+            case "str" :
+                baseStats.str += amount;
+                break;
+            case "con" :
+                baseStats.con += amount;
+                break;
+            case "dex" :
+                baseStats.dex += amount;
+                break;
+            default :
+                Debug.Log("<color = blue>[Player.cs]</color> UpdateBaseStats 입력 오류가 발생하였습니다. 정확한 baseStats name을 입력하세요.");
+                break;
+        }
         UpdateStats();
     }
     #endregion

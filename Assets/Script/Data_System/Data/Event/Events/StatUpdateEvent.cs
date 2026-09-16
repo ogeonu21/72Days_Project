@@ -26,28 +26,25 @@ public class StatUpdateEvent : BaseEvent
     {
         if (CharacterManager.Instance != null && NodeManager.Instance != null)
         {
-            switch (statType)
-            {
-                case "str":
-                    //데이터를 직접적으로 건드리잖아. 이게 맞아?
-                    CharacterManager.Instance.currentPlayer.baseStats.str += changeAmount;
-                    NodeManager.Instance.dumpNode.nodeMessage = $"힘이 {changeAmount}만큼 증가했다!";
-                    break;
-                case "dex":
-                    CharacterManager.Instance.currentPlayer.baseStats.dex += changeAmount;
-                    NodeManager.Instance.dumpNode.nodeMessage = $"민첩성이 {changeAmount}만큼 증가했다!";
-                    break;
-                case "con":
-                    CharacterManager.Instance.currentPlayer.baseStats.con += changeAmount;
-                    NodeManager.Instance.dumpNode.nodeMessage = $"체력이 {changeAmount}만큼 증가했다!";
-         
-                    break;
-                default:
-                    Debug.Log($"StatUpdateEvent: statType Error");
-                    break;
-            }
-            CharacterManager.Instance.currentPlayer.UpdateStats();
+            CharacterManager.Instance.currentPlayer.UpdateBaseStats(statType, changeAmount);
+            
+            NodeManager.Instance.dumpNode.nodeMessage = $"{StatTypeTranslation(statType)}이 {changeAmount}만큼 증가했다!";
+
             NodeManager.Instance.GoToNode(NodeManager.Instance.dumpNode);
         }
+    }
+    private string StatTypeTranslation(string statType)
+    {
+        switch (statType)
+            {
+                case "str" :
+                return "힘";
+                case "con" :
+                return "체력";
+                case "dex" :
+                return "민첩";
+                default :
+                return "에러";
+            }
     }
 }
