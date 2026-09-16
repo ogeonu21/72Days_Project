@@ -14,11 +14,6 @@ public sealed class NodeScreenRouter
             return;
         }
 
-
-
-
-
-
         DeactivateAllUI();
 
         // 노드 타입에 따라 특정 UI 활성화

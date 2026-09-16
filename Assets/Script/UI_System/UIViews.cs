@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using TMPro;
 using UnityEngine;
 
@@ -16,15 +17,22 @@ public sealed class PlayerStatsView
     private readonly TMP_Text str;
     private readonly TMP_Text dex;
     private readonly TMP_Text con;
-    public PlayerStatsView(TMP_Text str, TMP_Text dex, TMP_Text con) { this.str = str; this.dex = dex; this.con = con; }
-    public void Show(Player player) { if (player == null) return; if (str != null) str.text = " : " + player.baseStats.str; if (dex != null) dex.text = " : " + player.baseStats.dex; if (con != null) con.text = " : " + player.baseStats.con; }
+    private bool isOpen;
+    private float prevTimeScale;
+    public PlayerStatsView(TMP_Text str, TMP_Text dex, TMP_Text con) {this.str = str; this.dex = dex; this.con = con; }
+    public void Set(Player player) {
+        if (player == null) return;
+        if (str != null) str.text = " : " + player.baseStats.str;
+        if (dex != null) dex.text = " : " + player.baseStats.dex;
+        if (con != null) con.text = " : " + player.baseStats.con;
+    }
 }
 
 public sealed class LevelUpModal
 {
     private readonly GameObject view;
     private bool isOpen;
-    private float previousTimeScale;
+    private float prevTimeScale;
     public LevelUpModal(GameObject view) { this.view = view; }
     public void Open()
     {
@@ -35,7 +43,7 @@ public sealed class LevelUpModal
             return;
         }
         // 타이므 스토프!!!
-        previousTimeScale = Time.timeScale;
+        prevTimeScale = Time.timeScale;
         isOpen = true;
         Time.timeScale = 0;
         view.SetActive(true);
@@ -44,7 +52,7 @@ public sealed class LevelUpModal
     {
         if (!isOpen) return;
         isOpen = false;
-        Time.timeScale = previousTimeScale;
+        Time.timeScale = prevTimeScale;
         if (view != null) view.SetActive(false);
     }
 }

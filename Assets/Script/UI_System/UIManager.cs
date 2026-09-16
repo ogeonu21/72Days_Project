@@ -25,6 +25,8 @@ public class UIManager : SingleTon<UIManager>
 
     //플레이어의 레벨업 이벤트를 반복실행하기 위한 특별 변수. 레벨 변동량을 받아와서 eventExecute를 반복실행
     private int levelDifference = 0;
+    //UI를 열 때, 타이므 스토푸를 실행하기 위해 이전 타임 스케일을 저장하기 위한 특별 변수.
+    private float prevTimeScale;
 
     #region [UI 그룹]
     [Header("Level Up UI")]
@@ -89,13 +91,14 @@ public class UIManager : SingleTon<UIManager>
             }
         }
     }
-
+    //플레이어나 적 인스턴스에 변화가 있을때, 참조를 다시 연결.
     private void UpdateCharacter(Player player, Enemy enemy)
     {
         this.enemy = enemy;
         this.player = player;
-        playerStatsView.Show(player);
+        playerStatsView.Set(player);
     }
+    
     #endregion
 
     #region [Node UI Control]
@@ -144,8 +147,6 @@ public class UIManager : SingleTon<UIManager>
         {
             levelUpModal.Close();   
         }
-        //이런 시발! 시간 스케일링 때문에 실행이 안되는 것이었나!
-        
         
     }
     #endregion
@@ -158,9 +159,11 @@ public class UIManager : SingleTon<UIManager>
     #endregion
 
     #region [Character Stats UI Control]
+    
+    //얘는 플레이어의 스탯 표기만을 업데이트하는 녀석.
     private void UpdateCharacterStatsUI()
     {
-        playerStatsView.Show(player);
+        playerStatsView.Set(player);
     }
     #endregion
 
@@ -169,6 +172,9 @@ public class UIManager : SingleTon<UIManager>
     {
         if (UI != null)
         {
+            //타이므 스토푸!!! 근데 시발 원래 이렇게 하면 안되는뎅
+            prevTimeScale = Time.timeScale;
+            Time.timeScale = 0;
             
             Debug.Log($"<color=yellow>[UIMANAGER] </color>UI가 활성화되었습니다: {UI.name}</color>");
             UI.SetActive(true);    
@@ -182,6 +188,11 @@ public class UIManager : SingleTon<UIManager>
     {
         if(UI != null)
         {
+            //나중에 중복으로 UI가 활성화될 때 문제가 발생하겠지만.... 아직은 알빠노? 나중에 고쳐라.
+            if (Time.timeScale == 0)
+            {
+                Time.timeScale = prevTimeScale;
+            }
             UI.SetActive(false);
         }else
         {
