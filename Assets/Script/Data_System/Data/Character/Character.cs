@@ -79,17 +79,19 @@ public class Character : MonoBehaviour
     #region [State Update Function]
     //Stats Update
     //장비 변경, 스탯 변동 시에 작동.
-    public void UpdateStats()
+    public void UpdateStats(bool changeBaseStats = false)
     {
-        //int previousMaxHP = MaxHP;
+        int previousMaxHP = MaxHP;
         bool wasAlive = !IsDead;
         stats = new Stats(baseStats, tuningStats);
         // 최대 체력 증가분만 보충하고 감소 시에는 새 상한으로 제한한다.
         // 하지만, 만약 장비를 꼈다 뺏다 하는 식의 버그성 플레이를 하려한다면? 그로인해서 최대체력을 속이려 한다면?
         // 레벨업으로 인한 체력 회복만 가능하도록, 혹은 장비를 처음 착용했을 때만 회복하도록
-        // 현재는 스탯 변경으로 인한 회복만 가능하도록 하자.
-        // 당장은 스탯 변동에도 현재 체력을 건드리지 않는다.
-        // currentHP = wasAlive ? Mathf.Clamp(currentHP + Mathf.Max(0, MaxHP - previousMaxHP), 0, MaxHP) : 0;
+        // baseStats에 변동이 있을때만. 즉, 기본 스탯 str, dex, con이 체력을 회복할거임.
+        if (changeBaseStats)
+        {
+            currentHP = wasAlive ? Mathf.Clamp(currentHP + Mathf.Max(0, MaxHP - previousMaxHP), 0, MaxHP) : 0;
+        }
         UpdateHP_UI();
         OnStatsChanged();
     }

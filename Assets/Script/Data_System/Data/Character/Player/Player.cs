@@ -272,7 +272,7 @@ public class Player : Character
                 Debug.Log("<color = blue>[Player.cs]</color> UpdateBaseStats 입력 오류가 발생하였습니다. 정확한 baseStats name을 입력하세요.");
                 break;
         }
-        UpdateStats();
+        UpdateStats(true);
     }
     #endregion
 }
