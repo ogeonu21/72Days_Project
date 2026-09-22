@@ -9,6 +9,8 @@ public class Enemy : Character
     private TuningStats definitionTuning;
     private AreaData[] initialAreas;
 
+    public Reward reward{get; private set;}
+
     public void InitializeFromData(EnemyData data)
     {
         if (data == null) throw new ArgumentNullException(nameof(data));
@@ -17,9 +19,7 @@ public class Enemy : Character
         definitionTuning = data.tuningStats;
 
         //드랍 아이템과 보상 설정;
-        dropItem = data.dropItem;
-        itemDropRate = dropItem != null ? Mathf.Clamp01(data.itemDropRate) : 0;
-        dropGold = data.dropGold;
+        reward = new Reward(data.dropItem, (data.dropItem != null ? Mathf.Clamp01(data.itemDropRate) : 0), data.dropGold, 0, GetExpReward());
 
         AreaDataReset();
 

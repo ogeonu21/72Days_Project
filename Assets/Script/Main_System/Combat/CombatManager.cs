@@ -171,10 +171,9 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-        combatActive = false;
         onAttackTurn = false;
 
-        if (enemy.IsDead) yield return StartCoroutine(RewardEvent.RewardCoroutine(enemy, player));
+        if (enemy.IsDead) yield return StartCoroutine(RewardEvent.RewardCoroutine(enemy.reward));
 
         //플레이어 데이터 저장.
         gameManager.playerData = player.GetCurrentData();
