@@ -189,9 +189,8 @@ public class Player : Character
                 if (equipmentData.weaponItem != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.weaponItem.Release(this);
+                    equipmentData.weaponItem = null;
                 }
-                weaponItem.Equip(this);
                 equipmentData.weaponItem = weaponItem;
                 break;
             case ItemCategory.Armor:
@@ -199,9 +198,8 @@ public class Player : Character
                 if (equipmentData.armorItem[(int)armorItem.armorType] != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.armorItem[(int)armorItem.armorType].Release(this);
+                    equipmentData.armorItem[(int)armorItem.armorType] = null;
                 }
-                armorItem.Equip(this);
                 equipmentData.armorItem[(int)armorItem.armorType] = armorItem;
                 break;
             case ItemCategory.Accessory:
@@ -209,9 +207,8 @@ public class Player : Character
                 if (equipmentData.accessoryItem != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.accessoryItem.Release(this);
+                    equipmentData.accessoryItem = null;
                 }
-                accessoryItem.Equip(this);
                 equipmentData.accessoryItem = accessoryItem;
                 break;
             default:
@@ -235,7 +232,7 @@ public class Player : Character
                 if (weaponItem != null && equipmentData.weaponItem == weaponItem)
                 {
                     //장착중인 것이 확인되었으니 장착 해제
-                    equipmentData.weaponItem.Release(this);
+                    equipmentData.weaponItem = null;
                 }
                 break;
             case ItemCategory.Armor:
@@ -244,14 +241,14 @@ public class Player : Character
                     equipmentData.armorItem[(int)armorItem.armorType] == armorItem)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.armorItem[(int)armorItem.armorType].Release(this);
+                    equipmentData.armorItem[(int)armorItem.armorType] = null;
                 }
                 break;
             case ItemCategory.Accessory:
                 AccessoryItem accessoryItem = item as AccessoryItem;
                 if (accessoryItem != null && equipmentData.accessoryItem == accessoryItem)
                 {
-                    equipmentData.accessoryItem.Release(this);
+                    equipmentData.accessoryItem = null;
                 }
                 break;
             default:

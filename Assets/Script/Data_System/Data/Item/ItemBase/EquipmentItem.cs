@@ -5,22 +5,16 @@ public class EquipmentItem : BaseItem
 {
     public int durability; //내구도
 
-    // public int weaponDamageAmount;
-    // public int weaponAttackDistance;
-    public override void Equip(Player player)
-    {
-        //아이템 장착 함수.
-        //튜닝 수치 업데이트.
-        //player에게 장착 아이템 정보 제공 및 수치 업데이트.
-        if (durability <= 0)
-        {
-            Debug.Log("내구도가 0이하입니다. 장착할 수 없습니다.");
-            Release(player);
-            return;
-        }
-    }
+    
     public override void Use(Player player)
     {
+        if (--durability <= 0)
+        {
+            //장비가 파괴되어야겠지?
+            player.ReleaseItem(this);
+            InventoryManager.Instance.RemoveFromInventory(this);
+
+        }
         return;
     }
 
@@ -32,9 +26,6 @@ public class EquipmentItem : BaseItem
         {
             case ItemCategory.Weapon:
                 if (player.equipmentData.weaponItem == this) player.equipmentData.weaponItem = null;
-                //무기 해제 로직
-                //player.equipmentData.weaponId = -1;
-                //palyer.UpdateEquipmentStats();
                 break;
             case ItemCategory.Armor:
                 if (this is ArmorItem armor && EquipmentData.IsValidArmorType(armor.armorType) &&
@@ -46,16 +37,10 @@ public class EquipmentItem : BaseItem
                 if (player.equipmentData.accessoryItem == this) player.equipmentData.accessoryItem = null;
                 //악세서리 해제 로직
                 break;
-            case ItemCategory.Potion:
-                // 포션은 장비가 아니므로 해제 로직이 필요 없음
-                break;
             default:
                 Debug.LogWarning("알 수 없는 장비 유형입니다.");
                 break;
         }
-
-        //아이템 해제.
-        //player에게 아이템 해제하도록 명령, 수치 업데이트.
     }
 }
 

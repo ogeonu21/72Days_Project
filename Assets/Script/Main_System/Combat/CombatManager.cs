@@ -218,6 +218,25 @@ public class CombatManager : SingleTon<CombatManager>
             take.TakeDamage(result.Damage);
             logMessage = $"{who.characterName} {JosaUtility.GetJosa_은는(who.characterName)} {take.characterName}의 {where.label}을 공격하여 {result.Damage}의 피해를 입혔다.";
 
+
+            //방어구 내구도 감소.
+            if(take is Player)
+            {
+                Player p = take as Player;
+                foreach (ArmorItem item in p.equipmentData.armorItem) {
+                    item.Use(p);
+                }
+            }
+            //무기 내구도 감소
+            if(who is Player)
+            {
+                Player p = who as Player;
+                if(p.equipmentData.weaponItem != null)
+                {
+                    p.equipmentData.weaponItem.Use(p);
+                }
+            }
+
             if (result.AppliesEffect)
             {   
                 take.TakeEffect(where);

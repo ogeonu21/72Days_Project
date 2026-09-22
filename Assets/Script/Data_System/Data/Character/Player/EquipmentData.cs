@@ -27,4 +27,5 @@ public class EquipmentData
             Array.Copy(armorItem, copy.armorItem, Math.Min(armorItem.Length, ArmorSlotCount));
         return copy;
     }
+    //장비 내구도도 복사하는가?
 }
