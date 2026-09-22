@@ -23,6 +23,73 @@ public static class InventoryUISetup
     [MenuItem("Tools/Inventory/Install Inventory UI")]
     public static void InstallMenu() => Debug.Log(Install());
 
+    [MenuItem("Tools/Inventory/Install Player Stats Details")]
+    public static void InstallStatsMenu() => Debug.Log(InstallStatsDetails());
+
+    public static string InstallStatsDetails()
+    {
+        if (EditorApplication.isPlaying) throw new InvalidOperationException("Edit Mode에서 설치하세요.");
+        var original = SceneManager.GetActiveScene();
+        var scene = SceneManager.GetSceneByPath(ScenePath);
+        bool opened = !scene.isLoaded;
+        if (!opened && scene.isDirty) throw new InvalidOperationException("GameWindow의 미저장 변경을 먼저 저장하세요.");
+        if (opened) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+        try
+        {
+            var ui = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<InventoryUI>(true)).Single();
+            if (ui.playerStatsDetails != null) return "상세 능력치 UI가 이미 연결되어 있습니다.";
+            var status = ui.transform.Find("Status_UIGroup");
+            if (status == null) throw new InvalidOperationException("Status_UIGroup을 찾지 못했습니다.");
+            EnsureFont();
+            Undo.RegisterFullObjectHierarchyUndo(ui.gameObject, "상세 능력치 UI 연결");
+            var graphic = status.GetComponent<Image>() ?? Undo.AddComponent<Image>(status.gameObject);
+            graphic.color = new Color(.14f, .18f, .22f, 1);
+            graphic.raycastTarget = true;
+            var open = status.GetComponent<Button>() ?? Undo.AddComponent<Button>(status.gameObject);
+            open.targetGraphic = graphic;
+            UnityEventTools.AddPersistentListener(open.onClick, ui.OpenPlayerStats);
+            Text(status, "DetailsHint", "눌러서 상세 능력치 보기", .1f, -.24f, .9f, 0, 22, Gold).alignment = TextAlignmentOptions.Center;
+            var overlay = Image(ui.transform, "PlayerStatsDetails", new Color(0, 0, 0, .86f), 0, 0, 1, 1);
+            overlay.gameObject.SetActive(false);
+            var view = Undo.AddComponent<PlayerStatsDetailsUI>(overlay.gameObject);
+            ui.playerStatsDetails = view;
+            var card = Image(overlay.transform, "Card", Ink, .045f, .07f, .955f, .94f).transform;
+            var outline = card.gameObject.AddComponent<Outline>();
+            outline.effectColor = Gold;
+            Text(card, "Title", "상세 능력치", .06f, .90f, .72f, .97f, 46, Gold);
+            Button(card, "Close", "닫기", .78f, .91f, .95f, .97f, view.Close);
+            view.healthText = Text(card, "HealthValue", "체력", .07f, .84f, .93f, .89f, 34, Color.white);
+            var track = Image(card, "HealthBar", new Color(.18f, .22f, .25f), .07f, .79f, .93f, .825f);
+            var fill = Image(track.transform, "Fill", new Color(.38f, .72f, .48f), 0, 0, 1, 1);
+            view.healthBar = track.gameObject.AddComponent<Slider>();
+            view.healthBar.fillRect = fill.rectTransform;
+            view.healthBar.minValue = 0; view.healthBar.maxValue = 1;
+            view.healthBar.interactable = false;
+            track.raycastTarget = fill.raycastTarget = false;
+            view.attributesText = Text(card, "Attributes", "STR / DEX / CON", .07f, .70f, .93f, .76f, 34, Gold);
+            view.attackText = Text(card, "Attack", "공격력", .07f, .54f, .93f, .68f, 32, Color.white);
+            view.dodgeText = Text(card, "Dodge", "회피율", .07f, .38f, .93f, .52f, 32, Color.white);
+            view.accuracyText = Text(card, "Accuracy", "명중 보정", .07f, .20f, .93f, .36f, 30, Color.white);
+            view.rangeText = Text(card, "Range", "사거리", .07f, .08f, .93f, .18f, 32, Color.white);
+            Text(card, "Note", "기타 보정에는 버프·디버프 등이 포함됩니다.", .07f, .025f, .93f, .07f, 24, Gold);
+            foreach (var label in card.GetComponentsInChildren<TMP_Text>(true))
+            {
+                label.enableAutoSizing = true;
+                label.fontSizeMin = 20;
+                label.fontSizeMax = label.fontSize;
+            }
+            EditorUtility.SetDirty(ui);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            return "Status_UIGroup 클릭 및 상세 능력치 UI 연결 완료";
+        }
+        finally
+        {
+            if (opened) EditorSceneManager.CloseScene(scene, true);
+            if (original.IsValid() && original.isLoaded) SceneManager.SetActiveScene(original);
+        }
+    }
+
     public static string Install()
     {
         if (EditorApplication.isPlaying) throw new InvalidOperationException("Edit Mode에서 설치하세요.");

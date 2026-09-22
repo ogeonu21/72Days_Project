@@ -112,29 +112,43 @@ public class CombatManager : SingleTon<CombatManager>
     {
         who[0] = player;
         who[1] = enemy;
-
-        int index = GetFirst();
+        AreaData attackData;
 
         while (combatActive)
         {
+            //선공 정하기
+            int index = GetFirst();
+
+            //effect효과 적용
             who[0].CountEffect();
             who[1].CountEffect();
             CombatUIUpdate?.Invoke(player, enemy);
             GameEvent.UpdateCharacterUI(player, enemy);
 
-            if (index == 0)
-            {
-                yield return GameEvent.OnNodeTextUpdate("무슨 행동을 할 것인가?");
-                onAttackTurn = true;
+            //공격 전 입력 대기
+            yield return GameEvent.OnNodeTextUpdate("무슨 행동을 할 것인가?");
+            onAttackTurn = true;
+            yield return new WaitUntil(() => onAttackTurn == false);
 
-                yield return new WaitUntil(() => onAttackTurn == false);
+            //선공 턴
+            attackData = (index == 0) ? playerInputData : GetEnemyAttack();
+            yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
+            
+            //만약 선공 턴에서 전투가 끝났다면
+            if (!combatActive)
+            {
+                yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
+                yield break;
             }
 
-            AreaData attackData = (index == 0) ? playerInputData : GetEnemyAttack();
+            
+            //후공 전환을 위한 index 설정
+            index = (index + 1) % 2;
+            //공격 범위 설정.
+            attackData = (index == 0) ? playerInputData : GetEnemyAttack();
             yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
 
-            index = (index + 1) % 2;
-
+            //전투가 끝이 났는가?
             if (!combatActive)
             {
                 yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
@@ -223,15 +237,19 @@ public class CombatManager : SingleTon<CombatManager>
             if(take is Player)
             {
                 Player p = take as Player;
-                foreach (ArmorItem item in p.equipmentData.armorItem) {
-                    item.Use(p);
-                }
+                // 미착용 부위는 정상적인 빈 슬롯이다. 장착된 방어구만 소모한다.
+                var armorSlots = p.equipmentData?.armorItem;
+                if (armorSlots != null)
+                    foreach (ArmorItem item in armorSlots)
+                    {
+                        if (item != null) item.Use(p);
+                    }
             }
             //무기 내구도 감소
             if(who is Player)
             {
                 Player p = who as Player;
-                if(p.equipmentData.weaponItem != null)
+                if(p.equipmentData != null && p.equipmentData.weaponItem != null)
                 {
                     p.equipmentData.weaponItem.Use(p);
                 }
