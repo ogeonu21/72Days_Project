@@ -20,7 +20,7 @@ public class ChoiceListPresenter
 
         for (int index = 0; index < this.buttons.Length; index++)
         {
-            labels[index] = this.buttons[index] != null ? this.buttons[index].GetComponentInChildren<TMP_Text>() : null;
+            labels[index] = this.buttons[index] != null ? this.buttons[index].GetComponentInChildren<TMP_Text>(true) : null;
         }
     }
 

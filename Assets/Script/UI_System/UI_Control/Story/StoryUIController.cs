@@ -15,6 +15,7 @@ public class StoryUIController : UIController, IUpdatableUI
         base.OnEnable();
         NodeText = dialogueText;
         choiceListPresenter = choiceListPresenter ?? new ChoiceListPresenter(choiceButtons);
+        choiceListPresenter.Clear();
     }
 
     protected override void OnDisable()
@@ -26,23 +27,25 @@ public class StoryUIController : UIController, IUpdatableUI
 
     public void UpdateUI(Node node)
     {
+        if (node == null) return;
         if (node.nodeType == NodeType.StoryNode)
         {
-            StartCoroutine(UpdateStoryNode(node as StoryNode));
+            StartNodePresentation(UpdateStoryNode(node as StoryNode));
         }
         else if (node.nodeType == NodeType.MainStoryNode)
         {
-            StartCoroutine(UpdateMainStoryNode(node as MainStoryNode));
+            StartNodePresentation(UpdateMainStoryNode(node as MainStoryNode));
         }
     }
 
     public IEnumerator UpdateMainStoryNode(MainStoryNode node)
     {
         choiceListPresenter.Clear();
+        if (node == null) yield break;
 
-        yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
+        yield return TypeNodeText(node.nodeMessage);
 
-        yield return StartCoroutine(WaitForClick.WaitClick());
+        yield return WaitForClick.WaitClick();
 
         //얘는 따로 MainStoryUIController나 그런거를 만들기가 힘드네.
         NodeManager.Instance.AdvanceMainStory(node);
@@ -51,8 +54,9 @@ public class StoryUIController : UIController, IUpdatableUI
     public IEnumerator UpdateStoryNode(StoryNode node)
     {
 
-        //dialogue Text 출력.
-        yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
+        choiceListPresenter.Clear();
+        if (node == null) yield break;
+        yield return TypeNodeText(node.nodeMessage);
         choiceListPresenter.Present(node.choices, choice => NodeManager.Instance.SelectStoryChoice(choice));
     }
 }

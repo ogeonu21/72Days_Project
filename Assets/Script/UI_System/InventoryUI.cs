@@ -31,6 +31,7 @@ public sealed class InventoryUI : MonoBehaviour
     public Button plusButton;
     public Button allButton;
     public Button confirmButton;
+    public PlayerStatsDetailsUI playerStatsDetails;
     private Player player;
     private BaseItem selectedItem;
     private int selectedIndex = -1;
@@ -54,13 +55,15 @@ public sealed class InventoryUI : MonoBehaviour
         if (inventory != null) inventory.InventoryChanged -= Refresh;
         if (characters != null) characters.OnCharacterReady -= OnCharacterReady;
         SetPlayer(null);
+        if (playerStatsDetails != null) playerStatsDetails.Close();
         ClearSelection();
     }
 
     private void Update()
     {
         if (!Input.GetKeyDown(KeyCode.Escape)) return;
-        if (confirmPanel.activeSelf) CancelDiscard();
+        if (playerStatsDetails != null && playerStatsDetails.gameObject.activeSelf) playerStatsDetails.Close();
+        else if (confirmPanel.activeSelf) CancelDiscard();
         else if (detailPanel.activeSelf) CloseDetails();
         else uiManager.CloseUI(gameObject);
     }
@@ -71,6 +74,16 @@ public sealed class InventoryUI : MonoBehaviour
         if (player != null) player.StatsChanged -= Refresh;
         player = value;
         if (player != null) player.StatsChanged += Refresh;
+        if (playerStatsDetails != null) playerStatsDetails.Bind(player);
+    }
+
+    public void OpenPlayerStats()
+    {
+        if (playerStatsDetails == null) return;
+        ClearSelection();
+        playerStatsDetails.Bind(player);
+        playerStatsDetails.gameObject.SetActive(true);
+        playerStatsDetails.transform.SetAsLastSibling();
     }
 
     public void Refresh()
@@ -175,6 +188,7 @@ public sealed class InventoryUI : MonoBehaviour
         else inventory.TryUseAt(selectedIndex, player, out error);
         feedbackText.text = error ?? "";
         Refresh();
+        CloseDetails();
     }
 
     public void BeginDiscard()

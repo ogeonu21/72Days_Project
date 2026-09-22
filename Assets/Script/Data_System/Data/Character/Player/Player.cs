@@ -189,9 +189,8 @@ public class Player : Character
                 if (equipmentData.weaponItem != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.weaponItem.Release(this);
+                    equipmentData.weaponItem = null;
                 }
-                weaponItem.Equip(this);
                 equipmentData.weaponItem = weaponItem;
                 break;
             case ItemCategory.Armor:
@@ -199,9 +198,8 @@ public class Player : Character
                 if (equipmentData.armorItem[(int)armorItem.armorType] != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.armorItem[(int)armorItem.armorType].Release(this);
+                    equipmentData.armorItem[(int)armorItem.armorType] = null;
                 }
-                armorItem.Equip(this);
                 equipmentData.armorItem[(int)armorItem.armorType] = armorItem;
                 break;
             case ItemCategory.Accessory:
@@ -209,9 +207,8 @@ public class Player : Character
                 if (equipmentData.accessoryItem != null)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.accessoryItem.Release(this);
+                    equipmentData.accessoryItem = null;
                 }
-                accessoryItem.Equip(this);
                 equipmentData.accessoryItem = accessoryItem;
                 break;
             default:
@@ -235,7 +232,7 @@ public class Player : Character
                 if (weaponItem != null && equipmentData.weaponItem == weaponItem)
                 {
                     //장착중인 것이 확인되었으니 장착 해제
-                    equipmentData.weaponItem.Release(this);
+                    equipmentData.weaponItem = null;
                 }
                 break;
             case ItemCategory.Armor:
@@ -244,14 +241,14 @@ public class Player : Character
                     equipmentData.armorItem[(int)armorItem.armorType] == armorItem)
                 {
                     //기존 장착 아이템 해제.
-                    equipmentData.armorItem[(int)armorItem.armorType].Release(this);
+                    equipmentData.armorItem[(int)armorItem.armorType] = null;
                 }
                 break;
             case ItemCategory.Accessory:
                 AccessoryItem accessoryItem = item as AccessoryItem;
                 if (accessoryItem != null && equipmentData.accessoryItem == accessoryItem)
                 {
-                    equipmentData.accessoryItem.Release(this);
+                    equipmentData.accessoryItem = null;
                 }
                 break;
             default:
@@ -280,29 +277,30 @@ public class Player : Character
     {
         if (equipmentData == null) equipmentData = new EquipmentData();
         equipmentData.EnsureArmorSlots();
-
-        //초기화
-        tuningStats.attackBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.attackBonus : 0;
-        tuningStats.hpBonus = 0;
-        tuningStats.dodgeBonus = 0;
-        tuningStats.rangeBonus = equipmentData.weaponItem != null ? equipmentData.weaponItem.range : 0;
-
-        //장비 아이템 효과 적용
-        foreach (ArmorItem item in equipmentData.armorItem)
-        {
-            tuningStats.hpBonus += item != null ? item.hpBonus : 0;
-            tuningStats.dodgeBonus += item != null ? item.dodgeBonus : 0;
-        }
-
-        //장신구 아이템 효과 적용
-        tuningStats.dodgeBonus += equipmentData.accessoryItem != null ? equipmentData.accessoryItem.dodgeBonus : 0;
-
-
-        //특수 효과에 따른 스탯 조정.
-        tuningStats = ApplyStatusEffects(tuningStats);
-
-        //최종 스탯 업데이트.
+        tuningStats = ApplyStatusEffects(GetEquipmentTuningStats());
         UpdateStats();
+    }
+
+    // 실제 계산과 상세 UI가 동일한 장비 합산 결과를 사용한다.
+    public TuningStats GetEquipmentTuningStats()
+    {
+        var result = new TuningStats();
+        if (equipmentData == null) return result;
+        if (equipmentData.weaponItem != null)
+        {
+            result.attackBonus = equipmentData.weaponItem.attackBonus;
+            result.rangeBonus = equipmentData.weaponItem.range;
+        }
+        if (equipmentData.armorItem != null)
+            foreach (var item in equipmentData.armorItem)
+            {
+                if (item == null) continue;
+                result.hpBonus += item.hpBonus;
+                result.dodgeBonus += item.dodgeBonus;
+            }
+        if (equipmentData.accessoryItem != null)
+            result.dodgeBonus += equipmentData.accessoryItem.dodgeBonus;
+        return result;
     }
     #endregion
 
