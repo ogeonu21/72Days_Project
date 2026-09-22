@@ -71,8 +71,10 @@ public class Character : MonoBehaviour
     //HP 수정하고 수정 사실을 알림.
     protected void SetCurrentHPAndNotify(int currentHP)
     {
-        this.currentHP = Mathf.Clamp(currentHP, 0, MaxHP);
-        UpdateHP_UI();
+        int nextHP = Mathf.Clamp(currentHP, 0, MaxHP);
+        if (this.currentHP == nextHP) return;
+        this.currentHP = nextHP;
+        OnStatsChanged();
     }
     #endregion
 
@@ -92,11 +94,15 @@ public class Character : MonoBehaviour
         {
             currentHP = wasAlive ? Mathf.Clamp(currentHP + Mathf.Max(0, MaxHP - previousMaxHP), 0, MaxHP) : 0;
         }
-        UpdateHP_UI();
+        currentHP = Mathf.Clamp(currentHP, 0, MaxHP);
         OnStatsChanged();
     }
 
-    protected virtual void OnStatsChanged() => StatsChanged?.Invoke();
+    protected virtual void OnStatsChanged()
+    {
+        UpdateHP_UI();
+        StatsChanged?.Invoke();
+    }
 
     protected void InitializeCharacter(string id, string displayName, BaseStats initialStats, TuningStats initialTuning)
     {
@@ -127,9 +133,7 @@ public class Character : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         if (IsDead || amount < 0) return;
-        currentHP = Mathf.Max(0, currentHP - amount);
-
-        UpdateHP_UI();
+        SetCurrentHPAndNotify(Mathf.Max(0, currentHP - amount));
 
         if (currentHP <= 0)
         {
@@ -141,10 +145,9 @@ public class Character : MonoBehaviour
     public virtual void Heal(int amount)
     {
         if (IsDead || amount < 0) return;
-        currentHP = (int)Math.Min(MaxHP, (long)currentHP + amount);
+        SetCurrentHPAndNotify((int)Math.Min(MaxHP, (long)currentHP + amount));
         Debug.Log($"{amount}만큼의 체력을 회복하였다.");
 
-        UpdateHP_UI();
     }
 
     protected virtual void Die()
@@ -230,9 +233,9 @@ public class Character : MonoBehaviour
     {
         if (nameText != null) nameText.text = characterName;
 
-        if (hpSlider != null && MaxHP > 0)
+        if (hpSlider != null)
         {
-            hpSlider.value = (float)currentHP / MaxHP;
+            hpSlider.value = MaxHP > 0 ? (float)currentHP / MaxHP : 0f;
         }
         if (hpText != null)
         {

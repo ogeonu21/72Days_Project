@@ -15,6 +15,7 @@ public class EventUIController : UIController, IUpdatableUI
         base.OnEnable();
         NodeText = dialogueText;
         choiceListPresenter = choiceListPresenter ?? new ChoiceListPresenter(choiceButtons);
+        choiceListPresenter.Clear();
     }
     protected override void OnDisable()
     {
@@ -25,13 +26,15 @@ public class EventUIController : UIController, IUpdatableUI
 
     public void UpdateUI(Node node)
     {
-        StartCoroutine(UpdateEventNode(node as EventNode));
+        StartNodePresentation(UpdateEventNode(node as EventNode));
 
     }
 
     public IEnumerator UpdateEventNode(EventNode node)
     {
-        yield return GameEvent.OnNodeTextUpdate(node.nodeMessage);
+        choiceListPresenter.Clear();
+        if (node == null) yield break;
+        yield return TypeNodeText(node.nodeMessage);
         choiceListPresenter.Present(node.choices, choice => EventManager.Instance.Choose(choice));
     }
 }

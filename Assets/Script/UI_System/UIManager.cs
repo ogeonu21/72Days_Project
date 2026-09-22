@@ -59,11 +59,27 @@ public class UIManager : SingleTon<UIManager>
         GameEvent.OnNodeChanged += UpdateUI;
         PlayerEvent.OnPlayerLevelUp += UpdateLevelUpUI;
         CurrencyEvent.OnCurrencyChanged += UpdateCurrencyUI;
-        PlayerEvent.onStatsChanged += UpdateCharacterStatsUI;
+    }
 
+    private void OnEnable()
+    {
         characterSource = CharacterManager.Instance;
         if (characterSource != null)
+        {
             characterSource.OnCharacterReady += UpdateCharacter;
+            UpdateCharacter(characterSource.currentPlayer, characterSource.currentEnemy);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (characterSource != null)
+            characterSource.OnCharacterReady -= UpdateCharacter;
+        if (player != null)
+            player.StatsChanged -= UpdateCharacterStatsUI;
+        player = null;
+        enemy = null;
+        characterSource = null;
     }
 
     void OnDestroy()
@@ -72,7 +88,6 @@ public class UIManager : SingleTon<UIManager>
         GameEvent.OnNodeChanged -= UpdateUI;
         PlayerEvent.OnPlayerLevelUp -= UpdateLevelUpUI;
         CurrencyEvent.OnCurrencyChanged -= UpdateCurrencyUI;
-        PlayerEvent.onStatsChanged -= UpdateCharacterStatsUI;
         levelUpModal?.Close();
         if (characterSource != null)
         {
@@ -94,9 +109,13 @@ public class UIManager : SingleTon<UIManager>
     //플레이어나 적 인스턴스에 변화가 있을때, 참조를 다시 연결.
     private void UpdateCharacter(Player player, Enemy enemy)
     {
+        if (this.player != null)
+            this.player.StatsChanged -= UpdateCharacterStatsUI;
         this.enemy = enemy;
         this.player = player;
-        playerStatsView.Set(player);
+        if (this.player != null)
+            this.player.StatsChanged += UpdateCharacterStatsUI;
+        UpdateCharacterStatsUI();
     }
     
     #endregion

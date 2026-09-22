@@ -16,6 +16,9 @@ public class CombatUIController : UIController, IUpdatableUI
 
     //Manager
     private CombatManager combatManager;
+    private CharacterManager characterSource;
+    private Player player;
+    private Enemy enemy;
     #endregion
 
     private Coroutine bloodEffectCoroutine; // 피격 효과 코루틴을 제어하기 위한 변수
@@ -28,7 +31,14 @@ public class CombatUIController : UIController, IUpdatableUI
         base.OnEnable();
         NodeText = combatText;
         combatManager = CombatManager.Instance;
-        combatManager.CombatUIUpdate += UpdateCombatUI;
+        if (combatManager != null)
+            combatManager.CombatUIUpdate += UpdateCombatUI;
+        characterSource = CharacterManager.Instance;
+        if (characterSource != null)
+        {
+            characterSource.OnCharacterReady += UpdateCombatUI;
+            UpdateCombatUI(characterSource.currentPlayer, characterSource.currentEnemy);
+        }
         GameEvent.OnTakeDamageEffect += HandleTakeDamageEffect;
     }
     
@@ -36,7 +46,11 @@ public class CombatUIController : UIController, IUpdatableUI
     {
         base.OnDisable();
         NodeText = null;
-        combatManager.CombatUIUpdate -= UpdateCombatUI;
+        if (combatManager != null)
+            combatManager.CombatUIUpdate -= UpdateCombatUI;
+        if (characterSource != null)
+            characterSource.OnCharacterReady -= UpdateCombatUI;
+        UnbindCharacters();
         GameEvent.OnTakeDamageEffect -= HandleTakeDamageEffect;
     }
     #endregion
@@ -108,9 +122,34 @@ public class CombatUIController : UIController, IUpdatableUI
     //피격률 등 표시
     public void UpdateCombatUI(Player player, Enemy enemy)
     {
-        
-        for (int i = 0; i < 6; i++)
+        UnbindCharacters();
+        this.player = player;
+        this.enemy = enemy;
+        if (player != null) player.StatsChanged += RefreshCombatStats;
+        if (enemy != null) enemy.StatsChanged += RefreshCombatStats;
+        RefreshCombatStats();
+    }
+
+    private void UnbindCharacters()
+    {
+        if (player != null) player.StatsChanged -= RefreshCombatStats;
+        if (enemy != null) enemy.StatsChanged -= RefreshCombatStats;
+        player = null;
+        enemy = null;
+    }
+
+    private void RefreshCombatStats()
+    {
+        if (dodgeRateText == null) return;
+        for (int i = 0; i < Mathf.Min(6, dodgeRateText.Length); i++)
         {
+            if (dodgeRateText[i] == null) continue;
+            int areaIndex = i < 2 ? i : i / 2 + 1;
+            if (player == null || enemy == null || enemy.areaDataDB == null || areaIndex >= enemy.areaDataDB.Length)
+            {
+                dodgeRateText[i].text = string.Empty;
+                continue;
+            }
             string damageText;
             string dodgeText;
 
