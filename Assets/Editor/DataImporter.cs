@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
 
-public class DataImporter : EditorWindow
+public partial class DataImporter : EditorWindow
 {
     private const string baseURL = "https://script.google.com/macros/s/AKfycbzd47uZXwCe472lYE247EzI4jabj9fhZOIRgXUVL6f74683LiMpo7T4NnMFDc2G76VG-Q/exec";    
     private static Dictionary<string, Node> nodeMap = new Dictionary<string, Node>(StringComparer.OrdinalIgnoreCase);
@@ -21,36 +21,81 @@ public class DataImporter : EditorWindow
             string items = await Fetch("ItemData");
             string stats = await Fetch("StatusData");
             string nodes = await Fetch("NodeData");
-            ValidateSnapshot(items, stats, nodes);
+            string events = await Fetch("EventData");
+            string choices = await Fetch("EventChoiceData");
+            string rewards = await Fetch("RewardData");
+            ValidateSnapshot(items, stats, nodes, events, choices, rewards);
             if (!EditorUtility.DisplayDialog("데이터 가져오기 미리보기",
-                $"아이템 {JsonHelper.FromJson<ItemDataRaw>(items).Length}개, 캐릭터 {JsonHelper.FromJson<StatusDataRaw>(stats).Length}개, 노드 {JsonHelper.FromJson<NodeDataRaw>(nodes).Length}개 갱신\n기존 GUID 유지. 적용할까요?", "적용", "취소")) return;
+                $"아이템 {ParseRows<ItemDataRaw>(items).Length}개, 캐릭터 {ParseRows<StatusDataRaw>(stats).Length}개, 노드 {ParseRows<NodeDataRaw>(nodes).Length}개, 이벤트 {SheetJson.Read<EventDataRaw>(events).Length}개 갱신\n시트에 없는 에셋은 보존. 기존 GUID 유지. 적용할까요?", "적용", "취소")) return;
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
-            Undo.IncrementCurrentGroup();
-            int undoGroup = Undo.GetCurrentGroup();
-            Undo.SetCurrentGroupName("게임 데이터 가져오기");
-            try
-            {
-                ImportItems(items);
-                ImportStats(stats);
-                RunImportSequence(nodes);
-                AssetDatabase.SaveAssets();
-                Undo.CollapseUndoOperations(undoGroup);
-            }
-            catch
-            {
-                Undo.RevertAllDownToGroup(undoGroup);
-                AssetDatabase.SaveAssets();
-                throw;
-            }
+            ApplySnapshot(items, stats, nodes, events, choices, rewards);
             Debug.Log("[DataImporter] 데이터 적용 완료.");
         }
         catch (Exception ex) { Debug.LogError("[DataImporter] 가져오기 실패: " + ex.Message); }
         finally { importing = false; }
     }
     private static bool importing;
+    public static string LastValidationReport { get; private set; } = "검사 전";
+
+    [MenuItem("Tools/Validate Remote Game Data (No Changes)")]
+    public static async void ValidateRemoteGameData()
+    {
+        if (importing || EditorApplication.isPlayingOrWillChangePlaymode) return;
+        importing = true;
+        LastValidationReport = "원격 시트 검사 중";
+        try
+        {
+            var data = await Task.WhenAll(Fetch("ItemData"), Fetch("StatusData"), Fetch("NodeData"),
+                Fetch("EventData"), Fetch("EventChoiceData"), Fetch("RewardData"));
+            ValidateSnapshot(data[0], data[1], data[2], data[3], data[4], data[5]);
+            LastValidationReport = $"원격 6개 시트 검증 통과: 아이템 {ParseRows<ItemDataRaw>(data[0]).Length}, 적 {ParseRows<StatusDataRaw>(data[1]).Length}, 노드 {ParseRows<NodeDataRaw>(data[2]).Length}, 이벤트 {SheetJson.Read<EventDataRaw>(data[3]).Length}, 선택지 {SheetJson.Read<EventChoiceDataRaw>(data[4]).Length}, 보상 행 {SheetJson.Read<RewardDataRaw>(data[5]).Length}. 에셋 변경 없음.";
+            Debug.Log("[DataImporter] " + LastValidationReport);
+        }
+        catch (Exception ex) { LastValidationReport = "검증 실패: " + ex.Message; Debug.LogError("[DataImporter] " + LastValidationReport); }
+        finally { importing = false; }
+    }
+
+    public static void ApplySnapshot(string items, string stats, string nodes, string events, string choices, string rewards)
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Edit Mode에서만 가져올 수 있습니다.");
+        ValidateSnapshot(items, stats, nodes, events, choices, rewards);
+        var newPaths = new List<string>();
+        foreach (var row in ParseRows<ItemDataRaw>(items)) TrackNewAsset(newPaths, "Items", row.ItemID);
+        foreach (var row in ParseRows<StatusDataRaw>(stats)) TrackNewAsset(newPaths, "Characters", row.ID);
+        foreach (var row in ParseRows<NodeDataRaw>(nodes)) TrackNewAsset(newPaths, "Nodes", row.NodeID);
+        foreach (var row in SheetJson.Read<EventDataRaw>(events)) TrackNewAsset(newPaths, "EventDefinitions", row.EventID);
+        Undo.IncrementCurrentGroup();
+        int undoGroup = Undo.GetCurrentGroup();
+        Undo.SetCurrentGroupName("게임 데이터 가져오기");
+        try
+        {
+            ImportItems(items);
+            ImportStats(stats);
+            CreateOrReconstructNodeAssets(nodes);
+            RebuildNodeMap();
+            ImportEventDefinitions(events, choices, rewards);
+            LinkAllReferences(nodes);
+            AssetDatabase.SaveAssets();
+            Undo.CollapseUndoOperations(undoGroup);
+        }
+        catch
+        {
+            Undo.RevertAllDownToGroup(undoGroup);
+            foreach (var path in newPaths) if (File.Exists(path)) AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            throw;
+        }
+    }
+
+    private static void TrackNewAsset(List<string> paths, string folder, string id)
+    {
+        string path = $"Assets/Resources/{folder}/{id}.asset";
+        if (!File.Exists(path)) paths.Add(path);
+    }
 
     // Validate the entire snapshot before touching any asset.
-    public static void ValidateSnapshot(string itemJson, string statusJson, string nodeJson)
+    public static void ValidateSnapshot(string itemJson, string statusJson, string nodeJson,
+        string eventJson = null, string choiceJson = null, string rewardJson = null)
     {
         var items = ParseRows<ItemDataRaw>(itemJson);
         var stats = ParseRows<StatusDataRaw>(statusJson);
@@ -58,6 +103,7 @@ public class DataImporter : EditorWindow
         var itemIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var enemyIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var nodeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        HashSet<string> sheetEventIds = ValidateEventSheets(items, nodes, eventJson, choiceJson, rewardJson);
         foreach (var row in items)
         {
             CheckId(row?.ItemID, itemIds, "Items");
@@ -65,6 +111,7 @@ public class DataImporter : EditorWindow
             if (sample == null) throw new InvalidOperationException(row.ItemID + ": 잘못된 아이템 종류");
             try { CheckType("Items", row.ItemID, sample.GetType()); }
             finally { DestroyImmediate(sample); }
+            ValidateItemMapping(row);
             if (row.ItemCategory == "Armor" && (!Enum.TryParse(row.ArmorType, out ArmorType armor) || !Enum.IsDefined(typeof(ArmorType), armor)))
                 throw new InvalidOperationException(row.ItemID + ": 잘못된 방어구 종류");
         }
@@ -72,6 +119,7 @@ public class DataImporter : EditorWindow
         {
             CheckId(row?.ID, enemyIds, "Characters");
             CheckType("Characters", row.ID, typeof(EnemyData));
+            ValidateStatusMapping(row, items);
             if (float.IsNaN(row.ItemDropRate) || float.IsInfinity(row.ItemDropRate) || row.ItemDropRate < 0 || row.ItemDropRate > 1 || (row.ItemDropRate > 0 && string.IsNullOrWhiteSpace(row.DropItemID)))
                 throw new InvalidOperationException(row.ID + ": 드롭 확률 또는 아이템 설정 오류");
             if (!string.IsNullOrEmpty(row.DropItemID) && !itemIds.Contains(row.DropItemID) && Resources.Load<BaseItem>("Items/" + row.DropItemID) == null)
@@ -87,6 +135,7 @@ public class DataImporter : EditorWindow
             finally { DestroyImmediate(sample); }
             if (!Enum.TryParse(row.WorldLocation, out WorldLocation location) || !Enum.IsDefined(typeof(WorldLocation), location))
                 throw new InvalidOperationException(row.NodeID + ": 잘못된 지역");
+            if (row.SurviveDate < 0) throw new InvalidOperationException(row.NodeID + ": 날짜는 음수일 수 없습니다.");
         }
         foreach (var row in nodes)
         {
@@ -99,6 +148,15 @@ public class DataImporter : EditorWindow
                     throw new InvalidOperationException(row.NodeID + ": 전투 적 누락");
             }
             if (row.NodeType != nameof(NodeType.StoryNode) && row.NodeType != nameof(NodeType.EventNode)) continue;
+            if (row.NodeType == nameof(NodeType.EventNode) && !string.IsNullOrWhiteSpace(row.EventDefinitionID))
+            {
+                if (sheetEventIds.Contains(row.EventDefinitionID)) continue;
+                var definition = Resources.Load<EventDefinition>("EventDefinitions/" + row.EventDefinitionID.Trim());
+                if (definition == null) throw new InvalidOperationException(row.NodeID + ": EventDefinition 누락 " + row.EventDefinitionID);
+                string definitionError = EventDefinitionValidator.Validate(definition);
+                if (definitionError != null) throw new InvalidOperationException(row.NodeID + ": " + definitionError);
+                continue;
+            }
             string[] labels = { row.Choice1_Text, row.Choice2_Text, row.Choice3_Text };
             string[] links = { row.Choice1_NextNode, row.Choice2_NextNode, row.Choice3_NextNode };
             string[] events = { row.Choice1_EventName, row.Choice2_EventName, row.Choice3_EventName };
@@ -122,8 +180,7 @@ public class DataImporter : EditorWindow
 
     private static T[] ParseRows<T>(string json)
     {
-        if (string.IsNullOrWhiteSpace(json) || !json.TrimStart().StartsWith("[")) throw new InvalidOperationException("JSON 배열 응답이 아닙니다.");
-        var rows = JsonHelper.FromJson<T>(json);
+        var rows = SheetJson.Read<T>(json, true);
         if (rows == null || rows.Length == 0) throw new InvalidOperationException("빈 시트는 적용하지 않습니다.");
         return rows;
     }
@@ -182,7 +239,7 @@ public class DataImporter : EditorWindow
 
     private static void CreateOrReconstructNodeAssets(string json)
     {
-        var nodeDataList = JsonHelper.FromJson<NodeDataRaw>(json);
+        var nodeDataList = ParseRows<NodeDataRaw>(json);
         string folderPath = "Assets/Resources/Nodes";
         if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
@@ -211,7 +268,7 @@ public class DataImporter : EditorWindow
             Undo.RecordObject(existingNode, "노드 갱신");
             existingNode.nodeType = targetType; // 인스펙터 변수 할당
             existingNode.nodeName = data.NodeID;
-            existingNode.nodeMessage = data.NodeMessage;
+            existingNode.nodeMessage = SheetJson.Multiline(data.NodeMessage);
             existingNode.surviveDate = data.SurviveDate;
 
             if (System.Enum.TryParse(data.WorldLocation, out WorldLocation loc))
@@ -227,7 +284,7 @@ public class DataImporter : EditorWindow
 
     private static void LinkAllReferences(string json)
     {
-        var nodeDataList = JsonHelper.FromJson<NodeDataRaw>(json);
+        var nodeDataList = ParseRows<NodeDataRaw>(json);
         foreach (var data in nodeDataList)
         {
             if (!nodeMap.TryGetValue(data.NodeID, out Node node)) continue;
@@ -248,7 +305,8 @@ public class DataImporter : EditorWindow
                     sn.choices = CreateChoiceList(data);
                     break;
                 case EventNode en:
-                    en.choices = CreateChoiceList(data);
+                    en.choices = string.IsNullOrWhiteSpace(data.EventDefinitionID) ? CreateChoiceList(data) : new List<Choice>();
+                    en.definition = string.IsNullOrWhiteSpace(data.EventDefinitionID) ? null : Resources.Load<EventDefinition>("EventDefinitions/" + data.EventDefinitionID.Trim());
                     break;
             }
             EditorUtility.SetDirty(node);
@@ -286,7 +344,7 @@ public class DataImporter : EditorWindow
         if (string.IsNullOrEmpty(txt)) return;
         Choice c = new Choice 
         { 
-            choiceText = txt, 
+            choiceText = SheetJson.Multiline(txt),
             nextNode = FindNode(nxtID)
         };
         if (!string.IsNullOrEmpty(evt))
@@ -297,7 +355,7 @@ public class DataImporter : EditorWindow
     private static Node FindNode(string id)
     {
         if (string.IsNullOrEmpty(id)) return null;
-        return nodeMap.TryGetValue(id.Trim(), out Node result) ? result : null;
+        return nodeMap.TryGetValue(id.Trim(), out Node result) ? result : Resources.Load<Node>("Nodes/" + id.Trim());
     }
 
     
@@ -319,7 +377,8 @@ public class DataImporter : EditorWindow
     #region [Import Stats]
     private static void ImportStats(string json)
 {
-    var stats = JsonHelper.FromJson<StatusDataRaw>(json);
+    var stats = ParseRows<StatusDataRaw>(json);
+    EnsureResourceFolder("Characters");
     foreach (var data in stats)
     {
         if (string.IsNullOrEmpty(data.ID)) continue;
@@ -376,7 +435,8 @@ public class DataImporter : EditorWindow
     #region [Import Items]
     private static void ImportItems(string json)
     {
-        var items = JsonHelper.FromJson<ItemDataRaw>(json);
+        var items = ParseRows<ItemDataRaw>(json);
+        EnsureResourceFolder("Items");
         foreach(var data in items)
         {
             if (string.IsNullOrEmpty(data.ItemID)) continue;
@@ -395,7 +455,7 @@ public class DataImporter : EditorWindow
             Undo.RecordObject(item, "아이템 갱신");
             item.itemID = data.ItemID;
             item.itemName = data.ItemName;
-            item.itemDescription = data.ItemDesc;
+            item.itemDescription = SheetJson.Multiline(data.ItemDesc);
             item.itemCategory = System.Enum.TryParse(data.ItemCategory, out ItemCategory cat) ? cat : ItemCategory.Weapon;
             // 빈 시트 값으로 에디터에서 지정한 주소를 지우지 않는다.
             if (!string.IsNullOrWhiteSpace(data.ItemIcon)) item.itemIcon = data.ItemIcon.Trim();
@@ -417,6 +477,7 @@ public class DataImporter : EditorWindow
             }
             else if (item is AccessoryItem ac)
             {
+                ac.durability = data.Durability;
                 ac.dodgeBonus = data.DodgeBonus;
                 ac.questID = data.QuestID;
             }

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : SingleTon<GameManager>
 {
+    public EventProgress eventProgress = new EventProgress();
     #region [변수 관리]
     [Header("플레이어 정보")]
     public PlayerData playerData;
@@ -52,6 +53,7 @@ public class GameManager : SingleTon<GameManager>
 
     public void StartNewGame()
     {
+        eventProgress = new EventProgress();
         UpdateGameState(GameState.New);
         SceneManager.LoadScene("GameWindow");
     }

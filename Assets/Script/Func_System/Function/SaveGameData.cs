@@ -4,10 +4,11 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveGameData
 {
-    public const float CurrentVersion = 3.0f;
+    public const float CurrentVersion = 4.0f;
 
     public float version = CurrentVersion;
     public string currentNodeId;
+    public EventProgress eventProgress = new EventProgress();
     public PlayerSaveData player = new PlayerSaveData();
     public List<CurrencySaveData> currencies = new List<CurrencySaveData>();
     public List<InventoryItemSaveData> inventoryItems = new List<InventoryItemSaveData>();
@@ -23,7 +24,7 @@ public class SaveGameData
         try
         {
             var header = UnityEngine.JsonUtility.FromJson<LegacyHeader>(json);
-            if (header == null || (header.version != 1.0f && header.version != 2.0f && header.version != CurrentVersion))
+            if (header == null || (header.version != 1.0f && header.version != 2.0f && header.version != 3.0f && header.version != CurrentVersion))
             {
                 error = "지원하지 않거나 버전이 없는 저장 파일입니다.";
                 return false;
@@ -36,7 +37,7 @@ public class SaveGameData
                 error = "플레이어 저장 데이터가 없습니다.";
                 return false;
             }
-            if (header.version < CurrentVersion)
+            if (header.version < 3.0f)
             {
                 // 구 파일에는 수량이 기록되지 않았다. ID 등장 횟수만큼(보통 1개) 복원한다.
                 data.inventoryItems = new List<InventoryItemSaveData>();
@@ -70,6 +71,10 @@ public class SaveGameData
                 }
                 data.player.tendency = header.tendency != 0 ? header.tendency : header.goodAndEvil;
             }
+            if (data.eventProgress == null) data.eventProgress = new EventProgress();
+            if (data.eventProgress.claimed == null) data.eventProgress.claimed = new List<string>();
+            if (data.eventProgress.acceptedQuests == null) data.eventProgress.acceptedQuests = new List<string>();
+            if (data.eventProgress.completedQuests == null) data.eventProgress.completedQuests = new List<string>();
             data.version = CurrentVersion;
             return true;
         }

@@ -8,5 +8,6 @@ using UnityEngine;
 public class EventNode : Node
 {
     public string eventCategory;
+    public EventDefinition definition;
     public List<Choice> choices = new List<Choice>();
 }

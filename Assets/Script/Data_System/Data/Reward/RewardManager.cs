@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEditor.Build.Pipeline;
 
 public class RewardManager : SingleTon<RewardManager>
 {
@@ -12,7 +11,6 @@ public class RewardManager : SingleTon<RewardManager>
     public void OnEnable()
     {
         RewardEvent.OnRewardProcess += ProcessReward;
-        player = CharacterManager.Instance.playerPrefab;
     }
     public void OnDisable()
     {
@@ -21,33 +19,23 @@ public class RewardManager : SingleTon<RewardManager>
 
     private IEnumerator ProcessReward(Reward reward)
     {
-        this.player = CharacterManager.Instance.currentPlayer != null ? CharacterManager.Instance.currentPlayer : null;
-        if(this.player == null)
+        player = CharacterManager.Instance != null ? CharacterManager.Instance.currentPlayer : null;
+        string error = RewardService.Validate(reward);
+        if (error != null || player == null) { Debug.LogError(error ?? "보상 대상이 없습니다."); yield break; }
+        // 전투는 기존 정책 유지: 가방이 가득 차도 경험치/골드는 지급한다.
+        var entries = RewardService.Entries(reward);
+        reward.dropItem = null; reward.itemDropRate = 0; reward.items = null;
+        var result = RewardService.Apply(reward, player, InventoryManager.Instance, CurrencyManager.Instance);
+        yield return GameEvent.OnNodeTextUpdate(result.message);
+        yield return WaitForClick.WaitClick();
+        foreach (var entry in entries)
         {
-            Debug.Log("[RewardManager.cs] 에러 발생. player 특정 불가.");
-            yield return null;
+            if (entry.probability <= 0 || (entry.probability < 1 && UnityEngine.Random.value >= entry.probability)) continue;
+            var itemReward = new Reward { items = new List<ItemReward> { new ItemReward { item = entry.item, quantity = entry.quantity, probability = 1 } } };
+            var itemResult = RewardService.Apply(itemReward, player, InventoryManager.Instance, CurrencyManager.Instance);
+            yield return GameEvent.OnNodeTextUpdate(itemResult.message);
+            yield return WaitForClick.WaitClick();
         }
-
-        yield return GameEvent.OnNodeTextUpdate($"당신은 보상으로 {reward.exp}의 경험치를 획득하였다.");
-        yield return StartCoroutine(WaitForClick.WaitClick());
-
-        player.GetExp(reward.exp);
-        CurrencyManager.Instance.Increase("Gold", reward.dropGold);
-
-        if(CalculateFunction.Roll(reward.itemDropRate))
-        {
-            if (!InventoryManager.Instance.CanAdd(reward.dropItem))
-            {
-                yield return GameEvent.OnNodeTextUpdate($"배낭이 꽉 차 더 이상 아이템을 얻을 수 없다.");
-            }
-            else{
-                yield return GameEvent.OnNodeTextUpdate($"당신은 보상으로 {reward.dropItem.itemName}을 얻었다.");
-                InventoryManager.Instance.AddToInventory(reward.dropItem);
-            }
-            yield return StartCoroutine(WaitForClick.WaitClick());
-
-        }
-        yield return null;
 
     }
 }

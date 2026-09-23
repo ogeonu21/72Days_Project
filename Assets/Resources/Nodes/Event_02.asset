@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeType: 3
   nodeName: Event_02
-  nodeMessage: "\uC870\uC6B0 \uC774\uBCA4\uD2B8 \uBC1C\uC0DD. \\\\\\n \uB2F9\uC2E0\uC740
+  nodeMessage: "\uC870\uC6B0 \uC774\uBCA4\uD2B8 \uBC1C\uC0DD. \n \uB2F9\uC2E0\uC740
     \uAD76\uC8FC\uB9B0 \uBAA8\uB140\uC640 \uB9C8\uC8FC\uD558\uC600\uB2E4. \uC5B4\uB5BB\uAC8C
     \uD560 \uAC83\uC778\uAC00?"
   surviveDate: 2
   worldLocation: 0
   eventCategory: "\uC870\uC6B0"
+  definition: {fileID: 0}
   choices:
   - choiceText: "\uBB34\uC2DC\uD55C\uB2E4. (\uC544\uBB34\uB7F0 \uC77C\uB3C4 \uC77C\uC5B4\uB098\uC9C0
       \uC54A\uC74C.)"

@@ -20,6 +20,7 @@ MonoBehaviour:
   surviveDate: 1
   worldLocation: 0
   eventCategory: "\uC2A4\uD0EF \uC0C1\uC2B9"
+  definition: {fileID: 0}
   choices:
   - choiceText: "\uD798\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
     nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}

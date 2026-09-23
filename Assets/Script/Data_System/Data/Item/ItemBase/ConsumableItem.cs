@@ -15,7 +15,7 @@ public class ConsumableItem : BaseItem
 
     public static void ReleaseRuntimeCopy(BaseItem item)
     {
-        if (!(item is ConsumableItem) || (item.hideFlags & HideFlags.DontSave) != HideFlags.DontSave) return;
+        if (item == null || (item.hideFlags & HideFlags.DontSave) != HideFlags.DontSave) return;
         if (Application.isPlaying) Destroy(item);
         else DestroyImmediate(item);
     }

@@ -12,6 +12,37 @@ public class InventoryManager : SingleTon<InventoryManager>
     public int Capacity => maxInventorySlot;
     public event Action InventoryChanged;
 
+    public bool CanAddRewards(IList<ItemReward> entries)
+    {
+        long slots = inventoryItems.Count;
+        var stacks = new Dictionary<string, long>();
+        foreach (var item in inventoryItems)
+            if (item is ConsumableItem stack) stacks[stack.itemID] = stack.quantity;
+        foreach (var entry in entries)
+        {
+            if (entry.probability <= 0) continue;
+            if (entry.item is ConsumableItem)
+            {
+                if (!stacks.ContainsKey(entry.item.itemID)) { stacks[entry.item.itemID] = 0; slots++; }
+                stacks[entry.item.itemID] += entry.quantity;
+                if (stacks[entry.item.itemID] > int.MaxValue) return false;
+            }
+            else slots += entry.quantity;
+        }
+        return slots <= Capacity;
+    }
+
+    public void AddReward(BaseItem item, int quantity)
+    {
+        for (int i = 0; i < quantity; i++)
+        {
+            // 내구도가 있는 장비도 정의 에셋과 분리한다.
+            var value = item is ConsumableItem ? item : Instantiate(item);
+            if (value != item) value.hideFlags = HideFlags.DontSave;
+            AddToInventory(value);
+        }
+    }
+
     protected override void Awake()
     {
         base.Awake();

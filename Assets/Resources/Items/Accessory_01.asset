@@ -19,6 +19,6 @@ MonoBehaviour:
   isConsumable: 0
   itemValue: 140000
   itemCategory: 2
-  durability: 0
+  durability: 8
   dodgeBonus: 0.1
   questID: 0
