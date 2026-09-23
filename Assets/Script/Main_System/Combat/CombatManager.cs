@@ -125,6 +125,11 @@ public class CombatManager : SingleTon<CombatManager>
             CombatUIUpdate?.Invoke(player, enemy);
             GameEvent.UpdateCharacterUI(player, enemy);
 
+            if (!combatActive)
+            {
+                yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
+                yield break;
+            }
             //공격 전 입력 대기
             yield return GameEvent.OnNodeTextUpdate("무슨 행동을 할 것인가?");
             onAttackTurn = true;
