@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 0
   title: "\uACE8\uB4DC \uD68D\uB4DD\xB7\uC190\uC2E4 \uC608\uC81C"
-  exitNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+  exitNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   options:
   - id: find
     text: "\uACE8\uB4DC 100 \uD68D\uB4DD"
@@ -22,8 +22,17 @@ MonoBehaviour:
     goldLoss: 0
     repeatable: 0
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 0
     questId: 
     reward:
@@ -36,16 +45,26 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items: []
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+    nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   - id: lose
     text: "\uACE8\uB4DC \uCD5C\uB300 50 \uC783\uAE30"
     goldCost: 0
     goldLoss: 50
     repeatable: 0
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 0
     questId: 
     reward:
@@ -58,5 +77,6 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items: []
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+    nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}

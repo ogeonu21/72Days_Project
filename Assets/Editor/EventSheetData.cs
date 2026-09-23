@@ -17,6 +17,9 @@ public sealed class EventChoiceDataRaw
     public string RequiredQuestID, RequiredItemID;
     public int RequiredQuantity;
     public string Action, QuestID, NextNodeID, RewardID;
+    public string RequiredQuestState = "Active";
+    public string TendencyCondition = "Any";
+    public int TendencyMin, TendencyMax, RequiredGold, RequiredSTR, RequiredDEX, RequiredCON;
 }
 
 [Serializable]

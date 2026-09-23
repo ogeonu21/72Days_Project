@@ -74,6 +74,18 @@ public static class DataImporterValidation
         reject(validate, "드롭 종류 불일치 거부"); stats[0].DropItemCategory = "Weapon";
         items[0].Consumable = true;
         reject(validate, "장비 Consumable 불일치 거부"); items[0].Consumable = false;
+        nodes[1].EventDefinitionID = "";
+        reject(validate, "구형 이벤트 노드 거부"); nodes[1].EventDefinitionID = events[0].EventID;
+        choices[0].TendencyCondition = "Between"; choices[0].TendencyMin = 2; choices[0].TendencyMax = 1;
+        reject(validate, "역전 성향 조건 거부"); choices[0].TendencyMin = -1; choices[0].TendencyMax = 3;
+        choices[0].RequiredGold = -1;
+        reject(validate, "음수 조건 골드 거부"); choices[0].RequiredGold = 50;
+        choices[0].RequiredSTR = 1; choices[0].RequiredDEX = 2; choices[0].RequiredCON = 3;
+        choices[0].RequiredItemID = items[3].ItemID; choices[0].RequiredQuantity = 2;
+        choices[0].RequiredQuestID = "MissingQuest";
+        reject(validate, "수락 경로 없는 조건 퀘스트 거부"); choices[0].RequiredQuestID = "";
+        rewards[1].Kind = "Tendency"; rewards[1].Amount = -2;
+        validate(); check(true, "음수 성향 보상 허용"); rewards[1].Kind = "Gold"; rewards[1].Amount = 20;
 
         Undo.IncrementCurrentGroup();
         int group = Undo.GetCurrentGroup();
@@ -100,6 +112,10 @@ public static class DataImporterValidation
             check(definition != null && definition.kind == EventKind.Shop && definition.title == "검사 상점" && definition.exitNode != null && nodeAsset.nodeMessage.Contains("\n"), "노드 및 EventDefinition 자동 연결");
             check(definition.options[0].id == "fight" && definition.options[0].nextNode is CombatNode, "선택지 정렬과 전투 연결");
             var reward = definition.options[1].reward;
+            var mapped = definition.options[1];
+            check(mapped.requiredGold == 50 && mapped.requiredStats.str == 1 && mapped.requiredStats.dex == 2 && mapped.requiredStats.con == 3 &&
+                mapped.tendencyCondition == TendencyRequirement.Between && mapped.tendencyMin == -1 && mapped.tendencyMax == 3 &&
+                mapped.requiredItem == potion && mapped.requiredQuantity == 2 && mapped.requiredQuestState == QuestRequirementState.Active, "신규 조건 전체 매핑");
             check(reward.items[0].item == potion && reward.items[0].quantity == 3 && reward.items[0].probability == .5f && reward.dropGold == 20 && reward.statIncrease.str == 1 && reward.hpHeal == 5 && reward.exp == 10, "복합 보상 매핑");
             string path = AssetDatabase.GetAssetPath(definition);
             string guid = AssetDatabase.AssetPathToGUID(path);

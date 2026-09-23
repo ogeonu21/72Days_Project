@@ -14,28 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeType: 1
   nodeName: Main_03
-  nodeMessage: "\uB3CC\uC785\uC131\uACF5. \uC131\uACF5\uC801\uC73C\uB85C \uC9C4\uD589\uC774
-    \uD655\uC778\uB418\uC5C8\uB2E4. \uD50C\uB808\uC774\uC5B4\uB294 \uAC01 \uB178\uB4DC\uB4E4\uC744
-    \uD0D0\uC0C9\uD558\uB77C."
+  nodeMessage: "\uAC80\uC99D \uCD9C\uBC1C \uC9C0\uC810\uC774\uB2E4. \uC804\uD22C\uB97C
+    \uBA3C\uC800 \uD558\uBA74 \uC704\uD5D8\uD560 \uC218 \uC788\uB2E4. \uBCF4\uAE09\uB85C\uC5D0\uC11C
+    \uBB34\uAE30\uB97C \uC7A5\uCC29\uD558\uACE0 \uD6C8\uB828\uC744 \uBC1B\uB294 \uAC83\uC744
+    \uAD8C\uC7A5\uD55C\uB2E4."
   surviveDate: 1
   worldLocation: 0
   choices:
   - choiceText: "\uC804\uD22C \uB178\uB4DC \uD655\uC778\uD558\uB7EC \uAC00\uAE30."
     nextNode: {fileID: 11400000, guid: 239e30d4e02835e45a7b5d1763a3f96b, type: 2}
-    requiredFlag: 
-    eventStack: 0
-    triggersEvent: 0
-    baseEvent: {fileID: 0}
   - choiceText: "\uC774\uBCA4\uD2B8 \uB178\uB4DC \uD655\uC778\uD558\uB7EC \uAC00\uAE30."
     nextNode: {fileID: 11400000, guid: e37a40bf466f0f447ae5876e93fa420e, type: 2}
-    requiredFlag: 
-    eventStack: 0
-    triggersEvent: 0
-    baseEvent: {fileID: 0}
-  - choiceText: "\uB450\uBC88\uC9F8 \uC774\uBCA4\uB4DC \uB178\uB4DC \uD655\uC778\uD558\uB7EC
-      \uAC00\uAE30"
-    nextNode: {fileID: 11400000, guid: b4b86ef88fcb6644788e7de0f605a3ac, type: 2}
-    requiredFlag: 
-    eventStack: 0
-    triggersEvent: 0
-    baseEvent: {fileID: 0}
+  - choiceText: "\uBCF4\uAE09\uB85C\uC640 \uC804\uCCB4 \uC774\uBCA4\uD2B8 \uAC80\uC99D\uC73C\uB85C
+      \uC774\uB3D9"
+    nextNode: {fileID: 11400000, guid: 9f2ca3f1d5cdaef4ca7708c45ffdbba1, type: 2}

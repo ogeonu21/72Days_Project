@@ -39,6 +39,9 @@ public static class RewardService
             (long)player.baseStats.con + reward.statIncrease.con > 100000 ||
             (long)player.GetCurrentData().exp + reward.exp > int.MaxValue)
         { result.message = "능력치 또는 경험치 안전 상한을 초과합니다."; return result; }
+        long nextTendency = (long)player.tendency + reward.tendencyChange;
+        if (nextTendency < int.MinValue || nextTendency > int.MaxValue)
+        { result.message = "성향 안전 상한을 초과합니다."; return result; }
         var gold = currency != null ? currency.GetCurrencyData("Gold") : null;
         if ((cost > 0 || loss > 0 || reward.dropGold > 0) && gold == null) { result.message = "골드 정보가 없습니다."; return result; }
         if (cost > (gold?.Amount ?? 0)) { result.message = "골드가 부족합니다."; return result; }
@@ -65,6 +68,7 @@ public static class RewardService
         if (reward.hpHeal > 0) player.Heal(reward.hpHeal);
         result.healed = player.CurrentHP - before;
         if (reward.exp > 0) player.GetExp(reward.exp);
+        if (reward.tendencyChange != 0) player.ChangeTendency(reward.tendencyChange);
         var text = new StringBuilder();
         if (cost > 0) text.AppendLine($"비용: {cost} 골드");
         if (loss > 0) text.AppendLine($"골드 손실: {actualLoss}");
@@ -74,6 +78,7 @@ public static class RewardService
         if (reward.statIncrease.str > 0) text.AppendLine($"STR +{reward.statIncrease.str}");
         if (reward.statIncrease.dex > 0) text.AppendLine($"DEX +{reward.statIncrease.dex}");
         if (reward.statIncrease.con > 0) text.AppendLine($"CON +{reward.statIncrease.con}");
+        if (reward.tendencyChange != 0) text.AppendLine($"성향 {reward.tendencyChange:+0;-0;0}");
         foreach (var entry in result.grantedItems) text.AppendLine($"{entry.item.itemName} × {entry.quantity}");
         result.success = true;
         result.message = text.Length > 0 ? text.ToString().TrimEnd() : "처리되었습니다.";

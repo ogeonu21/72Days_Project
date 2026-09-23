@@ -4,6 +4,8 @@ using UnityEngine;
 
 public enum EventKind { Reward, Shop, Encounter, Quest }
 public enum EventActionKind { None, AcceptQuest, CompleteQuest, Combat }
+public enum QuestRequirementState { Active, Completed, NotAccepted, Accepted }
+public enum TendencyRequirement { Any, AtLeast, AtMost, Between }
 
 [CreateAssetMenu(menuName = "Events/Event Definition", fileName = "EventDefinition")]
 public sealed class EventDefinition : ScriptableObject
@@ -23,8 +25,14 @@ public sealed class EventOption
     [Min(0)] public int goldLoss;
     public bool repeatable;
     public string requiredQuest;
+    public QuestRequirementState requiredQuestState;
     public BaseItem requiredItem;
     [Min(1)] public int requiredQuantity = 1;
+    [Min(0)] public int requiredGold;
+    public BaseStats requiredStats;
+    public TendencyRequirement tendencyCondition;
+    public int tendencyMin;
+    public int tendencyMax;
     public EventActionKind action;
     public string questId;
     public Reward reward;

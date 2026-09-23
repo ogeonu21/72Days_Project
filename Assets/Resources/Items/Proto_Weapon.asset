@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00184cacf2a96804e9fcfd4d0bdf9157, type: 3}
+  m_Name: Proto_Weapon
+  m_EditorClassIdentifier: 
+  itemID: Proto_Weapon
+  itemName: "\uC5F0\uC2B5\uC6A9 \uBABD\uB465\uC774"
+  itemDescription: "\uD50C\uB808\uC774 \uD750\uB984 \uAC80\uC0AC \uC804\uC6A9 \uC7A5\uBE44.
+    \uBCF4\uAE09 \uD6C4 \uC778\uBCA4\uD1A0\uB9AC\uC5D0\uC11C \uC7A5\uCC29\uD558\uC138\uC694."
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/34_wood.png
+  isConsumable: 0
+  itemValue: 10
+  itemCategory: 0
+  durability: 30
+  attackBonus: 3
+  range: 1

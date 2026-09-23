@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 2
   title: "\uC870\uC6B0 \uC608\uC81C \xB7 \uC804\uD22C \uB610\uB294 \uB5A0\uB098\uAE30"
-  exitNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+  exitNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   options:
   - id: leave
     text: "\uC2F8\uC6B0\uC9C0 \uC54A\uACE0 \uB5A0\uB09C\uB2E4"
@@ -22,8 +22,17 @@ MonoBehaviour:
     goldLoss: 0
     repeatable: 0
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 0
     questId: 
     reward:
@@ -36,8 +45,9 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items: []
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+    nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   - id: fight
     text: "\uC804\uD22C\uC5D0 \uC9C4\uC785\uD55C\uB2E4 \xB7 \uBCF4\uC0C1\uC740 \uC801
       \uB4DC\uB86D \uC124\uC815 \uC0AC\uC6A9"
@@ -45,8 +55,17 @@ MonoBehaviour:
     goldLoss: 0
     repeatable: 0
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 3
     questId: 
     reward:
@@ -59,5 +78,6 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items: []
     nextNode: {fileID: 11400000, guid: 1bc8ee1c085f7084e818ca829e128a91, type: 2}

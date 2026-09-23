@@ -42,10 +42,12 @@ public class EventUIController : UIController, IUpdatableUI
         {
             string error = EventDefinitionValidator.Validate(node.definition);
             if (error != null) { Debug.LogError(error); yield break; }
+            if (choiceButtons == null || choiceButtons.Length == 0 || choiceButtons[0] == null || dialogueText == null)
+            { Debug.LogError("[EventUI] 버튼 템플릿 또는 본문 텍스트 연결이 없습니다."); yield break; }
             if (eventRouter == null) eventRouter = GetComponent<EventUIRouter>() ?? gameObject.AddComponent<EventUIRouter>();
             eventRouter.Present(node, choiceButtons[0], dialogueText.font);
             yield break;
         }
-        choiceListPresenter.Present(node.choices, choice => EventManager.Instance.Choose(choice));
+        Debug.LogError($"[EventUI] {node.name}: EventDefinition이 없습니다. 최신 시트를 가져오세요.");
     }
 }

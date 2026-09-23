@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: Proto_Start
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: Proto_Start
+  nodeMessage: "\uBCF4\uAE09\uB85C\uC5D0 \uB3C4\uCC29\uD588\uB2E4. \uCD5C\uCD08 \uBCF4\uAE09\uC744
+    \uBC1B\uACE0 \uBABD\uB465\uC774\uB97C \uC7A5\uCC29\uD558\uC790.\n\uC774\uD6C4
+    \uC0C1\uC810, \uD018\uC2A4\uD2B8, \uC804\uCCB4 \uAC80\uC99D \uBAA9\uB85D\uC744
+    \uD655\uC778\uD560 \uC218 \uC788\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: 2686e3b60f1da264e9d06d4bd864277c, type: 2}

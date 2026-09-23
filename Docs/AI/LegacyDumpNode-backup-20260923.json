@@ -1,0 +1,10 @@
+[
+  {
+    "content": "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!114 &11400000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}\n  m_Name: DumpNode\n  m_EditorClassIdentifier: \n  nodeType: 0\n  nodeName: DumpNode\n  nodeMessage: \n  surviveDate: 0\n  worldLocation: 0\n  nextNode: {fileID: 0}\n",
+    "path": "Assets/Resources/DumpNode.asset"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 3fa23ba03d65fb04f8ed4f15de2a4096\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/DumpNode.asset.meta"
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "content": "fileFormatVersion: 2\nguid: 813562353c8afa740bcba6a2b454d9fa\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\조우.meta"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: cb72748138c48804f871b43017044bea\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\조우\\전투하기_굶주린모녀.asset.meta"
+  },
+  {
+    "content": "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!114 &11400000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: b288881e1f76fd8468b8a262a07990fe, type: 3}\n  m_Name: \"\\uC804\\uD22C\\uD558\\uAE30_\\uAD76\\uC8FC\\uB9B0\\uBAA8\\uB140\"\n  m_EditorClassIdentifier: \n  eventCategory: \n  type: 0\n  who: {fileID: 11400000, guid: 1bc8ee1c085f7084e818ca829e128a91, type: 2}\n",
+    "path": "Assets/Resources/Events\\조우\\전투하기_굶주린모녀.asset"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 388b945cff479364ea69ec3ceea0e514\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\조우\\무시하기_굶주린모녀.asset.meta"
+  },
+  {
+    "content": "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!114 &11400000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: b288881e1f76fd8468b8a262a07990fe, type: 3}\n  m_Name: \"\\uBB34\\uC2DC\\uD558\\uAE30_\\uAD76\\uC8FC\\uB9B0\\uBAA8\\uB140\"\n  m_EditorClassIdentifier: \n  eventCategory: \n  type: 1\n  who: {fileID: 0}\n",
+    "path": "Assets/Resources/Events\\조우\\무시하기_굶주린모녀.asset"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: b174aa79f65668d48a792916d01db5b2\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\조우\\도와주기_굶주린모녀.asset.meta"
+  },
+  {
+    "content": "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!114 &11400000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: b288881e1f76fd8468b8a262a07990fe, type: 3}\n  m_Name: \"\\uB3C4\\uC640\\uC8FC\\uAE30_\\uAD76\\uC8FC\\uB9B0\\uBAA8\\uB140\"\n  m_EditorClassIdentifier: \n  eventCategory: \n  type: 2\n  who: {fileID: 0}\n",
+    "path": "Assets/Resources/Events\\조우\\도와주기_굶주린모녀.asset"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 677fdecac10e9e049addbf2f2f9c6fcf\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\스탯 상승.meta"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 4dadd6731b87ce748bfaf372cad08439\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\스탯 상승\\StrUp.asset.meta"
+  },
+  {
+    "content": "%YAML 1.1\r\n%TAG !u! tag:unity3d.com,2011:\r\n--- !u!114 &11400000\r\nMonoBehaviour:\r\n  m_ObjectHideFlags: 0\r\n  m_CorrespondingSourceObject: {fileID: 0}\r\n  m_PrefabInstance: {fileID: 0}\r\n  m_PrefabAsset: {fileID: 0}\r\n  m_GameObject: {fileID: 0}\r\n  m_Enabled: 1\r\n  m_EditorHideFlags: 0\r\n  m_Script: {fileID: 11500000, guid: 3a78f80712523ba43ae73522325a73a6, type: 3}\r\n  m_Name: StrUp\r\n  m_EditorClassIdentifier: \r\n  eventCategory: \r\n  changeAmount: 10\r\n  statType: str\r\n",
+    "path": "Assets/Resources/Events\\스탯 상승\\StrUp.asset"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 543a20beffda24d4ab5090012cbafe6f\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\스탯 상승\\DexUp.asset.meta"
+  },
+  {
+    "content": "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!114 &11400000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 3a78f80712523ba43ae73522325a73a6, type: 3}\n  m_Name: DexUp\n  m_EditorClassIdentifier: \n  changeAmount: 1\n  statType: dex\n",
+    "path": "Assets/Resources/Events\\스탯 상승\\DexUp.asset"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: e4797bbc9a369304bbf030dc472edb05\nNativeFormatImporter:\n  externalObjects: {}\n  mainObjectFileID: 11400000\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Resources/Events\\스탯 상승\\ConUp.asset.meta"
+  },
+  {
+    "content": "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!114 &11400000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 3a78f80712523ba43ae73522325a73a6, type: 3}\n  m_Name: ConUp\n  m_EditorClassIdentifier: \n  changeAmount: 1\n  statType: con\n",
+    "path": "Assets/Resources/Events\\스탯 상승\\ConUp.asset"
+  },
+  {
+    "content": "using UnityEngine;\r\n\r\npublic class BaseEvent : ScriptableObject, IEvent\r\n{\r\n    public string eventCategory;\r\n    public virtual void Execute() {}\r\n\r\n    public virtual void Execute(Node nextNode) {}\r\n}\r\n",
+    "path": "Assets/Script/Data_System/Data/Event/BaseEvent.cs"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 5daaba960865cbe4d92d6d54df522a25\nMonoImporter:\n  externalObjects: {}\n  serializedVersion: 2\n  defaultReferences: []\n  executionOrder: 0\n  icon: {instanceID: 0}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Script/Data_System/Data/Event/BaseEvent.cs.meta"
+  },
+  {
+    "content": "using System;\r\npublic interface IEvent\r\n{\r\n    void Execute();\r\n}",
+    "path": "Assets/Script/Data_System/Data/Event/IEvent.cs"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: aa0838931bf0f4f41bb200153e03ac6b\nMonoImporter:\n  externalObjects: {}\n  serializedVersion: 2\n  defaultReferences: []\n  executionOrder: 0\n  icon: {instanceID: 0}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Script/Data_System/Data/Event/IEvent.cs.meta"
+  },
+  {
+    "content": "using UnityEngine;\r\n\r\npublic enum meetingEventType\r\n{\r\n    전투하기,\r\n    무시하기,\r\n    도와주기\r\n}\r\n\r\n[CreateAssetMenu(fileName = \"MeetingEvent\", menuName = \"Events/MeetingEvent\")]\r\npublic class MeetingEvent : BaseEvent\r\n{\r\n    \r\n    public meetingEventType type;\r\n    public CombatNode who;\r\n\r\n    public override void Execute(Node nextNode)\r\n    {\r\n        if (NodeManager.Instance != null) {\r\n            switch (type)\r\n            {\r\n                case meetingEventType.전투하기:\r\n                    if (who.enemyData.type == \"선\")\r\n                    {\r\n                        if (CharacterManager.Instance != null && CharacterManager.Instance.currentPlayer != null)\r\n                        {\r\n                            CharacterManager.Instance.currentPlayer.ChangeTendency(-1);\r\n                        }\r\n                    }\r\n                    Debug.Log($\"<color=cyan>[Event] </color>{who.enemyData.name}과(와) 전투를 시작합니다.\");\r\n                    who.successNode = nextNode;\r\n                    NodeManager.Instance.GoToNode(who);\r\n                    break;\r\n                case meetingEventType.무시하기:\r\n                    Debug.Log($\"<color=cyan>[Event] </color>{who.enemyData.name}을(를) 무시합니다.\");\r\n                    NodeManager.Instance.GoToNode(nextNode);\r\n                    break;\r\n                case meetingEventType.도와주기:\r\n                    \r\n                    if (CharacterManager.Instance != null && CharacterManager.Instance.currentPlayer != null)\r\n                    {\r\n                        CharacterManager.Instance.currentPlayer.ChangeTendency(1);\r\n                    }\r\n                    Debug.Log($\"<color=cyan>[Event] </color>{who.enemyData.name}을(를) 도와줍니다.\");\r\n                    NodeManager.Instance.GoToNode(nextNode);\r\n                    break;\r\n                default:\r\n                    Debug.LogWarning($\"<color=cyan>[Event] </color>알 수 없는 EventType입니다.\");\r\n                    break;\r\n            }\r\n        }\r\n        \r\n    }\r\n}\r\n",
+    "path": "Assets/Script/Data_System/Data/Event/Events/MeetingEvent.cs"
+  },
+  {
+    "content": "fileFormatVersion: 2\r\nguid: b288881e1f76fd8468b8a262a07990fe\r\nMonoImporter:\r\n  externalObjects: {}\r\n  serializedVersion: 2\r\n  defaultReferences: []\r\n  executionOrder: 0\r\n  icon: {instanceID: 0}\r\n  userData: \r\n  assetBundleName: \r\n  assetBundleVariant: \r\n",
+    "path": "Assets/Script/Data_System/Data/Event/Events/MeetingEvent.cs.meta"
+  },
+  {
+    "content": "using System.Collections;\r\nusing System.Collections.Generic;\r\nusing UnityEngine;\r\n\r\n[CreateAssetMenu(fileName = \"StatUpdateEvent\", menuName = \"Events/StatUpdateEvent\")]\r\npublic class StatUpdateEvent : BaseEvent\r\n{\r\n    public int changeAmount;\r\n    public string statType;\r\n\r\n    public override void Execute()\r\n    {\r\n        EventExecute();\r\n    }\r\n\r\n    public override void Execute(Node nextNode)\r\n    {\r\n        NodeManager.Instance.dumpNode.nextNode = nextNode;\r\n        NodeManager.Instance.dumpNode.surviveDate = nextNode.surviveDate;\r\n        NodeManager.Instance.dumpNode.worldLocation = nextNode.worldLocation;\r\n        EventExecute();\r\n        \r\n    }\r\n\r\n    public void EventExecute()\r\n    {\r\n        if (CharacterManager.Instance != null && NodeManager.Instance != null)\r\n        {\r\n            CharacterManager.Instance.currentPlayer.UpdateBaseStats(statType, changeAmount);\r\n            \r\n            NodeManager.Instance.dumpNode.nodeMessage = $\"{StatTypeTranslation(statType)}이 {changeAmount}만큼 증가했다!\";\r\n\r\n            NodeManager.Instance.GoToNode(NodeManager.Instance.dumpNode);\r\n        }\r\n    }\r\n    private string StatTypeTranslation(string statType)\r\n    {\r\n        switch (statType)\r\n            {\r\n                case \"str\" :\r\n                return \"힘\";\r\n                case \"con\" :\r\n                return \"체력\";\r\n                case \"dex\" :\r\n                return \"민첩\";\r\n                default :\r\n                return \"에러\";\r\n            }\r\n    }\r\n}",
+    "path": "Assets/Script/Data_System/Data/Event/Events/StatUpdateEvent.cs"
+  },
+  {
+    "content": "fileFormatVersion: 2\r\nguid: 3a78f80712523ba43ae73522325a73a6\r\nMonoImporter:\r\n  externalObjects: {}\r\n  serializedVersion: 2\r\n  defaultReferences: []\r\n  executionOrder: 0\r\n  icon: {instanceID: 0}\r\n  userData: \r\n  assetBundleName: \r\n  assetBundleVariant: \r\n",
+    "path": "Assets/Script/Data_System/Data/Event/Events/StatUpdateEvent.cs.meta"
+  },
+  {
+    "content": "#if UNITY_EDITOR\r\nusing UnityEditor;\r\nusing UnityEngine;\r\n\r\n// CustomEditor 어트리뷰트를 사용해 MeetingEvent 클래스와 연결\r\n[CustomEditor(typeof(MeetingEvent))]\r\npublic class MeetingEventEditor : Editor\r\n{\r\n    // SerializedProperty를 사용해 인스펙터의 변수들을 관리\r\n    SerializedProperty eventCategoryProp;\r\n    SerializedProperty typeProp;\r\n    SerializedProperty whoProp;\r\n\r\n    private void OnEnable()\r\n    {\r\n        // 스크립트 활성화 시 변수들을 SerializedProperty로 초기화\r\n        eventCategoryProp = serializedObject.FindProperty(\"eventCategory\");\r\n        typeProp = serializedObject.FindProperty(\"type\");\r\n        whoProp = serializedObject.FindProperty(\"who\");\r\n    }\r\n\r\n    public override void OnInspectorGUI()\r\n    {\r\n        // SerializedObject를 업데이트하여 최신 변경사항을 가져옴\r\n        serializedObject.Update();\r\n\r\n        // eventCategory와 type 필드를 기본적으로 표시\r\n        EditorGUILayout.PropertyField(eventCategoryProp);\r\n        EditorGUILayout.PropertyField(typeProp);\r\n\r\n        // type이 '전투하기'일 때만 who 필드를 표시\r\n        // Enum 값은 정수로 변환하여 비교\r\n        if (typeProp.enumValueIndex == (int)meetingEventType.전투하기)\r\n        {\r\n            EditorGUILayout.PropertyField(whoProp);\r\n        }\r\n\r\n        // 변경사항을 SO에 적용\r\n        serializedObject.ApplyModifiedProperties();\r\n    }\r\n}\r\n#endif",
+    "path": "Assets/Editor/MeetingEventEditor.cs"
+  },
+  {
+    "content": "fileFormatVersion: 2\nguid: 8f9fba3aa81508c4a969fae5bb00e992\nMonoImporter:\n  externalObjects: {}\n  serializedVersion: 2\n  defaultReferences: []\n  executionOrder: 0\n  icon: {instanceID: 0}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    "path": "Assets/Editor/MeetingEventEditor.cs.meta"
+  }
+]

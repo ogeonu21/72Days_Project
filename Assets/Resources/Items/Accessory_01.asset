@@ -21,4 +21,4 @@ MonoBehaviour:
   itemCategory: 2
   durability: 8
   dodgeBonus: 0.1
-  questID: 0
+  questID:

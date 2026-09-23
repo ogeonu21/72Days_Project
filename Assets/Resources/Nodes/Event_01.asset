@@ -14,29 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeType: 3
   nodeName: Event_01
-  nodeMessage: "\uC774\uBCA4\uD2B8 \uB178\uB4DC\uC5D0 \uC9C4\uC785\uD558\uC600\uB2E4.
-    \uB2F9\uC2E0\uC758 \uC6B4\uC744 \uD655\uC778\uD55C\uB2E4. \uAC01 \uC774\uBCA4\uD2B8
-    \uBC1C\uC0DD \uD655\uB960\uC740 50%\uC774\uB2E4."
+  nodeMessage: "\uD6C8\uB828\uC18C\uB2E4. \uD798 10, \uBBFC\uCCA9 1, \uAC74\uAC15
+    1 \uD6C8\uB828\uC744 \uAC01\uAC01 \uD55C \uBC88 \uBC1B\uC744 \uC218 \uC788\uB2E4.\n\uD018\uC2A4\uD2B8\uC758
+    \uC2A4\uD0EF \uC870\uAC74\uC744 \uD655\uC778\uD558\uC790."
   surviveDate: 1
   worldLocation: 0
-  eventCategory: "\uC2A4\uD0EF \uC0C1\uC2B9"
-  definition: {fileID: 0}
-  choices:
-  - choiceText: "\uD798\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
-    requiredFlag: 
-    eventStack: 0
-    triggersEvent: 0
-    baseEvent: {fileID: 11400000, guid: 4dadd6731b87ce748bfaf372cad08439, type: 2}
-  - choiceText: "\uBBFC\uCCA9\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
-    requiredFlag: 
-    eventStack: 0
-    triggersEvent: 0
-    baseEvent: {fileID: 11400000, guid: 543a20beffda24d4ab5090012cbafe6f, type: 2}
-  - choiceText: "\uAC74\uAC15\uC774 \uC0C1\uC2B9\uD55C\uB2E4."
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
-    requiredFlag: 
-    eventStack: 0
-    triggersEvent: 0
-    baseEvent: {fileID: 11400000, guid: e4797bbc9a369304bbf030dc472edb05, type: 2}
+  definition: {fileID: 11400000, guid: aa01d32a204075744b6cf84e4d177408, type: 2}

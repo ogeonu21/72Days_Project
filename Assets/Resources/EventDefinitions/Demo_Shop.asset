@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 1
   title: "\uBB3C\uC57D \uC0C1\uC810 \uC608\uC81C"
-  exitNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+  exitNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   options:
   - id: buy_potion
     text: "\uBB3C\uC57D 2\uAC1C \uAD6C\uB9E4 \xB7 100\uACE8\uB4DC"
@@ -22,8 +22,17 @@ MonoBehaviour:
     goldLoss: 0
     repeatable: 1
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 0
     questId: 
     reward:
@@ -36,6 +45,7 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items:
       - item: {fileID: 11400000, guid: ad975f2832dc7d145a78467e19222b2d, type: 2}
         quantity: 2

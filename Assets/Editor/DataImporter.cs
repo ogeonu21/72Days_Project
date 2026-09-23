@@ -148,8 +148,11 @@ public partial class DataImporter : EditorWindow
                     throw new InvalidOperationException(row.NodeID + ": 전투 적 누락");
             }
             if (row.NodeType != nameof(NodeType.StoryNode) && row.NodeType != nameof(NodeType.EventNode)) continue;
-            if (row.NodeType == nameof(NodeType.EventNode) && !string.IsNullOrWhiteSpace(row.EventDefinitionID))
+            if (row.NodeType == nameof(NodeType.EventNode))
             {
+                if (string.IsNullOrWhiteSpace(row.EventDefinitionID)) throw new InvalidOperationException(row.NodeID + ": EventDefinitionID 필수. 구형 이벤트는 지원하지 않습니다.");
+                if (!string.IsNullOrWhiteSpace(row.Choice1_Text) || !string.IsNullOrWhiteSpace(row.Choice2_Text) || !string.IsNullOrWhiteSpace(row.Choice3_Text))
+                    throw new InvalidOperationException(row.NodeID + ": EventNode 선택지는 EventChoiceData에서만 작성하세요.");
                 if (sheetEventIds.Contains(row.EventDefinitionID)) continue;
                 var definition = Resources.Load<EventDefinition>("EventDefinitions/" + row.EventDefinitionID.Trim());
                 if (definition == null) throw new InvalidOperationException(row.NodeID + ": EventDefinition 누락 " + row.EventDefinitionID);
@@ -159,20 +162,16 @@ public partial class DataImporter : EditorWindow
             }
             string[] labels = { row.Choice1_Text, row.Choice2_Text, row.Choice3_Text };
             string[] links = { row.Choice1_NextNode, row.Choice2_NextNode, row.Choice3_NextNode };
-            string[] events = { row.Choice1_EventName, row.Choice2_EventName, row.Choice3_EventName };
             int count = 0;
             for (int i = 0; i < labels.Length; i++)
             {
                 if (string.IsNullOrWhiteSpace(labels[i]))
                 {
-                    if (!string.IsNullOrEmpty(links[i]) || !string.IsNullOrEmpty(events[i])) throw new InvalidOperationException(row.NodeID + ": 선택지 문구 누락");
+                    if (!string.IsNullOrEmpty(links[i])) throw new InvalidOperationException(row.NodeID + ": 선택지 문구 누락");
                     continue;
                 }
                 count++;
                 CheckLink(row.NodeID, links[i], nodeIds);
-                if ((row.NodeType == nameof(NodeType.EventNode) || !string.IsNullOrEmpty(events[i])) &&
-                    (string.IsNullOrEmpty(events[i]) || Resources.Load<BaseEvent>($"Events/{row.EventCategory}/{events[i]}") == null))
-                    throw new InvalidOperationException(row.NodeID + ": 선택지 이벤트 누락 " + events[i]);
             }
             if (count == 0) throw new InvalidOperationException(row.NodeID + ": 선택지 없음");
         }
@@ -275,7 +274,6 @@ public partial class DataImporter : EditorWindow
                 existingNode.worldLocation = loc;
 
             if (existingNode is CombatNode cn) cn.combatEnemyID = data.CombatEnemyID;
-            else if (existingNode is EventNode en) en.eventCategory = data.EventCategory;
             else if (existingNode is EndingNode edn) edn.endingName = data.EndingName;
 
             EditorUtility.SetDirty(existingNode);
@@ -305,7 +303,6 @@ public partial class DataImporter : EditorWindow
                     sn.choices = CreateChoiceList(data);
                     break;
                 case EventNode en:
-                    en.choices = string.IsNullOrWhiteSpace(data.EventDefinitionID) ? CreateChoiceList(data) : new List<Choice>();
                     en.definition = string.IsNullOrWhiteSpace(data.EventDefinitionID) ? null : Resources.Load<EventDefinition>("EventDefinitions/" + data.EventDefinitionID.Trim());
                     break;
             }
@@ -333,13 +330,13 @@ public partial class DataImporter : EditorWindow
     private static List<Choice> CreateChoiceList(NodeDataRaw data)
     {
         List<Choice> list = new List<Choice>();
-        AddChoice(list, data.Choice1_Text, data.Choice1_NextNode, data.Choice1_EventName, data.EventCategory);
-        AddChoice(list, data.Choice2_Text, data.Choice2_NextNode, data.Choice2_EventName, data.EventCategory);
-        AddChoice(list, data.Choice3_Text, data.Choice3_NextNode, data.Choice3_EventName, data.EventCategory);
+        AddChoice(list, data.Choice1_Text, data.Choice1_NextNode);
+        AddChoice(list, data.Choice2_Text, data.Choice2_NextNode);
+        AddChoice(list, data.Choice3_Text, data.Choice3_NextNode);
         return list;
     }
 
-    private static void AddChoice(List<Choice> list, string txt, string nxtID, string evt, string cat)
+    private static void AddChoice(List<Choice> list, string txt, string nxtID)
     {
         if (string.IsNullOrEmpty(txt)) return;
         Choice c = new Choice 
@@ -347,8 +344,6 @@ public partial class DataImporter : EditorWindow
             choiceText = SheetJson.Multiline(txt),
             nextNode = FindNode(nxtID)
         };
-        if (!string.IsNullOrEmpty(evt))
-            c.baseEvent = Resources.Load<BaseEvent>($"Events/{cat}/{evt}");
         list.Add(c);
     }
 

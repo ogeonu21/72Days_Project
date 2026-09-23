@@ -12,6 +12,7 @@ public struct Reward
     [Min(0)] public int hpHeal;
     [Min(0)] public int exp;
     public BaseStats statIncrease;
+    public int tendencyChange;
     public List<ItemReward> items;
     //public BaseStats baseStats;
 
@@ -23,6 +24,7 @@ public struct Reward
         this.hpHeal = hpHeal;
         this.exp = exp;
         statIncrease = default;
+        tendencyChange = 0;
         items = new List<ItemReward>();
     }
 }

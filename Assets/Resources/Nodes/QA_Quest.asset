@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: QA_Quest
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: QA_Quest
+  nodeMessage: "\uC758\uB8B0: \uC0DD\uC874 \uC900\uBE44\uB97C \uC99D\uBA85\uD558\uB77C.\n\uC218\uB77D
+    \uD6C4 \uC131\uD5A5 1 \uC774\uC0C1, \uBB3C\uC57D 2\uAC1C, \uACE8\uB4DC 50, STR\xB7DEX\xB7CON
+    \uAC01 1 \uC774\uC0C1\uC774\uBA74 \uC644\uB8CC\uD560 \uC218 \uC788\uB2E4.\n\uBCF4\uC720
+    \uC870\uAC74\uC740 \uC18C\uBE44\uD558\uC9C0 \uC54A\uB294\uB2E4. \uC644\uB8CC
+    \uBCF4\uC0C1\uC740 \uACE8\uB4DC 50\xB7\uACBD\uD5D8\uCE58 10\uC774\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: 0ea0fb9ad9e0d484eb96f8cef5aadd9b, type: 2}

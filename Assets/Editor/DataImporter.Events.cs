@@ -92,7 +92,7 @@ public partial class DataImporter
                 CheckId(row.RewardID, new HashSet<string>(), "RewardData RewardID");
                 CheckId(row.EntryID, new HashSet<string>(), "RewardData EntryID");
                 if (!entryIds.Add(row.RewardID + "/" + row.EntryID)) throw new InvalidOperationException(row.RewardID + ": 보상 EntryID 중복");
-                if (row.Amount < 1) throw new InvalidOperationException(row.RewardID + ": Amount는 1 이상이어야 합니다.");
+                if (row.Kind == "Tendency" ? row.Amount == 0 : row.Amount < 1) throw new InvalidOperationException(row.RewardID + ": Amount는 1 이상, Tendency는 0이 아닌 정수여야 합니다.");
                 CheckRate(row.Probability, row.RewardID + " Probability");
                 if (!rewardMap.TryGetValue(row.RewardID, out var reward)) reward = new Reward { items = new List<ItemReward>() };
                 if (row.Kind == "Item")
@@ -114,6 +114,7 @@ public partial class DataImporter
                             case "STR": reward.statIncrease.str += row.Amount; break;
                             case "DEX": reward.statIncrease.dex += row.Amount; break;
                             case "CON": reward.statIncrease.con += row.Amount; break;
+                            case "Tendency": reward.tendencyChange += row.Amount; break;
                             default: throw new InvalidOperationException(row.RewardID + ": 보상 종류 오류 " + row.Kind);
                         }
                     }
@@ -146,6 +147,11 @@ public partial class DataImporter
                     repeatable = row.Repeatable, requiredQuest = row.RequiredQuestID,
                     requiredQuantity = row.RequiredQuantity, action = NamedEnum<EventActionKind>(row.Action, row.ChoiceID), questId = row.QuestID
                 };
+                option.requiredQuestState = NamedEnum<QuestRequirementState>(string.IsNullOrWhiteSpace(row.RequiredQuestState) ? "Active" : row.RequiredQuestState, row.ChoiceID);
+                option.tendencyCondition = NamedEnum<TendencyRequirement>(string.IsNullOrWhiteSpace(row.TendencyCondition) ? "Any" : row.TendencyCondition, row.ChoiceID);
+                option.tendencyMin = row.TendencyMin; option.tendencyMax = row.TendencyMax;
+                option.requiredGold = row.RequiredGold;
+                option.requiredStats = new BaseStats(row.RequiredSTR, row.RequiredDEX, row.RequiredCON);
                 if (!string.IsNullOrWhiteSpace(row.RequiredItemID))
                 {
                     option.requiredItem = findItem(row.RequiredItemID);
@@ -162,6 +168,12 @@ public partial class DataImporter
                     if (!rewardMap.TryGetValue(row.RewardID, out option.reward)) throw new InvalidOperationException(row.ChoiceID + ": RewardID 누락");
                 }
                 definition.options.Add(option);
+            }
+            var acceptedQuestIds = new HashSet<string>(choiceRows.Where(c => c.Action == "AcceptQuest").Select(c => c.QuestID), StringComparer.Ordinal);
+            foreach (var row in choiceRows)
+            {
+                if (row.Action == "CompleteQuest" && !acceptedQuestIds.Contains(row.QuestID)) throw new InvalidOperationException(row.ChoiceID + ": 수락 선택지가 없는 퀘스트 " + row.QuestID);
+                if (!string.IsNullOrWhiteSpace(row.RequiredQuestID) && !acceptedQuestIds.Contains(row.RequiredQuestID)) throw new InvalidOperationException(row.ChoiceID + ": 조건 퀘스트 수락 선택지 누락 " + row.RequiredQuestID);
             }
             foreach (var pair in result)
             {

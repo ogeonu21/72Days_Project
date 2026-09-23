@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: Proto_Encounter
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: Proto_Encounter
+  nodeMessage: "\uC5F0\uC2B5\uC6A9 \uACBD\uBE44\uBCD1\uC774 \uAE38\uC744 \uB9C9\uACE0
+    \uC788\uB2E4.\n\uC804\uD22C\uB97C \uC2DC\uC791\uD558\uAC70\uB098 \uD53C\uD574
+    \uAC00\uC11C \uD734\uC2DD\uD560 \uC218 \uC788\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: 98d08cdac4e1cac45aae16183adee2c0, type: 2}

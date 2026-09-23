@@ -5,7 +5,6 @@ public class NodeManager : SingleTon<NodeManager>
 {
     public Node startNode { get; private set; }
     public Node currentNode => nodeRunner != null ? nodeRunner.CurrentNode : null;
-    public MainStoryNode dumpNode;
     private NodeRunner nodeRunner;
 
     protected override void Awake()

@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeType: 0
   nodeName: Main_02
-  nodeMessage: "\uBA54\uC778 \uC2A4\uD1A0\uB9AC\uC5D0 \uB3CC\uC785\uD55C\uB2E4. \uD14C\uC2A4\uD130\uB294
-    \uC900\uBE44\uD558\uB77C."
+  nodeMessage: "\uD6C8\uB828\uC18C, \uC870\uC6B0 \uC9C0\uC810, \uBCF4\uAE09\uB85C\uB97C
+    \uCC28\uB840\uB85C \uC0B4\uD3B4\uBCF4\uC790.\n\uD68C\uC0C9 \uC120\uD0DD\uC9C0\uB294
+    \uBD80\uC871\uD55C \uC870\uAC74\uC744 \uD45C\uC2DC\uD558\uBA70 \uC870\uAC74 \uCDA9\uC871
+    \uC2DC \uD65C\uC131\uD654\uB41C\uB2E4."
   surviveDate: 1
   worldLocation: 0
   nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 0
   title: "\uD734\uC2DD \uC608\uC81C \xB7 \uCCB4\uB825 \uD68C\uBCF5"
-  exitNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+  exitNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   options:
   - id: rest
     text: "\uCCB4\uB825 25 \uD68C\uBCF5"
@@ -22,8 +22,17 @@ MonoBehaviour:
     goldLoss: 0
     repeatable: 0
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 0
     questId: 
     reward:
@@ -36,5 +45,6 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items: []
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+    nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}

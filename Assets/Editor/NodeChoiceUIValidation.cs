@@ -70,7 +70,9 @@ public static class NodeChoiceUIValidation
             Time.timeScale = 1f;
             eventNode.nodeType = NodeType.EventNode;
             eventNode.nodeMessage = "이벤트 본문";
-            eventNode.choices.Add(new Choice { choiceText = "이벤트 선택" });
+            eventNode.definition = ScriptableObject.CreateInstance<EventDefinition>();
+            eventNode.definition.exitNode = storyNode;
+            eventNode.definition.options.Add(new EventOption { id = "test", text = "이벤트 선택" });
             storyNode.nodeType = NodeType.StoryNode;
             storyNode.nodeMessage = "스토리 본문";
             storyNode.choices.Add(new Choice { choiceText = "스토리 선택" });
@@ -91,15 +93,15 @@ public static class NodeChoiceUIValidation
             yield return new WaitForSeconds(.04f);
             check(!eb.gameObject.activeSelf && !sb.gameObject.activeSelf, "타이핑 중 숨김");
             yield return new WaitForSeconds(.5f);
-            check(eb.gameObject.activeSelf && el.text == "이벤트 선택" && eventUI.dialogueText.text == eventNode.nodeMessage, "Event 완료 후 표시");
+            check(FindEventButton(eventUI) != null && eventUI.dialogueText.text == eventNode.nodeMessage, "Event 완료 후 표시");
             check(sb.gameObject.activeSelf && sl.text == "스토리 선택" && storyUI.dialogueText.text == storyNode.nodeMessage, "Story 완료 후 표시");
             eventNode.nodeMessage = new string('가', 30);
             eventUI.UpdateUI(eventNode);
             eventNode.nodeMessage = "새 본문";
-            eventNode.choices[0].choiceText = "새 선택";
+            eventNode.definition.options[0].text = "새 선택";
             eventUI.UpdateUI(eventNode);
             yield return new WaitForSeconds(.9f);
-            check(eventUI.dialogueText.text == "새 본문" && el.text == "새 선택", "중간 교체 시 이전 본문 취소");
+            check(eventUI.dialogueText.text == "새 본문" && FindEventButton(eventUI).GetComponentInChildren<TMP_Text>().text.StartsWith("새 선택"), "중간 교체 시 이전 본문 취소");
             eventNode.nodeMessage = new string('나', 30);
             eventUI.UpdateUI(eventNode);
             eventUI.enabled = false;
@@ -109,7 +111,7 @@ public static class NodeChoiceUIValidation
             eventNode.nodeMessage = "재진입";
             eventUI.UpdateUI(eventNode);
             yield return new WaitForSeconds(.4f);
-            check(eb.gameObject.activeSelf && eventUI.dialogueText.text == "재진입", "재활성화 후 표시");
+            check(FindEventButton(eventUI) != null && eventUI.dialogueText.text == "재진입", "재활성화 후 표시");
             storyUI.UpdateUI(storyNode);
             storyUI.gameObject.SetActive(false);
             yield return new WaitForSeconds(.4f);
@@ -120,6 +122,7 @@ public static class NodeChoiceUIValidation
         {
             Time.timeScale = previousScale;
             if (save != null) save.enabled = saveEnabled;
+            UnityEngine.Object.Destroy(eventNode.definition);
             UnityEngine.Object.Destroy(eventNode);
             UnityEngine.Object.Destroy(storyNode);
         }
@@ -164,9 +167,18 @@ public static class NodeChoiceUIValidation
             Lifecycle(eventUI, "OnEnable");
             check(!button.gameObject.activeSelf, "Event 활성화 즉시 숨김");
             eventNode.nodeMessage = "이벤트 본문";
-            eventNode.choices.Add(choice);
-            ValidateSequence(eventUI.UpdateEventNode(eventNode), eventUI.dialogueText, button, label, eventNode.nodeMessage, choice.choiceText, check);
-            ValidateSequence(eventUI.UpdateEventNode(eventNode), eventUI.dialogueText, button, label, eventNode.nodeMessage, choice.choiceText, check);
+            eventNode.definition = ScriptableObject.CreateInstance<EventDefinition>();
+            eventNode.definition.exitNode = storyNode;
+            eventNode.definition.options.Add(new EventOption { id = "test", text = choice.choiceText });
+            for (int visit = 0; visit < 2; visit++)
+            {
+                var sequence = eventUI.UpdateEventNode(eventNode);
+                check(sequence.MoveNext() && !button.gameObject.activeSelf, "Event 본문 시작 전 선택지 숨김");
+                Drain((IEnumerator)sequence.Current);
+                check(FindEventButton(eventUI) == null, "Event 본문 완료 전 신규 버튼 숨김");
+                check(!sequence.MoveNext() && FindEventButton(eventUI) != null, "Event 완료 후 신규 버튼 표시");
+                check(FindEventButton(eventUI).GetComponentInChildren<TMP_Text>().text.StartsWith(choice.choiceText), "신규 버튼 문구 표시");
+            }
             Lifecycle(eventUI, "OnDisable");
             check(!button.gameObject.activeSelf, "Event 비활성화 숨김");
 
@@ -190,9 +202,17 @@ public static class NodeChoiceUIValidation
             if (eventUI != null) Lifecycle(eventUI, "OnDisable");
             if (storyUI != null) Lifecycle(storyUI, "OnDisable");
             UnityEngine.Object.DestroyImmediate(root);
+            UnityEngine.Object.DestroyImmediate(eventNode.definition);
             UnityEngine.Object.DestroyImmediate(eventNode);
             UnityEngine.Object.DestroyImmediate(storyNode);
         }
+    }
+
+    private static Button FindEventButton(EventUIController ui)
+    {
+        foreach (var button in ui.GetComponentsInChildren<Button>(true))
+            if (button.name == "EventAction_test" && button.gameObject.activeSelf && button.transform.parent.parent.parent.gameObject.activeSelf) return button;
+        return null;
     }
 
     private static void ValidateSequence(IEnumerator sequence, TMP_Text body, Button button, TMP_Text label,

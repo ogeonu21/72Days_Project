@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kind: 0
   title: "\uBCF4\uAE09\uD488 \uC608\uC81C \xB7 \uC544\uC774\uD15C \uD68D\uB4DD"
-  exitNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+  exitNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   options:
   - id: supplies
     text: "\uBB3C\uC57D 2\uAC1C \uD655\uC815 + \uC2DD\uCE7C 1\uAC1C 50% \uD655\uB960"
@@ -22,8 +22,17 @@ MonoBehaviour:
     goldLoss: 0
     repeatable: 0
     requiredQuest: 
+    requiredQuestState: 0
     requiredItem: {fileID: 0}
     requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
     action: 0
     questId: 
     reward:
@@ -36,6 +45,7 @@ MonoBehaviour:
         str: 0
         dex: 0
         con: 0
+      tendencyChange: 0
       items:
       - item: {fileID: 11400000, guid: ad975f2832dc7d145a78467e19222b2d, type: 2}
         quantity: 2
@@ -43,4 +53,4 @@ MonoBehaviour:
       - item: {fileID: 11400000, guid: 07c5ad52308c38f4ca53e7434bd269f0, type: 2}
         quantity: 1
         probability: 0.5
-    nextNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
+    nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}

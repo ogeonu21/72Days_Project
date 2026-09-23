@@ -59,8 +59,14 @@ public sealed class GameDataValidator : IPreprocessBuildWithReport
             if (combat.successNode == null) errors.Add(path + ": successNode 누락");
             if (combat.failureNode == null) errors.Add(path + ": failureNode 누락");
         }
-        List<Choice> choices = node is StoryNode story ? story.choices : node is EventNode ev ? ev.choices : null;
-        if (!(node is StoryNode) && !(node is EventNode)) return;
+        if (node is EventNode ev)
+        {
+            string error = EventDefinitionValidator.Validate(ev.definition);
+            if (error != null) errors.Add(path + ": " + error);
+            return;
+        }
+        List<Choice> choices = node is StoryNode story ? story.choices : null;
+        if (!(node is StoryNode)) return;
         if (choices == null || choices.Count == 0) { errors.Add(path + ": 선택지 없음"); return; }
         for (int i = 0; i < choices.Count; i++)
         {
@@ -69,7 +75,6 @@ public sealed class GameDataValidator : IPreprocessBuildWithReport
             if (choice == null) { errors.Add(at + "null"); continue; }
             if (string.IsNullOrWhiteSpace(choice.choiceText)) errors.Add(at + "문구 누락");
             if (choice.nextNode == null) errors.Add(at + "다음 노드 누락");
-            if ((node is EventNode || choice.triggersEvent) && choice.baseEvent == null) errors.Add(at + "이벤트 누락");
         }
     }
 }
