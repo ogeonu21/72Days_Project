@@ -144,6 +144,7 @@ public partial class DataImporter
                 var option = new EventOption
                 {
                     id = row.ChoiceID, text = SheetJson.Multiline(row.Text), goldCost = row.GoldCost, goldLoss = row.GoldLoss,
+                    resultText = SheetJson.Multiline(row.ResultText),
                     repeatable = row.Repeatable, requiredQuest = row.RequiredQuestID,
                     requiredQuantity = row.RequiredQuantity, action = NamedEnum<EventActionKind>(row.Action, row.ChoiceID), questId = row.QuestID
                 };

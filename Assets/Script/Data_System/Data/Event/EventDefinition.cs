@@ -20,7 +20,10 @@ public sealed class EventDefinition : ScriptableObject
 public sealed class EventOption
 {
     public string id;
+    [Tooltip("선택 전 버튼에 표시하는 문구. EventChoiceData.Text")]
     public string text;
+    [Tooltip("실행 성공 후 dialogue에 표시하고 클릭을 기다리는 문구. EventChoiceData.ResultText")]
+    [TextArea] public string resultText;
     [Min(0)] public int goldCost;
     [Min(0)] public int goldLoss;
     public bool repeatable;

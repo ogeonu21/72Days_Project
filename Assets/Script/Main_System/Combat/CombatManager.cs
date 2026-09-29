@@ -10,22 +10,16 @@ public class CombatManager : SingleTon<CombatManager>
     //Manager
     private GameManager gameManager;
     private CharacterManager characterSource;
-    private CombatUIController combatUIController;
 
     //Instance
     private Enemy enemy;
     private Player player;
 
-    //Array
-    AreaData[] where = new AreaData[2];
-    Character[] who = new Character[2];
-    private string[] areaIndex = { "머리", "몸", "팔", "다리" };
-
     #endregion
     [Header("CombatSetting")]
     public bool combatActive;
-    public bool onAttackTurn;
-    private AreaData playerInputData;
+    public bool onPlayerTurn;
+    private PlayerInputData playerInputData;
 
     [Header("CombatResult")]
     private Node successNode;
@@ -60,10 +54,10 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     #region [Input Field]
-    public void GetInput(AreaData data)
+    public void GetInput(PlayerInputData data)
     {
-        this.playerInputData = data;
-        onAttackTurn = false;
+        playerInputData = data;
+        onPlayerTurn = false;
     }
     #endregion
 
@@ -102,7 +96,7 @@ public class CombatManager : SingleTon<CombatManager>
 
         player.onDied += CombatNodeStop;
         enemy.onDied += CombatNodeStop;
-        onAttackTurn = true;
+        onPlayerTurn = true;
         combatActive = true;
 
         StartCoroutine(CombatLoopStart());
@@ -110,8 +104,7 @@ public class CombatManager : SingleTon<CombatManager>
 
     private IEnumerator CombatLoopStart()
     {
-        who[0] = player;
-        who[1] = enemy;
+        Character[] who = {player, enemy};
         AreaData attackData;
 
         while (combatActive)
@@ -125,34 +118,51 @@ public class CombatManager : SingleTon<CombatManager>
             CombatUIUpdate?.Invoke(player, enemy);
             GameEvent.UpdateCharacterUI(player, enemy);
 
+            //전투를 시작해도 되는가?
             if (!combatActive)
             {
                 yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
                 yield break;
             }
-            //공격 전 입력 대기
-            yield return GameEvent.OnNodeTextUpdate("무슨 행동을 할 것인가?");
-            onAttackTurn = true;
-            yield return new WaitUntil(() => onAttackTurn == false);
 
+            //행동 전 입력 대기
+            yield return GameEvent.OnNodeTextUpdate("무슨 행동을 할 것인가?");
+            onPlayerTurn = true;
+            yield return new WaitUntil(() => onPlayerTurn == false);
+
+            switch (playerInputData.playerBehaviour)
+            {
+                case PlayerBehaviour.Attack:
+                    attackData = (index == 0) ? playerInputData.areaData : GetEnemyAttack();
+                    yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
+
+                    if (!combatActive)
+                    {
+                        yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
+                        yield break;
+                    }
+
+            
+                    //후공 전환을 위한 index 설정
+                    index = (index + 1) % 2;
+                    //공격 범위 설정.
+                    attackData = (index == 0) ? playerInputData.areaData : GetEnemyAttack();
+                    yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
+
+                break;
+                case PlayerBehaviour.Use:
+                break;
+                case PlayerBehaviour.Run:
+                break;
+                default:
+                    Debug.LogError("[CombatManager] GetInput 함수에서 잘못된 값을 입력받았습니다. CombatUIRouter를 확인해주세요.");
+                    break;
+            }
             //선공 턴
-            attackData = (index == 0) ? playerInputData : GetEnemyAttack();
-            yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
+            
             
             //만약 선공 턴에서 전투가 끝났다면
-            if (!combatActive)
-            {
-                yield return StartCoroutine(CombatNodeEnd((player.IsDead) ? player : enemy));
-                yield break;
-            }
-
             
-            //후공 전환을 위한 index 설정
-            index = (index + 1) % 2;
-            //공격 범위 설정.
-            attackData = (index == 0) ? playerInputData : GetEnemyAttack();
-            yield return StartCoroutine(AttackTurn(who[index], who[(index + 1) % 2], attackData, index));
-
             //전투가 끝이 났는가?
             if (!combatActive)
             {
@@ -176,7 +186,7 @@ public class CombatManager : SingleTon<CombatManager>
 
         yield return StartCoroutine(WaitForClick.WaitClick());
 
-        onAttackTurn = false;
+        onPlayerTurn = false;
 
         if (enemy.IsDead) yield return StartCoroutine(RewardEvent.RewardCoroutine(enemy.reward));
 

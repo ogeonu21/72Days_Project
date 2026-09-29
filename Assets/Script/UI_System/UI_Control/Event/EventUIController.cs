@@ -41,6 +41,7 @@ public class EventUIController : UIController, IUpdatableUI
         if (node.definition != null)
         {
             string error = EventDefinitionValidator.Validate(node.definition);
+            //연결이나 오류 체크
             if (error != null) { Debug.LogError(error); yield break; }
             if (choiceButtons == null || choiceButtons.Length == 0 || choiceButtons[0] == null || dialogueText == null)
             { Debug.LogError("[EventUI] 버튼 템플릿 또는 본문 텍스트 연결이 없습니다."); yield break; }

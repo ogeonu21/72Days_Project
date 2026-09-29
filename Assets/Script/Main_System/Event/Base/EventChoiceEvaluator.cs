@@ -7,12 +7,21 @@ public static class EventChoiceEvaluator
     public static string Check(EventOption option, string claimKey, Player player,
         InventoryManager inventory, CurrencyManager currency, EventProgress progress)
     {
+        //기본 데이터 Check
         if (option == null || player == null || progress == null) return "플레이어 정보를 불러오는 중입니다.";
         if (player.IsDead) return "사망한 상태에서는 선택할 수 없습니다.";
+
+        //해당 선택지가 반복불가하고, 중복 선택하였다면.
         if (!option.repeatable && progress.claimed.Contains(claimKey)) return "이미 처리한 선택입니다.";
+
+        //거절 사유 String List
         var reasons = new List<string>();
+
+        //퀘스트 조건 확인용인가?
         bool accepted = progress.acceptedQuests.Contains(option.requiredQuest);
         bool completed = progress.completedQuests.Contains(option.requiredQuest);
+
+        //요구 퀘스트 Check
         if (!string.IsNullOrEmpty(option.requiredQuest))
         {
             bool matches;
@@ -26,6 +35,7 @@ public static class EventChoiceEvaluator
             }
             if (!matches) reasons.Add($"퀘스트 {option.requiredQuest}: {QuestLabel(option.requiredQuestState)} 필요");
         }
+
         if (option.action == EventActionKind.AcceptQuest &&
             (progress.acceptedQuests.Contains(option.questId) || progress.completedQuests.Contains(option.questId)))
             reasons.Add("이미 수락한 퀘스트입니다.");
@@ -36,9 +46,13 @@ public static class EventChoiceEvaluator
             if (player.tendency < option.tendencyMin) reasons.Add($"성향 {option.tendencyMin} 이상 필요 (현재 {player.tendency})");
         if (option.tendencyCondition == TendencyRequirement.AtMost || option.tendencyCondition == TendencyRequirement.Between)
             if (player.tendency > option.tendencyMax) reasons.Add($"성향 {option.tendencyMax} 이하 필요 (현재 {player.tendency})");
+
+        //요구 골드량 Check
         int goldNeeded = Math.Max(option.requiredGold, option.goldCost);
         int gold = currency != null ? currency.GetCurrencyData("Gold")?.Amount ?? 0 : 0;
         if (gold < goldNeeded) reasons.Add($"골드 {goldNeeded} 필요 (현재 {gold})");
+
+        //요구 아이템 Check
         if (option.requiredItem != null)
         {
             long count = 0;
@@ -47,12 +61,17 @@ public static class EventChoiceEvaluator
                     count += item is ConsumableItem stack ? Math.Max(0, stack.quantity) : 1;
             if (count < option.requiredQuantity) reasons.Add($"{option.requiredItem.itemName} {option.requiredQuantity}개 필요 (현재 {count})");
         }
+
+        //요구 스탯 Check
         if (player.baseStats.str < option.requiredStats.str) reasons.Add($"STR {option.requiredStats.str} 필요 (현재 {player.baseStats.str})");
         if (player.baseStats.dex < option.requiredStats.dex) reasons.Add($"DEX {option.requiredStats.dex} 필요 (현재 {player.baseStats.dex})");
         if (player.baseStats.con < option.requiredStats.con) reasons.Add($"CON {option.requiredStats.con} 필요 (현재 {player.baseStats.con})");
+
+        // 모든 조건이 통과되어 문제
         return reasons.Count == 0 ? null : string.Join("\n", reasons);
     }
 
+    //퀘스트 상태 라벨용.
     private static string QuestLabel(QuestRequirementState state)
     {
         switch (state)

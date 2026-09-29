@@ -43,11 +43,11 @@ public static class RewardService
         if (nextTendency < int.MinValue || nextTendency > int.MaxValue)
         { result.message = "성향 안전 상한을 초과합니다."; return result; }
         var gold = currency != null ? currency.GetCurrencyData("Gold") : null;
-        if ((cost > 0 || loss > 0 || reward.dropGold > 0) && gold == null) { result.message = "골드 정보가 없습니다."; return result; }
-        if (cost > (gold?.Amount ?? 0)) { result.message = "골드가 부족합니다."; return result; }
+        if ((cost > 0 || loss > 0 || reward.dropGold > 0) && gold == null) { result.message = "소지금 정보가 없습니다."; return result; }
+        if (cost > (gold?.Amount ?? 0)) { result.message = "소지금이 부족합니다."; return result; }
         long finalGold = Math.Max(0L, (long)(gold?.Amount ?? 0) - cost - loss) + reward.dropGold;
         long actualLoss = Math.Min(loss, (long)(gold?.Amount ?? 0) - cost);
-        if (finalGold > int.MaxValue) { result.message = "골드 상한을 초과합니다."; return result; }
+        if (finalGold > int.MaxValue) { result.message = "소지금 상한을 초과합니다."; return result; }
         var entries = Entries(reward);
         if (entries.Count > 0 && (inventory == null || !inventory.CanAddRewards(entries)))
         { result.message = "보상을 받을 가방 공간 또는 수량 여유가 부족합니다. 지급·결제하지 않았습니다."; return result; }
@@ -70,18 +70,20 @@ public static class RewardService
         if (reward.exp > 0) player.GetExp(reward.exp);
         if (reward.tendencyChange != 0) player.ChangeTendency(reward.tendencyChange);
         var text = new StringBuilder();
-        if (cost > 0) text.AppendLine($"비용: {cost} 골드");
-        if (loss > 0) text.AppendLine($"골드 손실: {actualLoss}");
-        if (reward.dropGold > 0) text.AppendLine($"골드 +{reward.dropGold}");
-        if (reward.exp > 0) text.AppendLine($"경험치 +{reward.exp}");
-        if (reward.hpHeal > 0) text.AppendLine($"체력 {result.healed} 회복");
+        if (cost > 0) text.AppendLine($"-{cost}원");
+        if (loss > 0) text.AppendLine($"-{actualLoss}원");
+        if (reward.dropGold > 0) text.AppendLine($"+{reward.dropGold}원");
+        if (reward.exp > 0) text.AppendLine($"+{reward.exp} 경험치");
+        if (reward.hpHeal > 0) text.AppendLine($"체력 +{result.healed} 회복");
         if (reward.statIncrease.str > 0) text.AppendLine($"STR +{reward.statIncrease.str}");
         if (reward.statIncrease.dex > 0) text.AppendLine($"DEX +{reward.statIncrease.dex}");
         if (reward.statIncrease.con > 0) text.AppendLine($"CON +{reward.statIncrease.con}");
         if (reward.tendencyChange != 0) text.AppendLine($"성향 {reward.tendencyChange:+0;-0;0}");
         foreach (var entry in result.grantedItems) text.AppendLine($"{entry.item.itemName} × {entry.quantity}");
         result.success = true;
-        result.message = text.Length > 0 ? text.ToString().TrimEnd() : "처리되었습니다.";
+        //이 처리되었스빈다가 ㅈ같은데용
+        // -> 지웠습니당~ null값으로 만들었네용~
+        result.message = text.Length > 0 ? text.ToString().TrimEnd() : null;
         return result;
     }
 }

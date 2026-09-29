@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class InputManager : MonoBehaviour
+public class ComabatUIRouter : MonoBehaviour
 {
     #region [변수 그룹]
     //변수 목록.
@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        if (!combatManager.onAttackTurn)
+        if (!combatManager.onPlayerTurn)
         {
             return;
         }
@@ -62,6 +62,8 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        combatManager.GetInput(player.areaDataDB[index]);
+        
+
+        combatManager.GetInput(new PlayerInputData(PlayerBehaviour.Attack, player.areaDataDB[index], null));
     }
 }

@@ -12,6 +12,7 @@ public sealed class EventChoiceDataRaw
     public string EventID, ChoiceID;
     public int SortOrder;
     public string Text;
+    public string ResultText;
     public int GoldCost, GoldLoss;
     public bool Repeatable;
     public string RequiredQuestID, RequiredItemID;

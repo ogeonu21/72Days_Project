@@ -29,7 +29,7 @@ public class GameManager : SingleTon<GameManager>
     }
     #endregion
 
-    #region [이벤트 관리]
+    #region [이벤트 구독 관리]
     public event Action<GameState> OnGameStateChanged;
 
     void OnEnable()

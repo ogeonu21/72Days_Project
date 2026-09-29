@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [Serializable]
 public sealed class EventProgress
 {
+    //이 claimed가 무슨 의미일까.
     public List<string> claimed = new List<string>();
     public List<string> acceptedQuests = new List<string>();
     public List<string> completedQuests = new List<string>();
