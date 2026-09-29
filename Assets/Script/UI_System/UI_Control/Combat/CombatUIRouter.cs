@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class ComabatUIRouter : MonoBehaviour
+public class CombatUIRouter : MonoBehaviour
 {
     #region [변수 그룹]
     //변수 목록.
@@ -61,9 +61,9 @@ public class ComabatUIRouter : MonoBehaviour
             Debug.LogError($"[InputManager] {area}에 대응하는 공격 부위 데이터를 찾을 수 없습니다.");
             return;
         }
-
+        PlayerInputData p = new PlayerInputData(PlayerBehaviour.Attack, player.areaDataDB[index], null);
         
 
-        combatManager.GetInput(new PlayerInputData(PlayerBehaviour.Attack, player.areaDataDB[index], null));
+        combatManager.GetInput(p);
     }
 }

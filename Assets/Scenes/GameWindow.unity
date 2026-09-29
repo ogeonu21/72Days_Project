@@ -583,7 +583,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1636104604}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatUIRouter, Assembly-CSharp
         m_MethodName: AttackAreaInput
         m_Mode: 3
         m_Arguments:
@@ -2379,7 +2379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGlobal: 0
   combatActive: 0
-  onAttackTurn: 0
+  onPlayerTurn: 0
 --- !u!1 &224740004
 GameObject:
   m_ObjectHideFlags: 0
@@ -3920,7 +3920,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1636104604}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatUIRouter, Assembly-CSharp
         m_MethodName: AttackAreaInput
         m_Mode: 3
         m_Arguments:
@@ -4324,7 +4324,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1636104604}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatUIRouter, Assembly-CSharp
         m_MethodName: AttackAreaInput
         m_Mode: 3
         m_Arguments:
@@ -5733,7 +5733,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1636104604}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatUIRouter, Assembly-CSharp
         m_MethodName: AttackAreaInput
         m_Mode: 3
         m_Arguments:
@@ -12374,7 +12374,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1636104604}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatUIRouter, Assembly-CSharp
         m_MethodName: AttackAreaInput
         m_Mode: 3
         m_Arguments:
@@ -18114,7 +18114,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1636104604}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: CombatUIRouter, Assembly-CSharp
         m_MethodName: AttackAreaInput
         m_Mode: 3
         m_Arguments:
