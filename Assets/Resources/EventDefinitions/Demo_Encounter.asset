@@ -18,6 +18,10 @@ MonoBehaviour:
   options:
   - id: leave
     text: "\uC2F8\uC6B0\uC9C0 \uC54A\uACE0 \uB5A0\uB09C\uB2E4"
+    resultText: "\uC2F8\uC6C0\uC744 \uD53C\uD558\uACE0 \uC870\uC6A9\uD788 \uC790\uB9AC\uB97C
+      \uB5A0\uB0AC\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -51,6 +55,9 @@ MonoBehaviour:
   - id: fight
     text: "\uC804\uD22C\uC5D0 \uC9C4\uC785\uD55C\uB2E4 \xB7 \uBCF4\uC0C1\uC740 \uC801
       \uB4DC\uB86D \uC124\uC815 \uC0AC\uC6A9"
+    resultText: "\uC0C1\uB300\uC640 \uB9DE\uC11C \uC2F8\uC6B0\uAE30\uB85C \uACB0\uC2EC\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0

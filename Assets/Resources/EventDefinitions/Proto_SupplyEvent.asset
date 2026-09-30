@@ -18,6 +18,9 @@ MonoBehaviour:
   options:
   - id: take
     text: "\uBCF4\uAE09\uD488\uC744 \uBC1B\uB294\uB2E4"
+    resultText: "\uC5EC\uC815\uC744 \uC704\uD55C \uBCF4\uAE09\uD488\uC744 \uBC1B\uC558\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0

@@ -22,7 +22,7 @@ public class EventManager : SingleTon<EventManager>
 
     //얘가 실행하는거야.
     //굳이 반환을 해야하는가?
-    public RewardResult Execute(EventNode node, EventOption option)
+    public RewardResult Execute(EventNode node, EventOption option, System.Func<float> roll = null)
     {
         RewardResult Fail(string message) => new RewardResult { message = message };
         //여기서 실행가능 여부를 한 번 더 체크하네? 중복이긴하다.
@@ -42,6 +42,12 @@ public class EventManager : SingleTon<EventManager>
         processing = true;
         try
         {
+            if (!option.RollSuccess(roll))
+            {
+                if (!option.repeatable) progress.claimed.Add(key);
+                GameEvent.SaveGame();
+                return new RewardResult { chanceFailed = true, message = "시도에 실패하였습니다." };
+            }
             var result = RewardService.Apply(option.reward, player, inventory, CurrencyManager.Instance, option.goldCost, option.goldLoss);
             if (!result.success) return result;
             // 반복 가능이 꺼졌다. 즉, 한번만 실행이 가능하다 이건가?

@@ -244,19 +244,20 @@ public sealed class EventUIRouter : MonoBehaviour
         activePanel.SetActive(false);
         var result = EventManager.Instance.Execute(node, option);
         resultLog.Enqueue(result.message);
-        resultPresentation = StartCoroutine(PresentResult(option, result.success));
+        resultPresentation = StartCoroutine(PresentResult(option, result.success, result.chanceFailed));
     }
 
-    private IEnumerator PresentResult(EventOption option, bool success)
+    private IEnumerator PresentResult(EventOption option, bool success, bool chanceFailed = false)
     {
         // 선택 버튼 클릭이 결과 확인 입력으로 재사용되지 않도록 프레임을 분리한다.
         yield return null;
         var controller = GetComponent<EventUIController>();
         var dialogue = controller != null ? controller.dialogueText : null;
-        if (success && !string.IsNullOrWhiteSpace(option.resultText))
+        string narrative = success ? option.resultText : (chanceFailed ? option.failureText : null);
+        if (!string.IsNullOrWhiteSpace(narrative))
         {
             dialogue.gameObject.SetActive(true);
-            yield return TypewriterEffect.TypeTextCoroutine(dialogue, option.resultText);
+            yield return TypewriterEffect.TypeTextCoroutine(dialogue, narrative);
             // 타이핑 중 누른 채 유지한 터치도 완료 클릭으로 처리하지 않는다.
             while (Input.GetMouseButton(0) || Input.touchCount > 0) yield return null;
             yield return null;

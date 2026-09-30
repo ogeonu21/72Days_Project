@@ -18,6 +18,9 @@ MonoBehaviour:
   options:
   - id: str
     text: "\uD798 \uD6C8\uB828 (+10)"
+    resultText: "\uC6B4\uB3D9\uC744 \uD1B5\uD574 \uD798\uC774 10\uB9CC\uD07C \uC99D\uAC00\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -50,6 +53,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: dex
     text: "\uBBFC\uCCA9 \uD6C8\uB828 (+1)"
+    resultText: "\uBC18\uBCF5 \uD6C8\uB828\uC744 \uD1B5\uD574 \uBBFC\uCCA9\uC774
+      1\uB9CC\uD07C \uC99D\uAC00\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -82,6 +89,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: con
     text: "\uAC74\uAC15 \uD6C8\uB828 (+1)"
+    resultText: "\uCCB4\uB825 \uB2E8\uB828\uC744 \uD1B5\uD574 \uAC74\uAC15\uC774
+      1\uB9CC\uD07C \uC99D\uAC00\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0

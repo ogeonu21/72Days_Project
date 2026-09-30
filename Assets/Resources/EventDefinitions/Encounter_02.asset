@@ -18,6 +18,10 @@ MonoBehaviour:
   options:
   - id: ignore
     text: "\uBB34\uC2DC\uD558\uACE0 \uB5A0\uB09C\uB2E4"
+    resultText: "\uB3C4\uC6C0\uC744 \uCCAD\uD558\uB294 \uC18C\uB9AC\uB97C \uB4A4\uB85C\uD558\uACE0
+      \uC790\uB9AC\uB97C \uB5A0\uB0AC\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -51,6 +55,10 @@ MonoBehaviour:
   - id: help
     text: "\uB3C4\uC640\uC900\uB2E4 (\uC131\uD5A5 +1, \uC544\uC774\uD15C \uC18C\uBE44
       \uC5C6\uC74C)"
+    resultText: "\uB3C4\uC6C0\uC774 \uD544\uC694\uD55C \uC0AC\uB78C\uC744 \uB3C4\uC654\uB2E4.
+      \uC131\uD5A5\uC774 1\uB9CC\uD07C \uC99D\uAC00\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -83,6 +91,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: fight
     text: "\uC2F8\uC6B4\uB2E4 (\uC131\uD5A5 -1)"
+    resultText: "\uC0C1\uB300\uC5D0\uAC8C \uC2F8\uC6C0\uC744 \uAC78\uC5C8\uB2E4.
+      \uC131\uD5A5\uC774 1\uB9CC\uD07C \uAC10\uC18C\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0

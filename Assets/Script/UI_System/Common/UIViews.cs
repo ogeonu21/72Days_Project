@@ -9,7 +9,7 @@ public sealed class HudView
     private readonly TMP_Text gold;
     public HudView(TMP_Text day, TMP_Text location, TMP_Text gold) { this.day = day; this.location = location; this.gold = gold; }
     public void ShowNode(Node node) { if (day != null) day.text = node.surviveDate + " 일차"; if (location != null) location.text = node.worldLocation.ToString(); }
-    public void ShowCurrency(CurrencyData data) { if (data != null && data.Name == "Gold" && gold != null) gold.text = data.Amount + "금"; }
+    public void ShowCurrency(CurrencyData data) { if (data != null && data.Name == "Gold" && gold != null) gold.text = data.Amount + "원"; }
 }
 
 public sealed class PlayerStatsView

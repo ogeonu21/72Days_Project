@@ -145,6 +145,8 @@ public partial class DataImporter
                 {
                     id = row.ChoiceID, text = SheetJson.Multiline(row.Text), goldCost = row.GoldCost, goldLoss = row.GoldLoss,
                     resultText = SheetJson.Multiline(row.ResultText),
+                    successProbability = ParseEventProbability(row.SuccessProbability, row.ChoiceID),
+                    failureText = SheetJson.Multiline(row.FailureText),
                     repeatable = row.Repeatable, requiredQuest = row.RequiredQuestID,
                     requiredQuantity = row.RequiredQuantity, action = NamedEnum<EventActionKind>(row.Action, row.ChoiceID), questId = row.QuestID
                 };
@@ -184,6 +186,15 @@ public partial class DataImporter
             return result;
         }
         catch { foreach (var obj in result.Values) DestroyImmediate(obj); throw; }
+    }
+
+    private static float ParseEventProbability(string value, string id)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return 1f;
+        if (!float.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float probability))
+            throw new InvalidOperationException(id + ": SuccessProbability는 0~1 숫자여야 합니다.");
+        CheckRate(probability, id + " SuccessProbability");
+        return probability;
     }
 
     private static void ImportEventDefinitions(string events, string choices, string rewards)

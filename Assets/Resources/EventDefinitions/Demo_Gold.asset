@@ -18,6 +18,9 @@ MonoBehaviour:
   options:
   - id: find
     text: "\uACE8\uB4DC 100 \uD68D\uB4DD"
+    resultText: "\uC8FC\uBCC0\uC744 \uC0B4\uD3B4 100\uACE8\uB4DC\uB97C \uBC1C\uACAC\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -50,6 +53,10 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   - id: lose
     text: "\uACE8\uB4DC \uCD5C\uB300 50 \uC783\uAE30"
+    resultText: "\uC8FC\uBA38\uB2C8\uB97C \uD655\uC778\uD558\uB2C8 \uAC00\uC9C0\uACE0
+      \uC788\uB358 \uACE8\uB4DC \uC77C\uBD80\uAC00 \uC0AC\uB77C\uC838 \uC788\uC5C8\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 50
     repeatable: 0

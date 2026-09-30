@@ -24,6 +24,15 @@ public sealed class EventOption
     public string text;
     [Tooltip("실행 성공 후 dialogue에 표시하고 클릭을 기다리는 문구. EventChoiceData.ResultText")]
     [TextArea] public string resultText;
+    [Range(0, 1)] public float successProbability = 1f;
+    [TextArea] public string failureText;
+
+    public bool RollSuccess(Func<float> roll = null)
+    {
+        if (successProbability >= 1f) return true;
+        if (successProbability <= 0f) return false;
+        return (roll != null ? roll() : UnityEngine.Random.value) < successProbability;
+    }
     [Min(0)] public int goldCost;
     [Min(0)] public int goldLoss;
     public bool repeatable;

@@ -18,6 +18,10 @@ MonoBehaviour:
   options:
   - id: neutral
     text: "\uC911\uB9BD \uC804\uC6A9 (\uC131\uD5A5 0)"
+    resultText: "\uC911\uB9BD \uC131\uD5A5 \uC870\uAC74\uC744 \uCDA9\uC871\uD568\uC744
+      \uD655\uC778\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -50,6 +54,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: good
     text: "\uC120\uD589 \uC804\uC6A9 (\uC131\uD5A5 1 \uC774\uC0C1)"
+    resultText: "\uC120\uD589 \uC131\uD5A5 \uC870\uAC74\uC744 \uCDA9\uC871\uD568\uC744
+      \uD655\uC778\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -82,6 +90,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: bad
     text: "\uC545\uD589 \uC804\uC6A9 (\uC131\uD5A5 -1 \uC774\uD558)"
+    resultText: "\uC545\uD589 \uC131\uD5A5 \uC870\uAC74\uC744 \uCDA9\uC871\uD568\uC744
+      \uD655\uC778\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -114,6 +126,11 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: item
     text: "\uBB3C\uC57D 3\uAC1C \uC18C\uC9C0 \uD655\uC778 (\uC18C\uBE44 \uC5C6\uC74C)"
+    resultText: "\uC751\uAE09 \uBB3C\uC57D\uC744 3\uAC1C \uC774\uC0C1 \uAC00\uC9C0\uACE0
+      \uC788\uC74C\uC744 \uD655\uC778\uD558\uC600\uB2E4. \uBB3C\uC57D\uC740 \uC18C\uBE44\uD558\uC9C0
+      \uC54A\uC558\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -146,6 +163,11 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: gold
     text: "\uACE8\uB4DC 150 \uC18C\uC9C0 \uD655\uC778 (\uC18C\uBE44 \uC5C6\uC74C)"
+    resultText: "150\uACE8\uB4DC \uC774\uC0C1 \uBCF4\uC720\uD558\uACE0 \uC788\uC74C\uC744
+      \uD655\uC778\uD558\uC600\uB2E4. \uACE8\uB4DC\uB294 \uC18C\uBE44\uD558\uC9C0
+      \uC54A\uC558\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -178,6 +200,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: stats
     text: "STR\xB7DEX\xB7CON \uAC01 1 \uD655\uC778"
+    resultText: "\uD798, \uBBFC\uCCA9, \uAC74\uAC15 \uC870\uAC74\uC744 \uBAA8\uB450
+      \uCDA9\uC871\uD568\uC744 \uD655\uC778\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -210,6 +236,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: quest
     text: "\uC0DD\uC874 \uC900\uBE44 \uC758\uB8B0 \uC644\uB8CC \uD655\uC778"
+    resultText: "\uC0DD\uC874 \uC900\uBE44 \uC758\uB8B0\uB97C \uC644\uB8CC\uD588\uC74C\uC744
+      \uD655\uC778\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -243,6 +273,10 @@ MonoBehaviour:
   - id: all
     text: "\uBAA8\uB4E0 \uC870\uAC74 \uCDA9\uC871 \uD6C4 \uC5F0\uC2B5 \uC870\uC6B0\uB85C
       \uC774\uB3D9"
+    resultText: "\uBAA8\uB4E0 \uC900\uBE44\uB97C \uB9C8\uCE58\uACE0 \uB2E4\uC74C
+      \uC7A5\uC18C\uB85C \uD5A5\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -275,6 +309,10 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 16a955f1ef05e3f4b98d90863cd327b0, type: 2}
   - id: up
     text: "\uAC1C\uBC1C\uC6A9: \uC131\uD5A5 +1"
+    resultText: "\uAC80\uC99D\uC744 \uC704\uD574 \uC131\uD5A5\uC744 1\uB9CC\uD07C
+      \uC99D\uAC00\uC2DC\uCF30\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -307,6 +345,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: down
     text: "\uAC1C\uBC1C\uC6A9: \uC131\uD5A5 -1"
+    resultText: "\uAC80\uC99D\uC744 \uC704\uD574 \uC131\uD5A5\uC744 1\uB9CC\uD07C
+      \uAC10\uC18C\uC2DC\uCF30\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1

@@ -13,6 +13,9 @@ public sealed class EventChoiceDataRaw
     public int SortOrder;
     public string Text;
     public string ResultText;
+    // 빈 셀을 0%와 구별해 기본 100%로 처리한다.
+    public string SuccessProbability = "1";
+    public string FailureText;
     public int GoldCost, GoldLoss;
     public bool Repeatable;
     public string RequiredQuestID, RequiredItemID;

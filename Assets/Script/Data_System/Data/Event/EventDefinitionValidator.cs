@@ -12,6 +12,10 @@ public static class EventDefinitionValidator
         foreach (var option in definition.options)
         {
             if (option == null || string.IsNullOrWhiteSpace(option.id) || !ids.Add(option.id) || string.IsNullOrWhiteSpace(option.text)) return "선택지 ID/문구 누락 또는 ID 중복";
+            if (float.IsNaN(option.successProbability) || float.IsInfinity(option.successProbability) || option.successProbability < 0 || option.successProbability > 1)
+                return "성공 확률은 0~1이어야 합니다.";
+            if (option.successProbability < 1 && string.IsNullOrWhiteSpace(option.failureText))
+                return "실패 가능한 선택지는 FailureText가 필요합니다.";
             if (!Enum.IsDefined(typeof(EventActionKind), option.action) || option.goldCost < 0 || option.goldLoss < 0) return "동작/비용/손실 오류";
             if (option.requiredItem != null && option.requiredQuantity < 1) return "조건 아이템 수량 오류";
             if (!Enum.IsDefined(typeof(QuestRequirementState), option.requiredQuestState) ||

@@ -40,6 +40,8 @@ public sealed class ItemReward
 public sealed class RewardResult
 {
     public bool success;
+    // 실행 불가 오류와 정상적인 확률 실패를 구분한다.
+    public bool chanceFailed;
     public string message;
     public int healed;
     public readonly List<ItemReward> grantedItems = new List<ItemReward>();

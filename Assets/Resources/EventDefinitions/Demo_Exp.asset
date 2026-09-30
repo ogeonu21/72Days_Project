@@ -18,6 +18,10 @@ MonoBehaviour:
   options:
   - id: learn
     text: "\uACBD\uD5D8\uCE58 10 \uD68D\uB4DD"
+    resultText: "\uC0C8\uB85C\uC6B4 \uC9C0\uC2DD\uC744 \uC775\uD600 \uACBD\uD5D8\uCE58\uB97C
+      10\uB9CC\uD07C \uC5BB\uC5C8\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0

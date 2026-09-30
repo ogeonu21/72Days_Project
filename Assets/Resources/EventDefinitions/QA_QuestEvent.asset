@@ -18,6 +18,9 @@ MonoBehaviour:
   options:
   - id: accept
     text: "\uC758\uB8B0\uB97C \uC218\uB77D\uD55C\uB2E4"
+    resultText: "\uC0DD\uC874 \uC900\uBE44 \uC758\uB8B0\uB97C \uC218\uB77D\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -50,6 +53,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: complete
     text: "\uC900\uBE44 \uC644\uB8CC\uB97C \uBCF4\uACE0\uD55C\uB2E4"
+    resultText: "\uC900\uBE44 \uC0C1\uD0DC\uB97C \uD655\uC778\uBC1B\uACE0 \uC758\uB8B0\uB97C
+      \uC644\uB8CC\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0
@@ -82,6 +89,10 @@ MonoBehaviour:
     nextNode: {fileID: 0}
   - id: after
     text: "\uC644\uB8CC\uC790 \uC804\uC6A9 \uC870\uAC74 \uAC80\uC0AC\uB85C \uC774\uB3D9"
+    resultText: "\uC758\uB8B0\uB97C \uB9C8\uCE5C \uC790\uC5D0\uAC8C \uC5F4\uB9B0
+      \uAE38\uB85C \uD5A5\uD558\uC600\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1

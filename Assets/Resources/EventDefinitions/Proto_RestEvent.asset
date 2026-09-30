@@ -18,6 +18,10 @@ MonoBehaviour:
   options:
   - id: rest
     text: "\uCCB4\uB825 25 \uD68C\uBCF5 \xB7 \uACBD\uD5D8\uCE58 10"
+    resultText: "\uD734\uC2DD\uC744 \uCDE8\uD558\uBA70 \uC5EC\uC815\uC5D0\uC11C \uC5BB\uC740
+      \uACBD\uD5D8\uC744 \uB418\uC0C8\uACBC\uB2E4."
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 0

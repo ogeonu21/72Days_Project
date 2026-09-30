@@ -18,6 +18,9 @@ MonoBehaviour:
   options:
   - id: Event_01
     text: "\uD6C8\uB828\uC18C: STR\xB7DEX\xB7CON"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -50,6 +53,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: e37a40bf466f0f447ae5876e93fa420e, type: 2}
   - id: Event_02
     text: "\uC870\uC6B0: \uC131\uD5A5 \uC99D\uAC00\xB7\uAC10\uC18C"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -82,6 +88,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: b4b86ef88fcb6644788e7de0f605a3ac, type: 2}
   - id: QA_Quest
     text: "\uD018\uC2A4\uD2B8 \uC218\uB77D\xB7\uC644\uB8CC"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -114,6 +123,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: efa75218a2730c749a6dd07793a8daf7, type: 2}
   - id: QA_Conditions
     text: "\uC120\uD0DD\uC9C0 \uC870\uAC74 \uAC80\uC0AC"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -146,6 +158,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 5e1287b0c19c55645866a7fe1df0cb8d, type: 2}
   - id: Proto_Encounter
     text: "\uC5F0\uC2B5 \uC804\uD22C \uB610\uB294 \uD68C\uD53C"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -178,6 +193,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 16a955f1ef05e3f4b98d90863cd327b0, type: 2}
   - id: Combat_01
     text: "\uAE30\uC874 \uC804\uD22C: \uB178\uC219\uC790"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -210,6 +228,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 239e30d4e02835e45a7b5d1763a3f96b, type: 2}
   - id: Ending_01
     text: "\uAE30\uC874 \uC2B9\uB9AC \uC5D4\uB529 (\uC885\uB8CC)"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -242,6 +263,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 0dc4205b22c183b419b7d002e7c75a2e, type: 2}
   - id: Ending_02
     text: "\uAE30\uC874 \uD328\uBC30 \uC5D4\uB529 (\uC885\uB8CC)"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -274,6 +298,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: d559f32b34b64ee44892c6a2e5c71d2d, type: 2}
   - id: Proto_Finish
     text: "\uD504\uB85C\uD1A0\uD0C0\uC785 \uC644\uB8CC \uC5D4\uB529 (\uC885\uB8CC)"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -306,6 +333,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 50bcc35e73e53bb45bbb26c55f475ff3, type: 2}
   - id: Proto_Fail
     text: "\uD504\uB85C\uD1A0\uD0C0\uC785 \uC2E4\uD328 \uC5D4\uB529 (\uC885\uB8CC)"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -338,6 +368,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 8c9af242e19d65c4bbbeba7054d8ba20, type: 2}
   - id: Demo_Training
     text: "\uD6C8\uB828 \uC608\uC81C \xB7 \uB2A5\uB825\uCE58 \uD655\uC815 \uC0C1\uC2B9"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -370,6 +403,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 2095f24d3104a8b498bd6e9dd1bd3122, type: 2}
   - id: Demo_Shop
     text: "\uBB3C\uC57D \uC0C1\uC810 \uC608\uC81C"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -402,6 +438,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: ef241d6a0e6e42e4a978a38c3e8f1d53, type: 2}
   - id: Demo_Encounter
     text: "\uC870\uC6B0 \uC608\uC81C \xB7 \uC804\uD22C \uB610\uB294 \uB5A0\uB098\uAE30"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -434,6 +473,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 7224b4239a7903547b8329238328bb31, type: 2}
   - id: Demo_Quest
     text: "\uBB3C\uC57D \uC18C\uC9C0 \uD655\uC778 \uD018\uC2A4\uD2B8 \uC608\uC81C"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -466,6 +508,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 81ebca0a4cc7dec4f9c49bc2bd3f4210, type: 2}
   - id: Demo_Heal
     text: "\uD734\uC2DD \uC608\uC81C \xB7 \uCCB4\uB825 \uD68C\uBCF5"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -498,6 +543,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: 1e2dc9d7328e3f843a18b46acbc09d50, type: 2}
   - id: Demo_Exp
     text: "\uBC30\uC6C0 \uC608\uC81C \xB7 \uACBD\uD5D8\uCE58 \uD68D\uB4DD"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -530,6 +578,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: c66c6fd30a5ec0f48b825c859080adf4, type: 2}
   - id: Demo_Gold
     text: "\uACE8\uB4DC \uD68D\uB4DD\xB7\uC190\uC2E4 \uC608\uC81C"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
@@ -562,6 +613,9 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: df0d028a0221d804480f45456972de7b, type: 2}
   - id: Demo_Item
     text: "\uBCF4\uAE09\uD488 \uC608\uC81C \xB7 \uC544\uC774\uD15C \uD68D\uB4DD"
+    resultText: 
+    successProbability: 1
+    failureText: 
     goldCost: 0
     goldLoss: 0
     repeatable: 1
