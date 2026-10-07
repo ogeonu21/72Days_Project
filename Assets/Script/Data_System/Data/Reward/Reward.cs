@@ -42,6 +42,8 @@ public sealed class RewardResult
     public bool success;
     // 실행 불가 오류와 정상적인 확률 실패를 구분한다.
     public bool chanceFailed;
+    // 수락 직후 완료까지 처리된 경우 UI가 완료 문구와 이동 대상을 사용한다. 저장 데이터가 아니다.
+    public EventOption completedQuestOption;
     public string message;
     public int healed;
     public readonly List<ItemReward> grantedItems = new List<ItemReward>();

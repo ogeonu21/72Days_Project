@@ -41,6 +41,11 @@ public sealed class InventoryUI : MonoBehaviour
 
     private void OnEnable()
     {
+        if (BlockedByCombat())
+        {
+            uiManager.CloseUI(gameObject);
+            return;
+        }
         // CharacterManager는 시작 씬의 전역 객체이므로 씬 간 직렬화 참조를 만들지 않는다.
         if (characters == null) characters = CharacterManager.Instance;
         inventory.InventoryChanged += Refresh;
@@ -79,6 +84,7 @@ public sealed class InventoryUI : MonoBehaviour
 
     public void OpenPlayerStats()
     {
+        if (BlockedByCombat()) return;
         if (playerStatsDetails == null) return;
         ClearSelection();
         playerStatsDetails.Bind(player);
@@ -122,6 +128,7 @@ public sealed class InventoryUI : MonoBehaviour
 
     public void SelectInventorySlot(int index)
     {
+        if (BlockedByCombat()) return;
         if (!inventory.TryGetItem(index, out var item)) return;
         selectedIndex = index;
         selectedItem = item;
@@ -134,6 +141,7 @@ public sealed class InventoryUI : MonoBehaviour
 
     public void SelectEquipmentSlot(int index)
     {
+        if (BlockedByCombat()) return;
         var item = GetEquipment(index);
         if (item == null) return;
         int inInventory = inventory.inventoryItems.IndexOf(item);
@@ -171,6 +179,7 @@ public sealed class InventoryUI : MonoBehaviour
 
     public void ActivateSelected()
     {
+        if (BlockedByCombat()) return;
         if (selectedItem == null || player == null || player.IsDead) return;
         string error = null;
         if (selectedItem is EquipmentItem equipment && InventoryManager.IsEquipped(player, selectedItem))
@@ -193,6 +202,7 @@ public sealed class InventoryUI : MonoBehaviour
 
     public void BeginDiscard()
     {
+        if (BlockedByCombat()) return;
         if (selectedItem == null || selectedIndex < 0) return;
         pendingDiscard = selectedItem;
         discardQuantity = 1;
@@ -203,9 +213,9 @@ public sealed class InventoryUI : MonoBehaviour
     }
 
     private int AvailableQuantity => selectedItem is ConsumableItem stack ? stack.quantity : 1;
-    public void IncreaseDiscard() { if (discardQuantity < AvailableQuantity) discardQuantity++; UpdateDiscardQuantity(); }
-    public void DecreaseDiscard() { discardQuantity = Mathf.Max(1, discardQuantity - 1); UpdateDiscardQuantity(); }
-    public void DiscardAll() { discardQuantity = AvailableQuantity; UpdateDiscardQuantity(); }
+    public void IncreaseDiscard() { if (BlockedByCombat()) return; if (discardQuantity < AvailableQuantity) discardQuantity++; UpdateDiscardQuantity(); }
+    public void DecreaseDiscard() { if (BlockedByCombat()) return; discardQuantity = Mathf.Max(1, discardQuantity - 1); UpdateDiscardQuantity(); }
+    public void DiscardAll() { if (BlockedByCombat()) return; discardQuantity = AvailableQuantity; UpdateDiscardQuantity(); }
     private void UpdateDiscardQuantity()
     {
         discardQuantity = Mathf.Clamp(discardQuantity, 1, Mathf.Max(1, AvailableQuantity));
@@ -217,6 +227,7 @@ public sealed class InventoryUI : MonoBehaviour
 
     public void ConfirmDiscard()
     {
+        if (BlockedByCombat()) return;
         if (pendingDiscard == null || pendingDiscard != selectedItem ||
             !inventory.TryGetItem(selectedIndex, out var current) || current != pendingDiscard) { CancelDiscard(); return; }
         inventory.TryDiscardAt(selectedIndex, discardQuantity, player, out var error);
@@ -226,6 +237,11 @@ public sealed class InventoryUI : MonoBehaviour
     }
     public void CancelDiscard() { pendingDiscard = null; confirmPanel.SetActive(false); }
     public void CloseDetails() { ClearSelection(); Refresh(); }
+    private bool BlockedByCombat()
+    {
+        if (uiManager == null) uiManager = FindObjectOfType<UIManager>();
+        return uiManager != null && uiManager.TryBlockInventory();
+    }
     private void ClearSelection()
     {
         selectedItem = null;

@@ -18,12 +18,13 @@ MonoBehaviour:
   options:
   - id: str
     text: "\uD798 +1 (\uD655\uC815)"
-    resultText: "\uC6B4\uB3D9\uC744 \uD1B5\uD574 \uD798\uC774 1\uB9CC\uD07C \uC99D\uAC00\uD558\uC600\uB2E4."
+    resultText: "\uADFC\uB825 \uC6B4\uB3D9\uC744 \uD1B5\uD574 \uD798\uC774 1\uB9CC\uD07C
+      \uC99D\uAC00\uD558\uC600\uB2E4."
     successProbability: 1
     failureText: 
     goldCost: 0
     goldLoss: 0
-    repeatable: 0
+    repeatable: 1
     requiredQuest: 
     requiredQuestState: 0
     requiredItem: {fileID: 0}
@@ -53,13 +54,13 @@ MonoBehaviour:
     nextNode: {fileID: 11400000, guid: d8e0e4d82254e7f4aa02ac3713721858, type: 2}
   - id: dex
     text: "\uBBFC\uCCA9 +1 (\uD655\uC815)"
-    resultText: "\uBC18\uBCF5 \uD6C8\uB828\uC744 \uD1B5\uD574 \uBBFC\uCCA9\uC774
+    resultText: "\uC21C\uBC1C\uB825 \uD6C8\uB828\uC744 \uD1B5\uD574 \uBBFC\uCCA9\uC774
       1\uB9CC\uD07C \uC99D\uAC00\uD558\uC600\uB2E4."
     successProbability: 1
     failureText: 
     goldCost: 0
     goldLoss: 0
-    repeatable: 0
+    repeatable: 1
     requiredQuest: 
     requiredQuestState: 0
     requiredItem: {fileID: 0}
@@ -95,7 +96,7 @@ MonoBehaviour:
     failureText: 
     goldCost: 0
     goldLoss: 0
-    repeatable: 0
+    repeatable: 1
     requiredQuest: 
     requiredQuestState: 0
     requiredItem: {fileID: 0}

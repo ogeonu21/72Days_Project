@@ -2380,6 +2380,7 @@ MonoBehaviour:
   isGlobal: 0
   combatActive: 0
   onPlayerTurn: 0
+  escapeProbability: 0.5
 --- !u!1 &224740004
 GameObject:
   m_ObjectHideFlags: 0
@@ -10590,7 +10591,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAE08"
+  m_text: "\uC6D0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d605140692eb8534394c124a2ca2100f, type: 2}
   m_sharedMaterial: {fileID: -4875569637840186141, guid: d605140692eb8534394c124a2ca2100f, type: 2}
@@ -14725,6 +14726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3501e6d780dcb944bafe71ac55d1d446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  choiceTemplate: {fileID: 0}
 --- !u!1 &1636127171
 GameObject:
   m_ObjectHideFlags: 0

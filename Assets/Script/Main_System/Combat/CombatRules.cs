@@ -6,6 +6,12 @@ using System;
 /// </summary>
 public static class CombatRules
 {
+    public static bool ResolveEscape(float probability, float roll)
+    {
+        if (float.IsNaN(probability) || probability <= 0f) return false;
+        if (probability >= 1f) return true;
+        return roll < probability;
+    }
     public static CombatAttackResult ResolveAttack(
         int attackPower,
         float damageMultiplier,

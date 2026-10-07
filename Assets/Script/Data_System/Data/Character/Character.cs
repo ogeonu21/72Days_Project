@@ -50,11 +50,28 @@ public class Character : MonoBehaviour
 
     protected int[] EffectTurn = new int[4];
     //기존 회피율 등등이 필요함.
+
+    //공격력 감소량
+    public const int AttackDown_Force = 1;
+    public const int AttackDown_Turn = 3;
+    //회피율 감소율
+    public const float DodgeDown_Force = 0.05f;
+    public const int DodgeDown_Turn = 3;
+    public const int Bleeding_Damage = 3;
+    public const int Bleeding_Turn = 3;
     #endregion
 
     #region [Events]
     public event Action onDied;
     public event Action StatsChanged;
+    public event Action EffectsChanged;
+    private CharacterEffectsUI effectsUI;
+    private HealthBarAnimation healthBarAnimation;
+    public int GetEffectTurns(CharacterEffect effect)
+    {
+        int index = (int)effect;
+        return index >= 0 && index < 3 ? EffectTurn[index] : 0;
+    }
     #endregion
 
     #region [initialize]
@@ -111,14 +128,15 @@ public class Character : MonoBehaviour
         baseStats = initialStats;
         tuningStats = initialTuning;
         Array.Clear(EffectTurn, 0, EffectTurn.Length);
+        EffectsChanged?.Invoke();
         currentHP = 0;
         stats = new Stats(baseStats, tuningStats);
     }
 
     protected TuningStats ApplyStatusEffects(TuningStats value)
     {
-        if (EffectTurn[0] > 0) value.attackBonus -= 5;
-        if (EffectTurn[1] > 0) value.dodgeBonus -= 0.05f;
+        if (EffectTurn[0] > 0) value.attackBonus -= AttackDown_Force;
+        if (EffectTurn[1] > 0) value.dodgeBonus -= DodgeDown_Force;
         return value;
     }
 
@@ -164,11 +182,13 @@ public class Character : MonoBehaviour
     //특수 효과 턴이 존재한다면 -1, 만약 -1하여 0이 된다면 효과 해제.
     public void CountEffect()
     {
+        bool changed = false;
         for (int i = 0; i < 3; i++)
         {
             if (EffectTurn[i] > 0)
             {
                 EffectTurn[i]--;
+                changed = true;
 
                 switch (i)
                 {
@@ -188,13 +208,14 @@ public class Character : MonoBehaviour
                         break;
                     case 2:
                     //복부 특수효과, 3의 데미지
-                        TakeDamage(3);
+                        TakeDamage(Bleeding_Damage);
                         break;
                     default:
                         break;
                 }
             }   
         }
+        if (changed) EffectsChanged?.Invoke();
     }
 
     //특수 효과 턴수 적용 함수.
@@ -203,19 +224,19 @@ public class Character : MonoBehaviour
         switch (data.label)
         {
             case "팔":
-                EffectTurn[0] = 3;
+                EffectTurn[0] = AttackDown_Turn;
                 break;
             case "다리":
-                EffectTurn[1] = 3;
+                EffectTurn[1] = DodgeDown_Turn;
                 break;
             case "몸":
-                EffectTurn[2] = 2;
+                EffectTurn[2] = Bleeding_Turn;
                 break;
             default:
                 break;
         }
         UpdateTuningStats();
-        //이펙트 효과 적용 필요.
+        EffectsChanged?.Invoke();
     }
 
     public void EffectReset()
@@ -225,6 +246,7 @@ public class Character : MonoBehaviour
             EffectTurn[i] = 0;
         }
         UpdateTuningStats();
+        EffectsChanged?.Invoke();
     }
     #endregion
 
@@ -232,10 +254,17 @@ public class Character : MonoBehaviour
     protected void UpdateHP_UI()
     {
         if (nameText != null) nameText.text = characterName;
+        if (nameText != null && effectsUI == null)
+        {
+            effectsUI = nameText.GetComponent<CharacterEffectsUI>() ?? nameText.gameObject.AddComponent<CharacterEffectsUI>();
+            effectsUI.Bind(this, nameText);
+        }
 
         if (hpSlider != null)
         {
-            hpSlider.value = MaxHP > 0 ? (float)currentHP / MaxHP : 0f;
+            if (healthBarAnimation == null || healthBarAnimation.gameObject != hpSlider.gameObject)
+                healthBarAnimation = hpSlider.GetComponent<HealthBarAnimation>() ?? hpSlider.gameObject.AddComponent<HealthBarAnimation>();
+            healthBarAnimation.SetValue(MaxHP > 0 ? (float)currentHP / MaxHP : 0f, Application.isPlaying);
         }
         if (hpText != null)
         {

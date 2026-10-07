@@ -22,6 +22,9 @@ public class UIManager : SingleTon<UIManager>
     private PlayerStatsView playerStatsView;
     private LevelUpModal levelUpModal;
     private CharacterManager characterSource;
+    private bool combatNodeActive;
+    private CombatManager inventoryCombatSource;
+    [SerializeField] private EventResultLog resultLog;
 
     //플레이어의 레벨업 이벤트를 반복실행하기 위한 특별 변수. 레벨 변동량을 받아와서 eventExecute를 반복실행
     private int levelDifference = 0;
@@ -124,8 +127,17 @@ public class UIManager : SingleTon<UIManager>
     private void UpdateUI(Node node)
     {
         if (node == null) return;
+        UpdateInventoryAccess(node);
         hudView.ShowNode(node);
         screenRouter.Show(node, enemy);
+    }
+
+    private void UpdateInventoryAccess(Node node)
+    {
+        combatNodeActive = node.nodeType == NodeType.CombatNode;
+        if (combatNodeActive)
+            foreach (var inventoryUI in FindObjectsOfType<InventoryUI>())
+                CloseUI(inventoryUI.gameObject);
     }
 
     #endregion
@@ -190,6 +202,7 @@ public class UIManager : SingleTon<UIManager>
     #region [UI Control]
     public void OpenUI(GameObject UI)
     {
+        if (UI != null && UI.GetComponentInChildren<InventoryUI>(true) != null && TryBlockInventory()) return;
         if (UI != null && UI.activeSelf) return;
         if (UI != null)
         {
@@ -204,6 +217,16 @@ public class UIManager : SingleTon<UIManager>
         {
             Debug.LogWarning($"<color=yellow>[UIMANAGER] </color>UI가 이미 활성화되어 있거나 null입니다.</color>");
         }
+    }
+    /// <summary>전투 노드의 도입/결과 대화까지 잠근다. 전투 선택지의 아이템 사용에는 적용하지 않는다.</summary>
+    public bool TryBlockInventory()
+    {
+        if (inventoryCombatSource == null) inventoryCombatSource = FindObjectOfType<CombatManager>();
+        if (!combatNodeActive && (inventoryCombatSource == null || !inventoryCombatSource.combatActive)) return false;
+        if (resultLog == null) resultLog = FindObjectOfType<EventResultLog>();
+        if (resultLog != null) resultLog.Enqueue("전투 중에는 사용할 수 없습니다.");
+        else Debug.LogWarning("[UIManager] 결과 로그 영역을 찾을 수 없습니다.");
+        return true;
     }
     public void CloseUI(GameObject UI)
     {

@@ -288,8 +288,8 @@ public class Player : Character
         if (equipmentData == null) return result;
         if (equipmentData.weaponItem != null)
         {
-            result.attackBonus = equipmentData.weaponItem.attackBonus;
-            result.rangeBonus = equipmentData.weaponItem.range;
+            result.attackBonus += equipmentData.weaponItem.attackBonus;
+            result.rangeBonus += equipmentData.weaponItem.range;
         }
         if (equipmentData.armorItem != null)
             foreach (var item in equipmentData.armorItem)

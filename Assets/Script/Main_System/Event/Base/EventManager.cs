@@ -36,33 +36,60 @@ public class EventManager : SingleTon<EventManager>
 
         //gameManager의 eventProgress를 복사
         var progress = game.eventProgress;
-        //이 key는 뭐지?
-        string key = node.name + "/" + option.id;
         var inventory = InventoryManager.Instance;
         processing = true;
         try
         {
-            if (!option.RollSuccess(roll))
+            var result = ApplyOption(node, option, player, inventory, progress, roll);
+            if (result.success && option.action == EventActionKind.AcceptQuest)
             {
-                if (!option.repeatable) progress.claimed.Add(key);
-                GameEvent.SaveGame();
-                return new RewardResult { chanceFailed = true, message = "시도에 실패하였습니다." };
+                // processing 잠금은 유지하되, 표시와 동일한 판정기로 완료 조건을 다시 검사한다.
+                foreach (var completion in node.definition.options)
+                {
+                    if (completion.action != EventActionKind.CompleteQuest || completion.questId != option.questId) continue;
+                    string unavailable = EventChoiceEvaluator.Check(completion, node.name + "/" + completion.id,
+                        player, inventory, CurrencyManager.Instance, progress);
+                    if (unavailable != null) continue;
+                    var completed = ApplyOption(node, completion, player, inventory, progress, roll);
+                    result.message += "\n" + completed.message;
+                    if (completed.success)
+                    {
+                        result.completedQuestOption = completion;
+                        result.healed += completed.healed;
+                        result.grantedItems.AddRange(completed.grantedItems);
+                    }
+                    // 한 번의 수락에서 하나의 완료 처리만 시도한다.
+                    break;
+                }
             }
-            var result = RewardService.Apply(option.reward, player, inventory, CurrencyManager.Instance, option.goldCost, option.goldLoss);
-            if (!result.success) return result;
-            // 반복 가능이 꺼졌다. 즉, 한번만 실행이 가능하다 이건가?
-            if (!option.repeatable) progress.claimed.Add(key);
-            if (option.action == EventActionKind.AcceptQuest){
-                progress.acceptedQuests.Add(option.questId);
-                result.message += "\n퀘스트 수락: " + option.questId;
-            }
-            if (option.action == EventActionKind.CompleteQuest){
-                progress.completedQuests.Add(option.questId);
-                result.message += "\n퀘스트 완료: " + option.questId;
-            }
-            GameEvent.SaveGame();
+            if (result.success || result.chanceFailed) GameEvent.SaveGame();
             return result;
         }
         finally { processing = false; ProgressChanged?.Invoke(); }
     }
+    private RewardResult ApplyOption(EventNode node, EventOption option, Player player,
+        InventoryManager inventory, EventProgress progress, System.Func<float> roll)
+    {
+        string key = node.name + "/" + option.id;
+        if (!option.RollSuccess(roll))
+        {
+            if (!option.repeatable) progress.claimed.Add(key);
+            return new RewardResult { chanceFailed = true, message = "시도에 실패하였습니다." };
+        }
+        var result = RewardService.Apply(option.reward, player, inventory, CurrencyManager.Instance, option.goldCost, option.goldLoss);
+        if (!result.success) return result;
+        if (!option.repeatable) progress.claimed.Add(key);
+        if (option.action == EventActionKind.AcceptQuest)
+        {
+            progress.acceptedQuests.Add(option.questId);
+            result.message += "\n퀘스트 수락: " + option.questId;
+        }
+        if (option.action == EventActionKind.CompleteQuest)
+        {
+            progress.completedQuests.Add(option.questId);
+            result.message += "\n퀘스트 완료: " + option.questId;
+        }
+        return result;
+    }
+
 }
