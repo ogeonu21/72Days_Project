@@ -6,34 +6,34 @@ public static class WaitForClick
 {
     public static IEnumerator WaitClick()
     {
-        return WaitForNewPress(HasContact, HasNewPress);
+        return WaitForNewPress(HasNewPress);
     }
 
     // 입력을 분리해 실제 기기 입력 없이도 코루틴의 경계 조건을 검증한다.
-    internal static IEnumerator WaitForNewPress(Func<bool> hasContact, Func<bool> hasNewPress)
+    internal static IEnumerator WaitForNewPress(Func<bool> hasNewPress)
     {
-        // 타이핑/선택에 쓰던 손가락을 모두 뗄 때까지 기다린다.
-        while (hasContact()) yield return null;
         // 대기가 시작된 프레임의 클릭은 확인 입력으로 재사용하지 않는다.
         yield return null;
+        // 새 Down/Began만 받으므로 길게 누르기는 통과하지 않는다.
+        // 모든 접촉의 해제를 요구하면 연속 탭/다중 터치의 새 입력까지 버리게 된다.
         while (!hasNewPress()) yield return null;
-    }
-
-    private static bool HasContact()
-    {
-        // Ended/Canceled도 해당 프레임에는 남아 있으므로 모두 사라진 뒤 대기한다.
-        return Input.touchCount > 0 || (!Application.isMobilePlatform && Input.GetMouseButton(0));
     }
 
     private static bool HasNewPress()
     {
+        bool touchBegan = false;
         if (Input.touchCount > 0)
         {
             for (int i = 0; i < Input.touchCount; i++)
-                if (Input.GetTouch(i).phase == TouchPhase.Began) return true;
-            return false;
+                if (Input.GetTouch(i).phase == TouchPhase.Began) { touchBegan = true; break; }
         }
-        // 모바일의 터치→마우스 합성 입력을 중복 처리하지 않는다.
-        return !Application.isMobilePlatform && Input.GetMouseButtonDown(0);
+        return AcceptNewPress(Application.isEditor, Application.isMobilePlatform,
+            Input.GetMouseButtonDown(0), touchBegan);
+    }
+
+    internal static bool AcceptNewPress(bool isEditor, bool isMobile, bool mouseDown, bool touchBegan)
+    {
+        // Game 창의 마우스는 허용하되 모바일 빌드의 합성 마우스는 제외한다.
+        return touchBegan || ((isEditor || !isMobile) && mouseDown);
     }
 }

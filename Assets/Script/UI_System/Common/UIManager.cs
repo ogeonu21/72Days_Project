@@ -20,6 +20,7 @@ public class UIManager : SingleTon<UIManager>
     private NodeScreenRouter screenRouter;
     private HudView hudView;
     private PlayerStatsView playerStatsView;
+    private PlayerTendencyUI tendencyView;
     private LevelUpModal levelUpModal;
     private CharacterManager characterSource;
     private bool combatNodeActive;
@@ -56,6 +57,12 @@ public class UIManager : SingleTon<UIManager>
         base.Awake();
         hudView = new HudView(dayCountText, locationText, goldText);
         playerStatsView = new PlayerStatsView(inventoryCharacterSTRText, inventoryCharacterDEXText, inventoryCharacterCONText);
+        if (dayCountText != null)
+        {
+            var tendencyTarget = dayCountText.transform.parent.Find("Tendency_Text");
+            if (tendencyTarget != null)
+                tendencyView = PlayerTendencyUI.Ensure(tendencyTarget.GetComponent<TMP_Text>());
+        }
         levelUpModal = new LevelUpModal(levelUpUI);
         InitializeUIControllers();
         screenRouter = new NodeScreenRouter(uiControllers);
@@ -81,6 +88,7 @@ public class UIManager : SingleTon<UIManager>
         if (player != null)
             player.StatsChanged -= UpdateCharacterStatsUI;
         player = null;
+        if (tendencyView != null) tendencyView.Bind(null);
         enemy = null;
         characterSource = null;
     }
@@ -116,6 +124,7 @@ public class UIManager : SingleTon<UIManager>
             this.player.StatsChanged -= UpdateCharacterStatsUI;
         this.enemy = enemy;
         this.player = player;
+        if (tendencyView != null) tendencyView.Bind(player);
         if (this.player != null)
             this.player.StatsChanged += UpdateCharacterStatsUI;
         UpdateCharacterStatsUI();

@@ -70,6 +70,7 @@ public class Player : Character
         UpdateStats();
         SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
         UpdateLV_UI();
+        TendencyChanged?.Invoke(tendency);
     }
     #endregion
 

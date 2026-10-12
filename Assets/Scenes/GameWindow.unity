@@ -1208,7 +1208,7 @@ GameObject:
   - component: {fileID: 79668368}
   - component: {fileID: 79668367}
   m_Layer: 0
-  m_Name: GoodAndDevil_Text
+  m_Name: Tendency_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1835,6 +1835,7 @@ MonoBehaviour:
   - {fileID: 1269922016}
   - {fileID: 569430725}
   - {fileID: 614658043}
+  choiceTemplate: {fileID: 0}
 --- !u!1001 &166021285
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5486,8 +5487,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -9483,6 +9484,7 @@ MonoBehaviour:
   - {fileID: 2130797516}
   - {fileID: 1737808970}
   - {fileID: 1464211109}
+  resultLog: {fileID: 0}
   levelUpUI: {fileID: 1364073604}
   dayCountText: {fileID: 1710008632}
   locationText: {fileID: 1386822219}
@@ -10568,8 +10570,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: -780, y: -60}
+  m_AnchoredPosition: {x: 0, y: -10}
+  m_SizeDelta: {x: -800, y: -60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092293382
 MonoBehaviour:
@@ -17304,8 +17306,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -80, y: -75}
-  m_SizeDelta: {x: 100, y: 80}
+  m_AnchoredPosition: {x: -80, y: -70}
+  m_SizeDelta: {x: 120, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1885926227
 MonoBehaviour:
