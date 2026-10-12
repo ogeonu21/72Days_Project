@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: QA_Hub
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: QA_Hub
+  nodeMessage: "\uAC01 \uC774\uBCA4\uD2B8\uB97C \uD655\uC778\uD558\uACE0 \uAC80\uC99D
+    \uBAA9\uB85D\uC73C\uB85C \uB3CC\uC544\uC624\uC790.\n\uC5D4\uB529\uC740 \uD50C\uB808\uC774\uB97C
+    \uC885\uB8CC\uD558\uBBC0\uB85C \uB9C8\uC9C0\uB9C9\uC5D0 \uD655\uC778\uD55C\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: d86cce5e604bd8e4d9abcd44935e2028, type: 2}

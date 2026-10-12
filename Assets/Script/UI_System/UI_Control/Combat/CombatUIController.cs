@@ -19,6 +19,9 @@ public class CombatUIController : UIController, IUpdatableUI
     private CharacterManager characterSource;
     private Player player;
     private Enemy enemy;
+    private CombatUIRouter choiceRouter;
+    [SerializeField] private Button choiceTemplate;
+    private Button[] bodyButtons;
     #endregion
 
     private Coroutine bloodEffectCoroutine; // 피격 효과 코루틴을 제어하기 위한 변수
@@ -44,6 +47,7 @@ public class CombatUIController : UIController, IUpdatableUI
     
     protected override void OnDisable()
     {
+        if (combatManager != null) combatManager.CancelCombat();
         base.OnDisable();
         NodeText = null;
         if (combatManager != null)
@@ -116,6 +120,21 @@ public class CombatUIController : UIController, IUpdatableUI
     //너는 뭐니?
     public void UpdateUI(Node node)
     {
+        if (attackButtons != null)
+        {
+            choiceRouter = attackButtons.GetComponent<CombatUIRouter>() ?? attackButtons.AddComponent<CombatUIRouter>();
+            if (bodyButtons == null) bodyButtons = attackButtons.GetComponentsInChildren<Button>(true);
+            if (choiceTemplate == null)
+            {
+                // 인체 부위 버튼이 아니라 기존 이벤트 선택지의 모양을 재사용한다.
+                var canvas = GetComponentInParent<Canvas>();
+                if (canvas != null)
+                    foreach (var eventUI in canvas.GetComponentsInChildren<EventUIController>(true))
+                        if (eventUI.choiceButtons != null && eventUI.choiceButtons.Length > 0 && eventUI.choiceButtons[0] != null)
+                        { choiceTemplate = eventUI.choiceButtons[0]; break; }
+            }
+            choiceRouter.Configure(choiceTemplate, combatText != null ? combatText.font : null, bodyButtons, combatText);
+        }
         combatManager.CombatNodeStart(node);
     }
 

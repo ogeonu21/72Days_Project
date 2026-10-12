@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66730cef175d17545a71ca543061291d, type: 3}
+  m_Name: Proto_Potion
+  m_EditorClassIdentifier: 
+  itemID: Proto_Potion
+  itemName: "\uC751\uAE09 \uBB3C\uC57D"
+  itemDescription: "\uD50C\uB808\uC774 \uD750\uB984 \uAC80\uC0AC \uC804\uC6A9 \uC18C\uBAA8\uD488.
+    \uCCB4\uB825\uC744 20 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/12_potion.png
+  isConsumable: 1
+  itemValue: 20
+  itemCategory: 3
+  quantity: 0
+  health: 20

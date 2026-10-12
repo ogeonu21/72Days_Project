@@ -7,6 +7,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EventNode", menuName = "Node/EventNode", order = 3)]
 public class EventNode : Node
 {
-    public string eventCategory;
-    public List<Choice> choices = new List<Choice>();
+    public EventDefinition definition;
 }

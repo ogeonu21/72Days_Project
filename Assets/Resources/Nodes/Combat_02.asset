@@ -20,5 +20,5 @@ MonoBehaviour:
   worldLocation: 0
   combatEnemyID: E_003
   successNode: {fileID: 11400000, guid: f5c3426933c05954da7af674084cf8ac, type: 2}
-  failureNode: {fileID: 11400000, guid: 0dc4205b22c183b419b7d002e7c75a2e, type: 2}
+  failureNode: {fileID: 11400000, guid: d559f32b34b64ee44892c6a2e5c71d2d, type: 2}
   enemyData: {fileID: 11400000, guid: 42e72278caf068046a471c89b1eb8ac7, type: 2}

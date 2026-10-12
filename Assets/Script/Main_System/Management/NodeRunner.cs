@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 노드 진행 상태와 스토리 선택의 유효성을 소유한다.
-/// UI는 이 클래스의 상태를 변경하지 않고 NodeManager를 통해 선택만 제출한다.
-/// </summary>
 public class NodeRunner
 {
     public Node CurrentNode { get; private set; }

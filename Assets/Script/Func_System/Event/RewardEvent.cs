@@ -4,10 +4,10 @@ using UnityEngine;
 
 public static class RewardEvent
 {
-    public delegate IEnumerator RewardProcess(Enemy enemy, Player player);
+    public delegate IEnumerator RewardProcess(Reward reward);
     public static event RewardProcess OnRewardProcess;
-    public static IEnumerator RewardCoroutine(Enemy enemy, Player player)
+    public static IEnumerator RewardCoroutine(Reward reward)
     {
-        yield return OnRewardProcess?.Invoke(enemy, player);
+        yield return OnRewardProcess?.Invoke(reward);
     }
 }

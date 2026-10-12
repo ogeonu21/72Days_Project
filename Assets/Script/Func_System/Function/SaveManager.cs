@@ -70,6 +70,7 @@ public class SaveManager : SingleTon<SaveManager>
         playerData = data.player.ToPlayerData();
         currencies = LoadCurrencies(data.currencies);
         playerData.equipmentData = equipmentData;
+        if (GameManager.Instance != null) GameManager.Instance.eventProgress = data.eventProgress;
         return true;
     }
 
@@ -99,6 +100,7 @@ public class SaveManager : SingleTon<SaveManager>
         SaveGameData data = new SaveGameData
         {
             currentNodeId = node.name,
+            eventProgress = GameManager.Instance != null ? GameManager.Instance.eventProgress : new EventProgress(),
             player = PlayerSaveData.FromPlayerData(player.GetCurrentData())
         };
 

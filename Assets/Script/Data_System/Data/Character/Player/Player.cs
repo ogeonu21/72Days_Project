@@ -70,6 +70,7 @@ public class Player : Character
         UpdateStats();
         SetCurrentHPAndNotify(restoreHealth ? data.currentHP : MaxHP);
         UpdateLV_UI();
+        TendencyChanged?.Invoke(tendency);
     }
     #endregion
 
@@ -288,8 +289,8 @@ public class Player : Character
         if (equipmentData == null) return result;
         if (equipmentData.weaponItem != null)
         {
-            result.attackBonus = equipmentData.weaponItem.attackBonus;
-            result.rangeBonus = equipmentData.weaponItem.range;
+            result.attackBonus += equipmentData.weaponItem.attackBonus;
+            result.rangeBonus += equipmentData.weaponItem.range;
         }
         if (equipmentData.armorItem != null)
             foreach (var item in equipmentData.armorItem)

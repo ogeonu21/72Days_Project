@@ -23,7 +23,7 @@ public class PotionItem : ConsumableItem
             //파괴 동작 실행.
             InventoryManager.Instance.RemoveFromInventory(this);
         }
-        else InventoryManager.Instance.UpdateItemUI(this);
+        InventoryManager.Instance.UpdateItemUI(this);
     }
 
 }

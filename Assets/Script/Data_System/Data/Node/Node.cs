@@ -47,12 +47,4 @@ public class Choice
     public string choiceText;
     public Node nextNode;
 
-    [Header("상태 플래그")]
-    public string requiredFlag;
-    //이벤트 발생 횟수, 발생 여부 등을 감지.
-    public int eventStack;
-
-    public bool triggersEvent;
-    public BaseEvent baseEvent;
-
 }

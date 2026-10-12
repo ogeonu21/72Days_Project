@@ -8,7 +8,8 @@ public class StatusDataRaw
     //스탯 정보
     public int STR, DEX, CON;
     //보너스 정보
-    public int AttackBonus, HpBonus, DodgeBonus, RangeBonus;
+    public int AttackBonus, HpBonus, RangeBonus;
+    public float DodgeBonus;
     //드랍테이블
     public string DropItemCategory;
     public string DropItemID;
