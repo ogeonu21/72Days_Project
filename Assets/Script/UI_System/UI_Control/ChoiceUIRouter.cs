@@ -58,7 +58,7 @@ public abstract class ChoiceUIRouter : MonoBehaviour
         panels.Clear();
     }
 
-    protected void HideChoices()
+    protected virtual void HideChoices()
     {
         contentVersion++;
         foreach (var panel in panels.Values) if (panel != null) panel.SetActive(false);
@@ -86,7 +86,10 @@ public abstract class ChoiceUIRouter : MonoBehaviour
         cr.anchorMin = new Vector2(0, 1); cr.anchorMax = Vector2.one; cr.pivot = new Vector2(.5f, 1);
         cr.offsetMin = cr.offsetMax = Vector2.zero;
         var layout = content.GetComponent<VerticalLayoutGroup>();
-        layout.spacing = 12; layout.childControlWidth = layout.childControlHeight = true;
+        // Story/Event 씬 선택지와 동일한 높이 100, 중심 간격 160(빈 간격 60).
+        layout.spacing = 60; layout.childControlWidth = layout.childControlHeight = true;
+        layout.childAlignment = TextAnchor.UpperCenter;
+        layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
         content.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         var scroll = viewport.GetComponent<ScrollRect>();
@@ -109,7 +112,13 @@ public abstract class ChoiceUIRouter : MonoBehaviour
         });
         button.gameObject.SetActive(true);
         var layout = button.GetComponent<LayoutElement>() ?? button.gameObject.AddComponent<LayoutElement>();
-        layout.minHeight = layout.preferredHeight = 95;
+        var templateRect = (RectTransform)template.transform;
+        layout.minHeight = layout.preferredHeight = Mathf.Max(100, templateRect.rect.height);
+        // 패널 폭까지 늘리지 않고 기존 선택지 템플릿의 실제 폭을 사용한다.
+        layout.minWidth = 0;
+        layout.preferredWidth = Mathf.Max(0, templateRect.rect.width);
+        layout.flexibleWidth = layout.flexibleHeight = 0;
+        button.transform.localScale = Vector3.one;
         var text = button.GetComponentInChildren<TMP_Text>(true);
         text.text = label; if (font != null) text.font = font;
         text.enableAutoSizing = true; text.fontSizeMin = text.fontSizeMax = 48;

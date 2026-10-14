@@ -12,17 +12,33 @@ public class CombatUIRouter : ChoiceUIRouter
     private bool showingItems;
     private Button[] attackAreaButtons = System.Array.Empty<Button>();
     private TMP_Text dialogueText;
+    private string layoutText;
+    private Vector2 layoutParentSize;
+    private Vector2 originalAnchorMin, originalAnchorMax, originalOffsetMin, originalOffsetMax;
+    private float originalFontSize;
+    private bool hasOriginalTextLayout;
     protected override Transform ChoicePanelParent => transform.parent != null ? transform.parent : transform;
 
     protected override void LayoutPanel(RectTransform rect)
     {
+        if (!rect.gameObject.activeSelf) return;
         var parentRect = ChoicePanelParent as RectTransform;
         var attackRect = transform as RectTransform;
         if (parentRect == null || attackRect == null || parentRect == attackRect) { base.LayoutPanel(rect); return; }
         var corners = new Vector3[4];
         attackRect.GetWorldCorners(corners);
-        float attackBottom = parentRect.InverseTransformPoint(corners[0]).y - parentRect.rect.yMin;
-        float choicesTop = dialogueText != null ? Mathf.Max(12, (attackBottom - 36) * .45f) : Mathf.Max(12, attackBottom - 12);
+        float attackBottom = Mathf.Clamp(parentRect.InverseTransformPoint(corners[0]).y - parentRect.rect.yMin, 0, parentRect.rect.height);
+        float available = Mathf.Max(0, attackBottom - 24);
+        float textHeight = 0;
+        if (dialogueText != null && !string.IsNullOrWhiteSpace(dialogueText.text))
+        {
+            float width = Mathf.Max(1, dialogueText.rectTransform.rect.width - dialogueText.margin.x - dialogueText.margin.z);
+            float preferred = dialogueText.GetPreferredValues(dialogueText.text, width, Mathf.Infinity).y;
+            // 최소 한 버튼과 스크롤 안쪽 여백은 남긴다. 짧은 본문은 필요한 높이만 사용한다.
+            textHeight = Mathf.Min(preferred + 8, Mathf.Max(0, available - 124 - 16));
+        }
+        float gap = textHeight > 0 ? 16 : 0;
+        float choicesTop = Mathf.Min(parentRect.rect.height, 12 + Mathf.Max(0, available - textHeight - gap));
         rect.anchorMin = Vector2.zero; rect.anchorMax = new Vector2(1, 0);
         rect.offsetMin = new Vector2(12, 12);
         rect.offsetMax = new Vector2(-12, choicesTop);
@@ -31,29 +47,67 @@ public class CombatUIRouter : ChoiceUIRouter
             var textRect = dialogueText.rectTransform;
             var textParent = textRect.parent as RectTransform;
             if (textParent == null) return;
-            float bottom = textParent.InverseTransformPoint(parentRect.TransformPoint(new Vector3(0, parentRect.rect.yMin + choicesTop + 16, 0))).y - textParent.rect.yMin;
-            float top = textParent.InverseTransformPoint(parentRect.TransformPoint(new Vector3(0, parentRect.rect.yMin + attackBottom - 12, 0))).y - textParent.rect.yMin;
+            float bottom = textParent.InverseTransformPoint(parentRect.TransformPoint(new Vector3(0, parentRect.rect.yMin + choicesTop + gap, 0))).y - textParent.rect.yMin;
+            float top = textParent.InverseTransformPoint(parentRect.TransformPoint(new Vector3(0, parentRect.rect.yMin + choicesTop + gap + textHeight, 0))).y - textParent.rect.yMin;
             textRect.anchorMin = new Vector2(textRect.anchorMin.x, 0);
             textRect.anchorMax = new Vector2(textRect.anchorMax.x, 0);
             textRect.offsetMin = new Vector2(textRect.offsetMin.x, bottom);
             textRect.offsetMax = new Vector2(textRect.offsetMax.x, Mathf.Max(bottom, top));
         }
+        layoutText = dialogueText != null ? dialogueText.text : null;
+        layoutParentSize = parentRect.rect.size;
+    }
+
+    private void LateUpdate()
+    {
+        if (activePanel == null || !activePanel.activeSelf) return;
+        var parent = ChoicePanelParent as RectTransform;
+        if (parent != null && (layoutParentSize != parent.rect.size ||
+            layoutText != (dialogueText != null ? dialogueText.text : null)))
+            LayoutPanel((RectTransform)activePanel.transform);
     }
 
     private void OnRectTransformDimensionsChange()
     {
-        if (activePanel != null) LayoutPanel((RectTransform)activePanel.transform);
+        if (activePanel != null && activePanel.activeSelf) LayoutPanel((RectTransform)activePanel.transform);
+    }
+
+    protected override void HideChoices()
+    {
+        base.HideChoices();
+        RestoreTextLayout();
+    }
+
+    private void RestoreTextLayout()
+    {
+        if (!hasOriginalTextLayout || dialogueText == null) return;
+        var rect = dialogueText.rectTransform;
+        rect.anchorMin = originalAnchorMin;
+        rect.anchorMax = originalAnchorMax;
+        rect.offsetMin = originalOffsetMin;
+        rect.offsetMax = originalOffsetMax;
+        dialogueText.enableAutoSizing = false;
+        dialogueText.fontSize = originalFontSize;
+        layoutText = null;
     }
 
     public void Configure(Button buttonTemplate, TMP_FontAsset textFont, Button[] bodyButtons = null, TMP_Text bodyText = null)
     {
         Unbind();
+        RestoreTextLayout();
+        if (dialogueText != bodyText) hasOriginalTextLayout = false;
         dialogueText = bodyText;
         if (dialogueText != null)
         {
-            dialogueText.enableAutoSizing = true;
-            dialogueText.fontSizeMin = 24;
-            dialogueText.fontSizeMax = 48;
+            if (!hasOriginalTextLayout)
+            {
+                var rect = dialogueText.rectTransform;
+                originalAnchorMin = rect.anchorMin; originalAnchorMax = rect.anchorMax;
+                originalOffsetMin = rect.offsetMin; originalOffsetMax = rect.offsetMax;
+                originalFontSize = dialogueText.fontSize;
+                hasOriginalTextLayout = true;
+            }
+            dialogueText.enableAutoSizing = false;
             dialogueText.overflowMode = TextOverflowModes.Masking;
         }
         attackAreaButtons = bodyButtons ?? System.Array.Empty<Button>();
