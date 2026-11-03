@@ -174,7 +174,7 @@ public class CombatUIController : UIController, IUpdatableUI
     {
         if (maxHP <= 0 || strength <= 0) return 0;
         double missingRatio = 1 - Math.Max(0d, Math.Min(1d, (double)currentHP / maxHP));
-        return (float)Math.Min(.85d, .15d + .65d * strength + .1d * Math.Sqrt(missingRatio));
+        return (float)Math.Min(.6d, .08d + .45d * strength + .07d * Math.Sqrt(missingRatio));
     }
 
     private void AdvancePlayerHitFeedback(float deltaTime)
@@ -196,7 +196,7 @@ public class CombatUIController : UIController, IUpdatableUI
         if (shake > 0)
             jitter = Vector2.ClampMagnitude(new Vector2((float)hitEffectRandom.NextDouble() * 2 - 1,
                 (float)hitEffectRandom.NextDouble() * 2 - 1), 1) * shake;
-        if (playerHitTextGroup != null) playerHitTextGroup.anchoredPosition = playerTextOrigin + jitter;
+        if (playerHitTextGroup != null) playerHitTextGroup.anchoredPosition = playerTextOrigin + jitter * 1.7f;
         if (playerHitHPBar != null && playerHitHPBar != playerHitTextGroup)
             playerHitHPBar.anchoredPosition = playerHPOrigin + jitter;
         float alpha = playerHitElapsed < BloodFadeIn

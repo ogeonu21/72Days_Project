@@ -31,9 +31,9 @@ public static class CombatAttackValidation
         check(strength(25, 100) == .5f, "25% 피해는 루트 강도50%");
         check(strength(int.MaxValue, 100) == 1, "과잉 피해 강도 제한");
         check(strength(10, 100) == strength(100, 1000), "최대 체력 비례 정규화");
-        check(alpha(99, 100, strength(1, 100)) > .2f, "초반 작은 피해도 혈흔 표시");
+        check(alpha(99, 100, strength(1, 100)) > .1f, "초반 작은 피해도 혈흔 표시");
         check(alpha(75, 100, strength(25, 100)) > alpha(99, 100, strength(1, 100)), "피해량에 따른 혈흔 증가");
-        check(alpha(0, 100, 1) <= .85f && alpha(0, 100, 1) > .8f, "혈흔 상한85%");
+        check(alpha(0, 100, 1) <= .6f && alpha(0, 100, 1) > .55f, "혈흔 상한60%");
         check(alpha(50, 0, 1) == 0 && alpha(100, 100, 0) == 0, "유효하지 않은 혈흔 입력 방어");
         check(alpha(1, 100, .1f) > alpha(99, 100, .1f), "낮은 잔여HP의 추가 강조");
         return $"Player hit rules: {passed} passed";
@@ -77,10 +77,10 @@ public static class CombatAttackValidation
             GameEvent.OnTakeDamageEffect += damageHandler;
             player.TakeDamage(1);
             check(notifications == 1 && lastDamage == 1, "실제 피해를 UI에 전달");
-            check(Vector2.Distance(textRect.anchoredPosition, textOrigin) <= 18.001f &&
-                (textRect.anchoredPosition - textOrigin - (hpRect.anchoredPosition - hpOrigin)).sqrMagnitude < .001f, "텍스트 그룹과 HP바 같은 범위·방향으로 흔들림");
+            check(Vector2.Distance(textRect.anchoredPosition, textOrigin) <= 30.601f &&
+                (textRect.anchoredPosition - textOrigin - (hpRect.anchoredPosition - hpOrigin) * 1.7f).sqrMagnitude < .001f, "텍스트 그룹은 HP바와 같은 방향으로 1.7배 흔들림");
             InvokeFeedback(controller, "AdvancePlayerHitFeedback", .1f);
-            check(controller.blood_Effect.color.a > .15f, "작은 피해 혈흔 페이드인");
+            check(controller.blood_Effect.color.a > .1f, "작은 피해 혈흔 페이드인");
             InvokeFeedback(controller, "AdvancePlayerHitFeedback", .2f);
             check(textRect.anchoredPosition == textOrigin && hpRect.anchoredPosition == hpOrigin, "0.3초 뒤 흔들림 복원");
             player.TakeDamage(1); player.TakeDamage(1);

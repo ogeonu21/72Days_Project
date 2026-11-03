@@ -86,8 +86,8 @@ public abstract class ChoiceUIRouter : MonoBehaviour
         cr.anchorMin = new Vector2(0, 1); cr.anchorMax = Vector2.one; cr.pivot = new Vector2(.5f, 1);
         cr.offsetMin = cr.offsetMax = Vector2.zero;
         var layout = content.GetComponent<VerticalLayoutGroup>();
-        // Story/Event 씬 선택지와 동일한 높이 100, 중심 간격 160(빈 간격 60).
-        layout.spacing = 60; layout.childControlWidth = layout.childControlHeight = true;
+        // Story 씬 선택지와 동일하게 버튼 사이 빈 간격을 30으로 맞춘다.
+        layout.spacing = 30; layout.childControlWidth = layout.childControlHeight = true;
         layout.childAlignment = TextAnchor.UpperCenter;
         layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
