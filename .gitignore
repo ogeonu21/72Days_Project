@@ -80,3 +80,8 @@ crashlytics-build.properties
 # Android signing keys
 *.keystore
 *.jks
+
+# Local-only agent configuration and working documents.
+/.codex/
+/Docs/
+/AGENTS.md
