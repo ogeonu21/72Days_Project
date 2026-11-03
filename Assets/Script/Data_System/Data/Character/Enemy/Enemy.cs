@@ -3,7 +3,16 @@ using UnityEngine;
 
 public class Enemy : Character
 {
-    #region [EnemyData]
+    /// <summary>실제 체력이 감소했을 때 피격 연출에 알린다. 출혈과 치명타도 포함한다.</summary>
+    public event Action Damaged;
+
+    public override void TakeDamage(int amount)
+    {
+        int previousHP = CurrentHP;
+        base.TakeDamage(amount);
+        if (CurrentHP < previousHP) Damaged?.Invoke();
+    }
+
     public BaseItem dropItem;
     public float itemDropRate;
     public int dropGold;

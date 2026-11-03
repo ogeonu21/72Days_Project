@@ -26,7 +26,7 @@ public sealed class PlayerTendencyUI : MonoBehaviour
         label = target;
         label.fontSize = 48;
         label.alignment = TextAlignmentOptions.MidlineRight;
-        label.margin = new Vector4(100, 0, 0, 0);
+        label.margin = new Vector4(105, 5, 5, 5);
         label.raycastTarget = false;
         if (icon == null)
         {

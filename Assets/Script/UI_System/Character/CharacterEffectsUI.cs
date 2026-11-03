@@ -95,6 +95,13 @@ public sealed class CharacterEffectsUI : MonoBehaviour
             text.rectTransform.offsetMax = new Vector2(-2, 0);
             text.font = nameLabel.font;
             text.fontSize = 32;
+            // 실행 중 생성하는 표시에도 씬과 같은 행 간격과 여백을 적용한다.
+            text.margin = new Vector4(5, 5, 5, 5);
+            if (text.font != null)
+            {
+                var face = text.font.faceInfo;
+                text.lineSpacing = face.pointSize > 0 ? 15f * face.lineHeight * face.scale / face.pointSize : 15f;
+            }
             text.alignment = TextAlignmentOptions.Center;
             text.color = Color.white;
             text.raycastTarget = false;

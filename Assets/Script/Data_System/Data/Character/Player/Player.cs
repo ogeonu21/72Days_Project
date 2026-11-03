@@ -106,9 +106,11 @@ public class Player : Character
     public override void TakeDamage(int amount)
     {
         if (IsDead || amount <= 0) return;
+        int previousHP = CurrentHP;
         base.TakeDamage(amount);
 
-        GameEvent.OnTakeDamage(currentHP, MaxHP);
+        int actualDamage = previousHP - CurrentHP;
+        if (actualDamage > 0) GameEvent.OnTakeDamage(currentHP, MaxHP, actualDamage);
     }
     #endregion
 

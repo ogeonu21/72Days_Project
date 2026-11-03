@@ -335,6 +335,12 @@ public static class InventoryUISetup
     {
         var text = RectObject(parent, name, x0, y0, x1, y1).gameObject.AddComponent<TextMeshProUGUI>();
         text.font = font; text.fontSize = size; text.text = value; text.color = color;
+        text.margin = new Vector4(5, 5, 5, 5);
+        if (font != null)
+        {
+            var face = font.faceInfo;
+            text.lineSpacing = face.pointSize > 0 ? 15f * face.lineHeight * face.scale / face.pointSize : 15f;
+        }
         text.raycastTarget = false; text.enableWordWrapping = true;
         return text;
     }

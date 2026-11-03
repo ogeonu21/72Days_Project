@@ -8,7 +8,7 @@ public sealed class EventResultLog : MonoBehaviour
     [SerializeField] private TMP_Text lineTemplate;
     [SerializeField] private float lineInterval = 0.2f;
     [SerializeField] private float lifetime = 3f;
-    [SerializeField] private float lineSpacing = 44f;
+    [SerializeField] private float lineSpacing = 50.6f;
     private readonly Queue<string> pending = new Queue<string>();
     private readonly List<(TMP_Text text, float born)> visible = new List<(TMP_Text, float)>();
     private float nextLineAt;
