@@ -26,6 +26,17 @@ public class CombatUIController : UIController, IUpdatableUI
 
     private Coroutine bloodEffectCoroutine; // 피격 효과 코루틴을 제어하기 위한 변수
 
+    private const float EnemyHitDuration = 0.3f;
+    private const float EnemyShakeDistance = 6f; // Canvas 기준 거리. 해상도 배율은 CanvasScaler가 적용한다.
+    private readonly List<UnityEngine.UI.Image> enemyHitImages = new List<UnityEngine.UI.Image>();
+    private readonly List<Color> enemyHitColors = new List<Color>();
+    // 연출 난수가 전투 명중·보상 난수 시퀀스를 바꾸지 않도록 분리한다.
+    private readonly System.Random enemyHitRandom = new System.Random();
+    private RectTransform enemyHitGroup;
+    private Vector2 enemyHitOrigin;
+    private float enemyHitElapsed;
+    private bool enemyHitActive;
+
 
     #region [initialize]
 
@@ -60,6 +71,73 @@ public class CombatUIController : UIController, IUpdatableUI
     #endregion
 
     #region [Effect]
+
+    private void HandleEnemyDamaged()
+    {
+        if (isActiveAndEnabled && attackButtons != null && attackButtons.activeInHierarchy)
+            BeginEnemyHitFeedback();
+    }
+
+    private void BeginEnemyHitFeedback()
+    {
+        ResetEnemyHitFeedback();
+        if (attackButtons == null) return;
+        enemyHitGroup = attackButtons.transform as RectTransform;
+        if (enemyHitGroup == null) return;
+        enemyHitOrigin = enemyHitGroup.anchoredPosition;
+        // 기존 PlayerInput 부위 버튼의 클릭 전환 대상 Image만 사용한다. 라벨은 착색하지 않는다.
+        if (bodyButtons == null) bodyButtons = attackButtons.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+        enemyHitImages.Clear();
+        enemyHitColors.Clear();
+        foreach (var button in bodyButtons)
+        {
+            var image = button != null ? button.targetGraphic as UnityEngine.UI.Image : null;
+            if (image == null || enemyHitImages.Contains(image)) continue;
+            enemyHitImages.Add(image);
+            enemyHitColors.Add(image.color);
+        }
+        enemyHitElapsed = 0;
+        enemyHitActive = true;
+        ApplyEnemyHitFeedback();
+    }
+
+    private void LateUpdate()
+    {
+        if (enemyHitActive) AdvanceEnemyHitFeedback(Time.unscaledDeltaTime);
+    }
+
+    private void AdvanceEnemyHitFeedback(float deltaTime)
+    {
+        if (!enemyHitActive) return;
+        if (enemyHitGroup == null || !enemyHitGroup.gameObject.activeInHierarchy)
+        { ResetEnemyHitFeedback(); return; }
+        enemyHitElapsed += Mathf.Max(0, deltaTime);
+        if (enemyHitElapsed >= EnemyHitDuration) { ResetEnemyHitFeedback(); return; }
+        ApplyEnemyHitFeedback();
+    }
+
+    private void ApplyEnemyHitFeedback()
+    {
+        float strength = 1 - Mathf.Clamp01(enemyHitElapsed / EnemyHitDuration);
+        for (int i = 0; i < enemyHitImages.Count; i++)
+        {
+            if (enemyHitImages[i] == null) continue;
+            Color original = enemyHitColors[i];
+            enemyHitImages[i].color = Color.Lerp(original, new Color(1, 0, 0, original.a), strength);
+        }
+        var jitter = new Vector2((float)enemyHitRandom.NextDouble() * 2 - 1,
+            (float)enemyHitRandom.NextDouble() * 2 - 1);
+        enemyHitGroup.anchoredPosition = enemyHitOrigin + Vector2.ClampMagnitude(jitter, 1) * (EnemyShakeDistance * strength);
+    }
+
+    private void ResetEnemyHitFeedback()
+    {
+        if (!enemyHitActive) return;
+        for (int i = 0; i < enemyHitImages.Count; i++)
+            if (enemyHitImages[i] != null) enemyHitImages[i].color = enemyHitColors[i];
+        if (enemyHitGroup != null) enemyHitGroup.anchoredPosition = enemyHitOrigin;
+        enemyHitActive = false;
+    }
 
     //데미지 피격 효과
     private void HandleTakeDamageEffect(int currentHP, int maxHP)
@@ -120,6 +198,7 @@ public class CombatUIController : UIController, IUpdatableUI
     //너는 뭐니?
     public void UpdateUI(Node node)
     {
+        ResetEnemyHitFeedback();
         if (attackButtons != null)
         {
             choiceRouter = attackButtons.GetComponent<CombatUIRouter>() ?? attackButtons.AddComponent<CombatUIRouter>();
@@ -141,18 +220,29 @@ public class CombatUIController : UIController, IUpdatableUI
     //피격률 등 표시
     public void UpdateCombatUI(Player player, Enemy enemy)
     {
+        // 출혈 처리 직후에도 같은 참조로 갱신된다. 진행 중인 피격 연출을 취소하지 않는다.
+        if (this.player == player && this.enemy == enemy) { RefreshCombatStats(); return; }
         UnbindCharacters();
         this.player = player;
         this.enemy = enemy;
         if (player != null) player.StatsChanged += RefreshCombatStats;
-        if (enemy != null) enemy.StatsChanged += RefreshCombatStats;
+        if (enemy != null)
+        {
+            enemy.StatsChanged += RefreshCombatStats;
+            enemy.Damaged += HandleEnemyDamaged;
+        }
         RefreshCombatStats();
     }
 
     private void UnbindCharacters()
     {
         if (player != null) player.StatsChanged -= RefreshCombatStats;
-        if (enemy != null) enemy.StatsChanged -= RefreshCombatStats;
+        if (enemy != null)
+        {
+            enemy.StatsChanged -= RefreshCombatStats;
+            enemy.Damaged -= HandleEnemyDamaged;
+        }
+        ResetEnemyHitFeedback();
         player = null;
         enemy = null;
     }
