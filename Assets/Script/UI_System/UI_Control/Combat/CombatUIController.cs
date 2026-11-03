@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,14 +23,19 @@ public class CombatUIController : UIController, IUpdatableUI
     private Button[] bodyButtons;
     #endregion
 
-    private Coroutine bloodEffectCoroutine; // 피격 효과 코루틴을 제어하기 위한 변수
+    private const float PlayerShakeDuration = .3f;
+    private const float BloodFadeIn = .1f, BloodHold = .2f, BloodFadeOut = .4f;
+    private RectTransform playerHitTextGroup, playerHitHPBar;
+    private Vector2 playerTextOrigin, playerHPOrigin;
+    private float playerHitElapsed, playerShakeDistance, playerBloodPeak, playerBloodStart;
+    private bool playerHitActive;
 
     private const float EnemyHitDuration = 0.3f;
     private const float EnemyShakeDistance = 6f; // Canvas 기준 거리. 해상도 배율은 CanvasScaler가 적용한다.
     private readonly List<UnityEngine.UI.Image> enemyHitImages = new List<UnityEngine.UI.Image>();
     private readonly List<Color> enemyHitColors = new List<Color>();
     // 연출 난수가 전투 명중·보상 난수 시퀀스를 바꾸지 않도록 분리한다.
-    private readonly System.Random enemyHitRandom = new System.Random();
+    private readonly System.Random hitEffectRandom = new System.Random();
     private RectTransform enemyHitGroup;
     private Vector2 enemyHitOrigin;
     private float enemyHitElapsed;
@@ -104,6 +108,7 @@ public class CombatUIController : UIController, IUpdatableUI
     private void LateUpdate()
     {
         if (enemyHitActive) AdvanceEnemyHitFeedback(Time.unscaledDeltaTime);
+        if (playerHitActive) AdvancePlayerHitFeedback(Time.unscaledDeltaTime);
     }
 
     private void AdvanceEnemyHitFeedback(float deltaTime)
@@ -125,8 +130,8 @@ public class CombatUIController : UIController, IUpdatableUI
             Color original = enemyHitColors[i];
             enemyHitImages[i].color = Color.Lerp(original, new Color(1, 0, 0, original.a), strength);
         }
-        var jitter = new Vector2((float)enemyHitRandom.NextDouble() * 2 - 1,
-            (float)enemyHitRandom.NextDouble() * 2 - 1);
+        var jitter = new Vector2((float)hitEffectRandom.NextDouble() * 2 - 1,
+            (float)hitEffectRandom.NextDouble() * 2 - 1);
         enemyHitGroup.anchoredPosition = enemyHitOrigin + Vector2.ClampMagnitude(jitter, 1) * (EnemyShakeDistance * strength);
     }
 
@@ -140,58 +145,85 @@ public class CombatUIController : UIController, IUpdatableUI
     }
 
     //데미지 피격 효과
-    private void HandleTakeDamageEffect(int currentHP, int maxHP)
+    private void HandleTakeDamageEffect(int currentHP, int maxHP, int actualDamage)
     {
-        if (bloodEffectCoroutine != null)
-        {
-            StopCoroutine(bloodEffectCoroutine);
-        }
-        // 새로운 피격 효과 코루틴 시작
-        bloodEffectCoroutine = StartCoroutine(ShowBloodScreenEffect(currentHP, maxHP));
+        if (actualDamage <= 0 || maxHP <= 0) return;
+        float previousAlpha = playerHitActive && blood_Effect != null ? blood_Effect.color.a : 0;
+        ResetPlayerHitFeedback();
+        // 본문 레이아웃과 충돌하지 않도록 TMP 자체 대신 부모 텍스트 영역을 움직인다.
+        playerHitTextGroup = combatText != null ? combatText.rectTransform.parent as RectTransform : null;
+        playerHitHPBar = player != null && player.hpSlider != null ? player.hpSlider.transform as RectTransform : null;
+        if (playerHitTextGroup != null) playerTextOrigin = playerHitTextGroup.anchoredPosition;
+        if (playerHitHPBar != null) playerHPOrigin = playerHitHPBar.anchoredPosition;
+        float strength = CalculatePlayerHitStrength(actualDamage, maxHP);
+        playerShakeDistance = 2 + 16 * strength;
+        playerBloodPeak = Math.Max(previousAlpha, CalculateBloodAlpha(currentHP, maxHP, strength));
+        playerBloodStart = Math.Min(playerBloodPeak, previousAlpha);
+        playerHitElapsed = 0;
+        playerHitActive = true;
+        ApplyPlayerHitFeedback();
     }
 
-    private IEnumerator ShowBloodScreenEffect(int currentHP, int maxHP)
+    private static float CalculatePlayerHitStrength(int damage, int maxHP)
     {
-        // 1. 체력 비율 계산 (체력이 낮을수록 효과가 강해짐)
-        float healthPercent = (float)currentHP / maxHP;
-        // 체력이 50%일 때 alpha 0.5, 체력이 0%일 때 alpha 1.0이 되도록 목표 투명도 설정
-        float targetAlpha = Mathf.Max(0f, 0.7f - healthPercent);
+        if (damage <= 0 || maxHP <= 0) return 0;
+        return (float)Math.Sqrt(Math.Min(1d, (double)damage / maxHP));
+    }
 
-        float fadeDuration = 0.1f; // 페이드인 시간
-        float lingerDuration = 0.2f; // 효과 유지 시간
-        float fadeOutDuration = 0.4f; // 페이드아웃 시간
+    private static float CalculateBloodAlpha(int currentHP, int maxHP, float strength)
+    {
+        if (maxHP <= 0 || strength <= 0) return 0;
+        double missingRatio = 1 - Math.Max(0d, Math.Min(1d, (double)currentHP / maxHP));
+        return (float)Math.Min(.85d, .15d + .65d * strength + .1d * Math.Sqrt(missingRatio));
+    }
 
-        Color currentColor = blood_Effect.color;
+    private void AdvancePlayerHitFeedback(float deltaTime)
+    {
+        if (!playerHitActive) return;
+        if ((playerHitTextGroup != null && !playerHitTextGroup.gameObject.activeInHierarchy) ||
+            (playerHitHPBar != null && !playerHitHPBar.gameObject.activeInHierarchy))
+        { ResetPlayerHitFeedback(); return; }
+        playerHitElapsed += Mathf.Max(0, deltaTime);
+        if (playerHitElapsed >= BloodFadeIn + BloodHold + BloodFadeOut)
+        { ResetPlayerHitFeedback(); return; }
+        ApplyPlayerHitFeedback();
+    }
 
-        // 2. 페이드인
-        float timer = 0f;
-        while (timer < fadeDuration)
+    private void ApplyPlayerHitFeedback()
+    {
+        float shake = playerShakeDistance * (1 - Mathf.Clamp01(playerHitElapsed / PlayerShakeDuration));
+        var jitter = Vector2.zero;
+        if (shake > 0)
+            jitter = Vector2.ClampMagnitude(new Vector2((float)hitEffectRandom.NextDouble() * 2 - 1,
+                (float)hitEffectRandom.NextDouble() * 2 - 1), 1) * shake;
+        if (playerHitTextGroup != null) playerHitTextGroup.anchoredPosition = playerTextOrigin + jitter;
+        if (playerHitHPBar != null && playerHitHPBar != playerHitTextGroup)
+            playerHitHPBar.anchoredPosition = playerHPOrigin + jitter;
+        float alpha = playerHitElapsed < BloodFadeIn
+            ? Mathf.Lerp(playerBloodStart, playerBloodPeak, playerHitElapsed / BloodFadeIn)
+            : playerHitElapsed < BloodFadeIn + BloodHold ? playerBloodPeak
+            : Mathf.Lerp(playerBloodPeak, 0, (playerHitElapsed - BloodFadeIn - BloodHold) / BloodFadeOut);
+        SetBloodAlpha(alpha);
+    }
+
+    private void SetBloodAlpha(float alpha)
+    {
+        if (blood_Effect == null) return;
+        Color color = blood_Effect.color;
+        color.a = alpha;
+        blood_Effect.color = color;
+    }
+
+    private void ResetPlayerHitFeedback()
+    {
+        if (playerHitActive)
         {
-            timer += Time.deltaTime;
-            currentColor.a = Mathf.Lerp(0, targetAlpha, timer / fadeDuration);
-            blood_Effect.color = currentColor;
-            yield return null;
+            if (playerHitTextGroup != null) playerHitTextGroup.anchoredPosition = playerTextOrigin;
+            if (playerHitHPBar != null && playerHitHPBar != playerHitTextGroup)
+                playerHitHPBar.anchoredPosition = playerHPOrigin;
         }
-        currentColor.a = targetAlpha;
-        blood_Effect.color = currentColor;
-
-        // 3. 효과 유지
-        yield return new WaitForSeconds(lingerDuration);
-
-        // 4. 페이드아웃
-        timer = 0f;
-        while (timer < fadeOutDuration)
-        {
-            timer += Time.deltaTime;
-            currentColor.a = Mathf.Lerp(targetAlpha, 0, timer / fadeOutDuration);
-            blood_Effect.color = currentColor;
-            yield return null;
-        }
-        currentColor.a = 0;
-        blood_Effect.color = currentColor;
-
-        // 코루틴 종료 후 참조 초기화
-        bloodEffectCoroutine = null;
+        playerHitActive = false;
+        SetBloodAlpha(0);
     }
 
     #endregion
@@ -199,6 +231,7 @@ public class CombatUIController : UIController, IUpdatableUI
     public void UpdateUI(Node node)
     {
         ResetEnemyHitFeedback();
+        ResetPlayerHitFeedback();
         if (attackButtons != null)
         {
             choiceRouter = attackButtons.GetComponent<CombatUIRouter>() ?? attackButtons.AddComponent<CombatUIRouter>();
@@ -243,6 +276,7 @@ public class CombatUIController : UIController, IUpdatableUI
             enemy.Damaged -= HandleEnemyDamaged;
         }
         ResetEnemyHitFeedback();
+        ResetPlayerHitFeedback();
         player = null;
         enemy = null;
     }

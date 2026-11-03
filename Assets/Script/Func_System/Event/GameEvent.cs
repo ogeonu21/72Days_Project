@@ -6,8 +6,10 @@ using UnityEngine;
 public static class GameEvent
 {
     //데미지 피격 이벤트
-    public static event Action<int, int> OnTakeDamageEffect;
-    public static void OnTakeDamage(int currentHP, int maxHP) => OnTakeDamageEffect?.Invoke(currentHP, maxHP);
+    // 현재HP, 최대HP, 실제 감소한HP. 과잉 피해량은 연출 강도에 중복 반영하지 않는다.
+    public static event Action<int, int, int> OnTakeDamageEffect;
+    public static void OnTakeDamage(int currentHP, int maxHP, int actualDamage) =>
+        OnTakeDamageEffect?.Invoke(currentHP, maxHP, actualDamage);
 
     //노드 변경 이벤트
     public static event Action<Node> OnNodeChanged;
