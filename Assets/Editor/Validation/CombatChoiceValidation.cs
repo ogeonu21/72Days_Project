@@ -12,9 +12,54 @@ public static class CombatChoiceValidation
     [MenuItem("Tools/Validation/Combat Choices")]
     public static void RunMenu() => Debug.Log(RunChecks());
 
+    // Unity 객체 생성 없이 수치 경계와 적 성장 분배를 재현한다.
+    public static string RunEscapeRuleChecks()
+    {
+        int passed = 0;
+        Action<bool, string> check = (ok, message) => { if (!ok) throw new Exception(message); passed++; };
+        Func<int, int, int, int, int, int, float> probability = CombatRules.CalculateEscapeProbability;
+        check(Math.Abs(probability(1, 1, 100, 100, 100, 100) - .3f) < .00001f, "동일 조건 30%");
+        check(Math.Abs(probability(1, 3, 100, 100, 100, 100) - .2f) < .00001f, "적 레벨 우위 반영");
+        check(Math.Abs(probability(1, 1, 100, 100, 50, 100) - .55f) < .00001f, "체력 비율 차이 반영");
+        check(probability(1, 1, 50, 100, 100, 100) < probability(1, 1, 100, 100, 100, 100), "플레이어 피해 시 확률 감소");
+        check(probability(int.MaxValue, 1, 1, 1, 1, 1) == 1, "레벨 상한에서 성공률 제한");
+        check(probability(1, int.MaxValue, 1, 1, 1, 1) == 0, "레벨 하한에서 성공률 제한");
+        check(probability(0, -1, 1, 1, 1, 1) == .3f, "미초기화 레벨 보정");
+        check(probability(1, 1, 100, 0, 1, 1) == 0, "최대 체력0 방어");
+        check(probability(1, 1, 0, 100, 1, 1) == 0, "사망한 플레이어 방어");
+        check(probability(1, 1, 1, 1, 0, 100) == 0, "사망한 적 방어");
+        check(probability(1, 1, 200, 100, 100, 100) == .3f, "최대 초과 체력 제한");
+
+        var tuning = typeof(Enemy).GetMethod("EnemyStatsDayTuning", BindingFlags.NonPublic | BindingFlags.Static);
+        Func<BaseStats, int, Func<float>, BaseStats> tune = (stats, day, roll) =>
+            (BaseStats)tuning.Invoke(null, new object[] { stats, day, roll });
+        Func<BaseStats, long> sum = stats => (long)stats.str + stats.dex + stats.con;
+        var original = new BaseStats(3, 2, 1);
+        Func<float> unexpectedRoll = () => throw new Exception("보정 없는 날에 난수 사용");
+        check(sum(tune(original, 0, unexpectedRoll)) == 6, "0일차 보정 없음");
+        check(sum(tune(original, -1, unexpectedRoll)) == 6, "음수 일차 보정 없음");
+        check(sum(tune(original, 10, () => .2f)) == 13, "10일차 정확히 7포인트");
+        check(sum(original) == 6 && sum(tune(original, 10, () => .2f)) == 13, "원본 불변 및 재초기화 누적 방지");
+        int rolls = 0;
+        var zero = tune(new BaseStats(0, 0, 0), 5, () => new[] { 0f, .5f, 1f }[rolls++]);
+        check(zero.str == 1 && zero.dex == 1 && zero.con == 1, "0스탯 적은 세 능력치로 균등 분배");
+        var onlyStr = tune(new BaseStats(1, 0, 0), 2, () => 1f);
+        check(onlyStr.str == 2 && onlyStr.dex == 0 && onlyStr.con == 0, "난수1도 가중치0 능력치에 배분하지 않음");
+        rolls = 0;
+        var hugeDay = tune(original, int.MaxValue, () => { rolls++; return 0f; });
+        check(rolls == 100000 && sum(hugeDay) == 100006, "큰 일차의 실행량 제한");
+        var nearLimit = tune(new BaseStats(int.MaxValue - 1, 0, 0), 10, () => 0f);
+        check(nearLimit.str == int.MaxValue, "능력치 덧셈 오버플로 방어");
+        var level = typeof(Enemy).GetMethod("CalculateLevel", BindingFlags.NonPublic | BindingFlags.Static);
+        check((int)level.Invoke(null, new object[] { new BaseStats(3, 1, 1) }) == 3, "스탯 2포인트당 1레벨 버림 유지");
+        check((int)level.Invoke(null, new object[] { new BaseStats(int.MaxValue, int.MaxValue, int.MaxValue) }) == int.MaxValue, "레벨 합산 오버플로 방어");
+        return "Escape and enemy growth: " + passed + " passed";
+    }
+
     public static string RunChecks()
     {
         if (EditorApplication.isPlaying) throw new InvalidOperationException("Edit Mode에서 실행하세요.");
+        RunEscapeRuleChecks();
         int passed = 0;
         Action<bool, string> check = (ok, message) => { if (!ok) throw new Exception(message); passed++; };
         check(!CombatRules.ResolveEscape(0, 0), "0% 도주 실패");

@@ -10,6 +10,7 @@ public class Character : MonoBehaviour
     [Header("캐릭터 아이디")]
     public string ID;
     public string characterName;
+    public int lv { get; protected set; } = 1;
 
     #region [UI Component]
     [Header("UI 요소")]
