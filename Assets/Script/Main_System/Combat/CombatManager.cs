@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/// <summary>
+/// 전투 진행과 행동 입력, 전투 결과 이동을 관리한다.
+/// </summary>
 public class CombatManager : SingleTon<CombatManager>
 {
     #region [변수 그룹]
     #region [기본 변수]
-    //Manager
     private GameManager gameManager;
     private CharacterManager characterSource;
 
@@ -20,12 +22,11 @@ public class CombatManager : SingleTon<CombatManager>
     public bool combatActive;
     public bool onPlayerTurn;
     private PlayerInputData playerInputData;
-    [SerializeField, Range(0f, 1f)] private float escapeProbability = .5f;
     private Node escapeNode;
     private string usedItemName;
     public bool CanChooseAction => combatActive && onPlayerTurn && player != null && !player.IsDead;
     public bool CanEscape => escapeNode != null;
-    public float EscapeProbability => escapeProbability;
+    public float EscapeProbability => CombatRules.CalculateEscapeProbability(player, enemy);
 
     [Header("CombatResult")]
     private Node successNode;
@@ -41,8 +42,10 @@ public class CombatManager : SingleTon<CombatManager>
     protected override void Awake()
     {
         base.Awake();
-        gameManager = GameManager.Instance; //SaveGame을 위해 Instance를 저장. 굳이?
+        //Manager Instance 초기화
+        gameManager = GameManager.Instance;
         characterSource = CharacterManager.Instance;
+        //이벤트 구독 캐릭터가 준비되었을 때 캐릭터를 업데이트
         if (characterSource != null) characterSource.OnCharacterReady += UpdateCharacter;
     }
     void OnDestroy()
@@ -53,6 +56,7 @@ public class CombatManager : SingleTon<CombatManager>
         }
     }
 
+    //캐릭터 인스턴스 업데이트
     private void UpdateCharacter(Player player, Enemy enemy)
     {
         this.enemy = enemy;
@@ -61,6 +65,7 @@ public class CombatManager : SingleTon<CombatManager>
     #endregion
 
     #region [Input Field]
+    //플레이어의 입력을 받아옴.
     public void GetInput(PlayerInputData data)
     {
         TrySubmitInput(data, out _);
@@ -73,7 +78,7 @@ public class CombatManager : SingleTon<CombatManager>
         if (!Enum.IsDefined(typeof(PlayerBehaviour), data.playerBehaviour))
         { error = "알 수 없는 행동입니다."; return false; }
         if (data.playerBehaviour == PlayerBehaviour.Run && !CanEscape)
-        { error = "승리 후 이동 노드가 없어 도주할 수 없습니다."; return false; }
+        { error = "승리 후 이동 노드가 없어 도주할 수 없습니다."; return false; } //왜? 도주 불가가 왜 있지? next를 무조건 주면 해결되겠지?
         if (data.playerBehaviour == PlayerBehaviour.Attack &&
             (player.areaDataDB == null || !Array.Exists(player.areaDataDB, area => area.Equals(data.areaData))))
         { error = "유효한 공격 부위를 선택하세요."; return false; }
@@ -97,6 +102,7 @@ public class CombatManager : SingleTon<CombatManager>
     #region [CombatControl]
     public void CombatNodeStart(Node node)
     {
+        //전투 시작 전 각종 인스턴스 초기화
         CancelCombat();
         if (node != null && node.nodeType == NodeType.CombatNode)
         {
@@ -108,12 +114,15 @@ public class CombatManager : SingleTon<CombatManager>
     {
         if (characterSource == null) characterSource = CharacterManager.Instance;
         if (characterSource != null) UpdateCharacter(characterSource.currentPlayer, characterSource.currentEnemy);
+
         if (node == null || player == null || enemy == null || node.enemyData == null)
         {
             Debug.LogError("[CombatManager] 플레이어, 적 또는 전투 노드 데이터가 없습니다.");
             yield break;
         }
+
         onPlayerTurn = false;
+
         ActionSelectionChanged?.Invoke(false);
         successNode = node.successNode;
         failureNode = node.failureNode;
@@ -122,7 +131,7 @@ public class CombatManager : SingleTon<CombatManager>
         
         if (node.enemyData != null)
         {
-            enemy?.InitializeFromData(node.enemyData);
+            enemy.InitializeFromData(node.enemyData, node.surviveDate);
         }
         else
         {
@@ -132,6 +141,7 @@ public class CombatManager : SingleTon<CombatManager>
         CombatUIUpdate?.Invoke(player, enemy);
         GameEvent.UpdateCharacterUI(player, enemy);
 
+        //등장 이벤트에서 출력 문구를 Enemy에서 얻어올 수 있게 enemy data에 appearanceText를 추가하고 이를 출력하도록 수정해보자.
         yield return GameEvent.OnNodeTextUpdate(enemy.characterName + JosaUtility.GetJosa_이가(enemy.characterName) + " 당신에게 싸움을 걸었다. \n 준비하라.");
         yield return StartCoroutine(WaitForClick.WaitClick());
 
@@ -207,6 +217,9 @@ public class CombatManager : SingleTon<CombatManager>
                     if (combatActive) yield return AttackTurn(enemy, player, GetEnemyAttack(), 1);
                 break;
                 case PlayerBehaviour.Run:
+                //도주 시도
+                    //이 도주 시도의 확률을 수정해볼거야. 어떻게? Enemy Lv 과 Player Lv의 차이와 체력 차이를 이용해서. lv 차이는 계수. 체력 차이가 주된 확률을 결정. 상대 체력이 100%라면 기본 확률 30%.
+                    float escapeProbability = EscapeProbability;
                     bool escaped = CombatRules.ResolveEscape(escapeProbability, UnityEngine.Random.value);
                     yield return GameEvent.OnNodeTextUpdate(escaped ? "전투에서 도주하였다." : "도주에 실패하였다.");
                     yield return WaitForClick.WaitClick();

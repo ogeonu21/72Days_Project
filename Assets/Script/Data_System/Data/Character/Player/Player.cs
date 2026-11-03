@@ -11,8 +11,6 @@ public class Player : Character
     #region [플레이어 경험치 & 장비 데이터]
     //레벨 관련
     private int exp;
-    public int lv;
-
     //장비 관련
     public EquipmentData equipmentData = new EquipmentData();
     //플레이어 성향

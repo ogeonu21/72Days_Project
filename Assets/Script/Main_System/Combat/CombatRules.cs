@@ -35,6 +35,25 @@ public static class CombatRules
     {
         return Math.Max(0f, Math.Min(1f, value));
     }
+    public static float CalculateEscapeProbability(Character player, Character enemy)
+    {
+        if (player == null || enemy == null) return 0f;
+        return CalculateEscapeProbability(player.lv, enemy.lv,
+            player.CurrentHP, player.MaxHP, enemy.CurrentHP, enemy.MaxHP);
+    }
+
+    // 수치 계산을 분리해 씬이나 Unity 입력 없이 경계값을 검사한다.
+    public static float CalculateEscapeProbability(int playerLevel, int enemyLevel,
+        int playerHP, int playerMaxHP, int enemyHP, int enemyMaxHP)
+    {
+        if (playerMaxHP <= 0 || enemyMaxHP <= 0 || playerHP <= 0 || enemyHP <= 0) return 0f;
+        int levelDifference = (int)Math.Max(1, playerLevel) - Math.Max(1, enemyLevel);
+        float playerHealthRatio = (float)Math.Min(playerHP, playerMaxHP) / playerMaxHP;
+        float enemyHealthRatio = (float)Math.Min(enemyHP, enemyMaxHP) / enemyMaxHP;
+        //기본 확률 0.3 + 레벨 차이 0.05 + 체력 비율 차이 0.6
+        float probability = 0.3f + 0.05f * levelDifference + 0.6f * (playerHealthRatio - enemyHealthRatio);
+        return (float)Math.Max(0.1f, Math.Min(1f, probability));
+    }
 }
 
 public struct CombatAttackResult
