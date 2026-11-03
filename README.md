@@ -6,8 +6,6 @@
 
 | 하고 싶은 작업 | 안내 |
 | --- | --- |
-| 폴더와 주요 코드 위치 파악 | [프로젝트 구조 안내](Docs/프로젝트-구조.md) |
-| 기능별 사용법·변경 기록 찾기 | [문서 목록](Docs/README.md) |
 | 게임 로직 수정 | `Assets/Script/Main_System/` |
 | 화면·버튼·아이콘 수정 | `Assets/Script/UI_System/` |
 | 데이터 구조 수정 | `Assets/Script/Data_System/` |
@@ -19,7 +17,7 @@
 ```text
 war_LIke2/
 ├─ Assets/           게임 코드·씬·에셋·외부 플러그인
-├─ Docs/             한글 사용법·설계·변경 기록
+├─ Docs/             로컬 전용 사용법·설계·변경 기록 (Git 제외)
 ├─ Tools/            인코딩 검사·Unity 연결 보조 도구
 ├─ Packages/         Unity 패키지 구성
 ├─ ProjectSettings/  프로젝트 설정
@@ -42,4 +40,4 @@ war_LIke2/
 - `Resources` 하위 경로는 로드 코드·가져오기 코드와 연결되므로 임의로 변경하지 않습니다.
 - 외부 플러그인과 자동 생성 폴더는 직접 작성한 게임 코드와 구분합니다.
 - `Keystore/`는 로컬 서명 자료입니다. 공유하거나 Git에 추가하지 않습니다.
-- 상세 변경 이력은 [문서 목록](Docs/README.md)에 정리되어 있습니다.
+- 작업용 문서와 에이전트 설정은 로컬의 `Docs/`, `.codex/`, `AGENTS.md`에서 관리하며 Git 추적 대상에서 제외합니다.
