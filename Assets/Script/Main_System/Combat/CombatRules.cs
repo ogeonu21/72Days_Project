@@ -47,11 +47,12 @@ public static class CombatRules
         int playerHP, int playerMaxHP, int enemyHP, int enemyMaxHP)
     {
         if (playerMaxHP <= 0 || enemyMaxHP <= 0 || playerHP <= 0 || enemyHP <= 0) return 0f;
-        long levelDifference = (long)Math.Max(1, playerLevel) - Math.Max(1, enemyLevel);
-        double playerHealthRatio = (double)Math.Min(playerHP, playerMaxHP) / playerMaxHP;
-        double enemyHealthRatio = (double)Math.Min(enemyHP, enemyMaxHP) / enemyMaxHP;
-        double probability = 0.3d + 0.05d * levelDifference + 0.5d * (playerHealthRatio - enemyHealthRatio);
-        return (float)Math.Max(0d, Math.Min(1d, probability));
+        int levelDifference = (int)Math.Max(1, playerLevel) - Math.Max(1, enemyLevel);
+        float playerHealthRatio = (float)Math.Min(playerHP, playerMaxHP) / playerMaxHP;
+        float enemyHealthRatio = (float)Math.Min(enemyHP, enemyMaxHP) / enemyMaxHP;
+        //기본 확률 0.3 + 레벨 차이 0.05 + 체력 비율 차이 0.6
+        float probability = 0.3f + 0.05f * levelDifference + 0.6f * (playerHealthRatio - enemyHealthRatio);
+        return (float)Math.Max(0.1f, Math.Min(1f, probability));
     }
 }
 
