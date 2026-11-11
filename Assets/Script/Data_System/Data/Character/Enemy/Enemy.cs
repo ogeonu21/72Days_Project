@@ -22,7 +22,8 @@ public class Enemy : Character
     // 잘못된 일차 입력이 수억 회 분배를 실행하지 않도록 보정 포인트를 제한한다.
     private const int MaxDayStatPoints = 100000;
 
-    //현재 게임 진행률에 따라 스탯에 보정치를 가함.
+    //현재 게임 진행률에 따라 스탯에 보정치를 가함
+
     private static BaseStats EnemyStatsDayTuning(BaseStats baseStats, int surviveDay, Func<float> roll = null)
     {
         BaseStats tunedStats = baseStats;

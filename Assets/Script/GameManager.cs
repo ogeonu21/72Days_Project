@@ -70,6 +70,14 @@ public class GameManager : SingleTon<GameManager>
         {
             if (currentState == GameState.New)
             {
+                var node = Resources.Load<Node>("Nodes/DEMO_01");
+                if (node == null)
+                {
+                    Debug.LogError("[GameManager] 시작 노드 DEMO_01을 찾을 수 없습니다.");
+                    UpdateGameState(GameState.Main);
+                    SceneManager.LoadScene("MainWindow");
+                    return;
+                }
                 Debug.Log("<color=red>[GameManager] </color>새로운 세계를 시작하기 위해 핵을 떨구는 중입니다...");
                 //코루틴을 이용한 로딩바 추가도 가능.
 
@@ -82,10 +90,6 @@ public class GameManager : SingleTon<GameManager>
                 UpdateGameState(GameState.Playing);
                 CharacterManager.Instance.SpawnCharacter(playerData, 0);
                 InventoryManager.Instance.MakeNew(itemData); //???? 이거 언제 만들었지??
-                //시작 노드 고정. 이것도 수정해야함.
-                var node = Resources.Load<Node>($"Nodes/Main_01");
-                
-
                 NodeManager.Instance.GoToNode(node);
             }
             else if (currentState == GameState.Load)

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: DEMO_STEALTH_RECON
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: DEMO_STEALTH_RECON
+  nodeMessage: "\uBD81\uCABD \uB3C4\uB85C\uB97C \uAC00\uB85C\uC9C0\uB974\uB294 \uC815\uCC30\uBCD1\uC774
+    \uAC19\uC740 \uBAA8\uD241\uC774\uC5D0\uC11C \uBA48\uCDC4\uB2E4. \uC218\uCCA9\uC744
+    \uBCF4\uB294 \uB3D9\uC548 \uB4A4\uCABD \uB2F4\uC7A5\uC740 \uC2DC\uC57C\uC5D0\uC11C
+    \uC0AC\uB77C\uC84C\uB2E4. \uCC3D\uBB38\uC5D0 \uBE44\uCE5C \uC6C0\uC9C1\uC784\uC744
+    \uC77D\uAC70\uB098, \uD55C \uBC14\uD034 \uB354 \uAE30\uB2E4\uB9B4 \uC218 \uC788\uB2E4.
+    \uC131\uAE09\uD788 \uB2E4\uAC00\uAC00\uBA74 \uC815\uBA74\uC73C\uB85C \uBD80\uB52A\uCE60
+    \uAC83\uC774\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: 8bd34654ff369e647963dba5f7a39d51, type: 2}

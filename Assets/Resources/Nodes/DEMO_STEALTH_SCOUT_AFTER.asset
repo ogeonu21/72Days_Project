@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_STEALTH_SCOUT_AFTER
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_STEALTH_SCOUT_AFTER
+  nodeMessage: "\uD070\uAE38\uC758 \uCD94\uACA9\uC774 \uC7A0\uC2DC \uB04A\uACBC\uB2E4.
+    \uBAB8\uC744 \uB0AE\uCD98 \uCC44 \uC606 \uACE8\uBAA9\uC73C\uB85C \uB4E4\uC5B4\uAC14\uB2E4.
+    \uC801\uC774 \uB354 \uB530\uB77C\uC624\uB294\uC9C0 \uD655\uC2E0\uD560 \uC218
+    \uC5C6\uC5B4 \uB4A4\uB97C \uC0B4\uD53C\uBA70 \uAC78\uC5C8\uB2E4. \uC544\uC9C1
+    \uBD80\uB300\uC5D0 \uB3C4\uCC29\uD558\uC9C0 \uBABB\uD588\uB2E4\uB294 \uC0AC\uC2E4\uC740
+    \uBCC0\uD558\uC9C0 \uC54A\uC558\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: 94a67281bfdb55041ae34b8bfc35bfb9, type: 2}
