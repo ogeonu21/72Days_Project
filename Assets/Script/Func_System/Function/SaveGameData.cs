@@ -8,6 +8,7 @@ public class SaveGameData
 
     public float version = CurrentVersion;
     public string currentNodeId;
+    public string storyVersion;
     public EventProgress eventProgress = new EventProgress();
     public PlayerSaveData player = new PlayerSaveData();
     public List<CurrencySaveData> currencies = new List<CurrencySaveData>();

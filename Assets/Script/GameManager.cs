@@ -70,7 +70,7 @@ public class GameManager : SingleTon<GameManager>
         {
             if (currentState == GameState.New)
             {
-                var node = Resources.Load<Node>("Nodes/DEMO_01");
+                var node = RuntimeStoryCatalog.Resolve(RuntimeStoryCatalog.Active != null ? RuntimeStoryCatalog.Active.StartNodeId : "DEMO_01");
                 if (node == null)
                 {
                     Debug.LogError("[GameManager] 시작 노드 DEMO_01을 찾을 수 없습니다.");
