@@ -18,7 +18,6 @@ public class Enemy : Character
     public int dropGold;
     private TuningStats definitionTuning;
     public Reward reward{get; private set;}
-    #endregion
     private AreaData[] initialAreas;
     // 잘못된 일차 입력이 수억 회 분배를 실행하지 않도록 보정 포인트를 제한한다.
     private const int MaxDayStatPoints = 100000;
