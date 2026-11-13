@@ -20,9 +20,13 @@ public static class LoadingSceneInstaller
         var camera=new GameObject("Main Camera").AddComponent<Camera>(); camera.tag="MainCamera"; camera.clearFlags=CameraClearFlags.SolidColor; camera.backgroundColor=Color.black;
         new GameObject("Directional Light").AddComponent<Light>().type=LightType.Directional;
         new GameObject("EventSystem",typeof(EventSystem),typeof(StandaloneInputModule));
-        var canvas=new GameObject("LoadingCanvas",typeof(RectTransform),typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster));
+        var canvas=new GameObject("LoadingCanvas",typeof(RectTransform),typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster),typeof(CanvasSafeArea));
+        var safeArea=new SerializedObject(canvas.GetComponent<CanvasSafeArea>());
+        safeArea.FindProperty("fitReferenceResolution").boolValue=true; safeArea.ApplyModifiedPropertiesWithoutUndo();
         canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;
         var scaler=canvas.GetComponent<UnityEngine.UI.CanvasScaler>(); scaler.uiScaleMode=UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution=new Vector2(1080,1920); scaler.matchWidthOrHeight=.5f;
+        // 어느 화면비에서도 고정 배치가 사용하는 참조 영역 전체를 유지한다.
+        scaler.screenMatchMode=UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
         var font=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Fonts/DungGeunMo SDF.asset");
         if(font==null) throw new InvalidOperationException("로딩 한글 폰트 누락");
         var bg=Image("Background",canvas.transform,new Vector2(1080,1920),Vector2.zero);

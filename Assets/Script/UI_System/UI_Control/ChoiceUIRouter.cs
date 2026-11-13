@@ -122,6 +122,12 @@ public abstract class ChoiceUIRouter : MonoBehaviour
         var text = button.GetComponentInChildren<TMP_Text>(true);
         text.text = label; if (font != null) text.font = font;
         text.enableAutoSizing = true; text.fontSizeMin = text.fontSizeMax = 48;
+        // 고정 글자 크기를 유지하며 여러 줄 문구와 비용 표시가 버튼 안에 들어오게 한다.
+        var textRect = text.rectTransform;
+        float labelWidth = layout.preferredWidth * (textRect.anchorMax.x - textRect.anchorMin.x) + textRect.sizeDelta.x;
+        float textHeight = text.GetPreferredValues(label, Mathf.Max(1, labelWidth), Mathf.Infinity).y;
+        float padding = Mathf.Max(0, templateRect.rect.height - textRect.rect.height);
+        layout.minHeight = layout.preferredHeight = Mathf.Max(layout.preferredHeight, textHeight + padding + 16);
         button.interactable = available;
         return button;
     }
