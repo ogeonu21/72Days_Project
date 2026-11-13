@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df6feea42cb0624ea6aa2809344cecc, type: 3}
+  m_Name: E_DEMO_STEALTH_ARMORY
+  m_EditorClassIdentifier: 
+  kind: 2
+  title: "\uC7A0\uC785 5 \xB7 \uC784\uC2DC \uBB34\uAE30\uACE0"
+  exitNode: {fileID: 11400000, guid: 94a67281bfdb55041ae34b8bfc35bfb9, type: 2}
+  options:
+  - id: LOOK
+    text: "\uCC28\uACE0 \uBC16\uC5D0\uC11C \uB0B4\uBD80\uB97C \uC0B4\uD53C\uACE0
+      \uB5A0\uB09C\uB2E4"
+    resultText: "\uC0C1\uC790 \uC704\uCE58\uC640 \uC21C\uCC30 \uBC29\uD5A5\uB9CC
+      \uAE30\uC5B5\uD588\uB2E4. \uBB34\uAE30\uB294 \uCC59\uAE30\uC9C0 \uBABB\uD588\uC9C0\uB9CC
+      \uC18C\uC74C\uC744 \uB0B4\uC9C0 \uC54A\uACE0 \uCC28\uACE0\uB97C \uBC97\uC5B4\uB0AC\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items: []
+    nextNode: {fileID: 11400000, guid: 94a67281bfdb55041ae34b8bfc35bfb9, type: 2}
+  - id: CROWBAR
+    text: "\uBC29\uB9DD\uC774\uB85C \uB2EB\uD788\uB294 \uC154\uD130\uB97C \uBC1B\uCE58\uACE0
+      \uD6C4\uBB38\uC73C\uB85C \uBE60\uC9C4\uB2E4"
+    resultText: "\uBC29\uB9DD\uC774\uB85C \uC7A0\uAE50 \uC154\uD130\uB97C \uBC1B\uCE5C
+      \uB4A4 \uD68C\uC218\uD588\uB2E4. \uACBD\uBE44\uC758 \uC2DC\uC120\uC774 \uB2FF\uC9C0
+      \uC54A\uB294 \uAE38\uB85C \uB098\uC654\uC9C0\uB9CC \uCCA0\uCC3D \uC18D \uBB34\uAE30\uC5D0\uB294
+      \uC190\uB300\uC9C0 \uBABB\uD588\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 11400000, guid: 37c3922dffc2bbe48ba4079e755a29d1, type: 2}
+    requiredQuantity: 1
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items: []
+    nextNode: {fileID: 11400000, guid: 94a67281bfdb55041ae34b8bfc35bfb9, type: 2}
+  - id: FIGHT
+    text: "\uACBD\uBE44\uBCD1\uACFC \uB9DE\uC11C \uBB34\uAE30 \uD68C\uC218\uB97C
+      \uC2DC\uB3C4\uD55C\uB2E4"
+    resultText: "\uCD1D\uC744 \uACA8\uB208 \uACBD\uBE44\uBCD1\uC774 \uCC28\uACE0
+      \uC785\uAD6C\uB97C \uB9C9\uC558\uB2E4. \uBB34\uAE30\uB97C \uBE7C\uC557\uC73C\uB824\uBA74
+      \uBA3C\uC800 \uADF8\uC640 \uC2F8\uC6CC\uC57C \uD55C\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 3
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items: []
+    nextNode: {fileID: 11400000, guid: 18238f320f386fa4fb4b9f810991dbe1, type: 2}

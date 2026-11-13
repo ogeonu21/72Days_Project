@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc481ad19478d446b7e936332d10d21, type: 3}
+  m_Name: DEMO_BATTLE_CIV
+  m_EditorClassIdentifier: 
+  nodeType: 2
+  nodeName: DEMO_BATTLE_CIV
+  nodeMessage: "\uBB3C\uC744 \uC9C0\uD0A4\uB294 \uBBFC\uAC04\uC778\uC774 \uCE7C\uC744
+    \uB4E4\uC5C8\uB2E4. \uB098\uB294 \uC0B4\uC544\uB0A8\uC744 \uBB3C\uC790\uB97C
+    \uC5BB\uC73C\uB824\uACE0 \uADF8\uB97C \uC8FD\uC77C \uC758\uB3C4\uB97C \uD488\uACE0
+    \uACF5\uACA9\uC5D0 \uB098\uC130\uB2E4. \uADF8\uAC00 \uC800\uD56D\uD558\uB294
+    \uC774\uC720\uB97C \uC54C\uBA74\uC11C\uB3C4 \uB0B4\uAC00 \uBA3C\uC800 \uAC70\uB9AC\uB97C
+    \uC881\uD614\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  combatEnemyID: DEMO_CIV_ENEMY
+  successNode: {fileID: 11400000, guid: 8ad47090ad082814a875ca46847e52b1, type: 2}
+  failureNode: {fileID: 11400000, guid: 70a5829a0f0e78b45b0844abf747c5d8, type: 2}
+  enemyData: {fileID: 11400000, guid: 63602dce5f4d8ce45ac5c677a3aba622, type: 2}

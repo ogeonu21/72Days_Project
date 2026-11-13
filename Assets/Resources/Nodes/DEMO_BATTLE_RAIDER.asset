@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc481ad19478d446b7e936332d10d21, type: 3}
+  m_Name: DEMO_BATTLE_RAIDER
+  m_EditorClassIdentifier: 
+  nodeType: 2
+  nodeName: DEMO_BATTLE_RAIDER
+  nodeMessage: "\uC1E0\uB9C9\uB300\uAC00 \uB3C4\uB85C\uB97C \uAE01\uC5C8\uB2E4. \uB0A8\uC790\uB294
+    \uB0B4 \uAC00\uBC29\uC744 \uB178\uB9AC\uACE0 \uB2E4\uAC00\uC654\uACE0 \uB098\uB294
+    \uACF5\uACA9 \uAC70\uB9AC\uB97C \uC7AC\uBA70 \uBB3C\uB7EC\uC130\uB2E4. \uB300\uD654\uAC00
+    \uB04A\uAE34 \uC790\uB9AC\uC5D0\uC11C \uBAB8\uACFC \uC9D0\uC744 \uC9C0\uCF1C\uC57C
+    \uD588\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  combatEnemyID: DEMO_RAIDER_ENEMY
+  successNode: {fileID: 11400000, guid: 837ba9e26571c91429f4c4e8ffd15cfe, type: 2}
+  failureNode: {fileID: 11400000, guid: 70a5829a0f0e78b45b0844abf747c5d8, type: 2}
+  enemyData: {fileID: 11400000, guid: 116bfc0d815105a44a8246c7af82f7b2, type: 2}

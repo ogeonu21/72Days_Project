@@ -5,14 +5,23 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class CanvasSafeArea : MonoBehaviour
 {
+    private enum ReferenceLayoutMode { Fit, ExpandHeight }
+    [SerializeField] private bool fitReferenceResolution;
+    [Tooltip("Fit은 참조 영역 전체를 맞추고, ExpandHeight는 긴 세로 화면의 여유 높이를 자식 레이아웃에 전달합니다.")]
+    [SerializeField] private ReferenceLayoutMode referenceLayoutMode;
     private Canvas canvas;
+    private UnityEngine.UI.CanvasScaler scaler;
     private RectTransform content;
     private Rect lastSafeArea;
     private Rect lastViewport;
+    private Vector2 lastCanvasSize, lastReference;
+    private bool lastFit;
+    private ReferenceLayoutMode lastMode;
 
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
+        scaler = GetComponent<UnityEngine.UI.CanvasScaler>();
         if (canvas.renderMode == RenderMode.WorldSpace || !canvas.isRootCanvas)
         {
             Debug.LogError("[CanvasSafeArea] 루트 화면 Canvas에만 적용할 수 있습니다.", this);
@@ -51,10 +60,35 @@ public sealed class CanvasSafeArea : MonoBehaviour
         Rect viewport = canvas.renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera != null
             ? canvas.worldCamera.pixelRect : new Rect(0, 0, Screen.width, Screen.height);
         Rect safeArea = Screen.safeArea;
-        if (!force && safeArea == lastSafeArea && viewport == lastViewport) return;
+        Vector2 canvasSize = ((RectTransform)transform).rect.size;
+        Vector2 reference = scaler != null ? scaler.referenceResolution : Vector2.zero;
+        if (!force && safeArea == lastSafeArea && viewport == lastViewport && canvasSize == lastCanvasSize &&
+            reference == lastReference && fitReferenceResolution == lastFit && referenceLayoutMode == lastMode) return;
         lastSafeArea = safeArea;
         lastViewport = viewport;
-        SetAnchors(NormalizeSafeArea(safeArea, viewport));
+        lastCanvasSize = canvasSize;
+        lastReference = reference;
+        lastFit = fitReferenceResolution;
+        lastMode = referenceLayoutMode;
+        SetLayout(NormalizeSafeArea(safeArea, viewport), canvasSize, reference);
+    }
+
+    private void SetLayout(Rect area, Vector2 canvasSize, Vector2 reference)
+    {
+        if (fitReferenceResolution && canvasSize.x > 0 && canvasSize.y > 0 && reference.x > 0 && reference.y > 0)
+        {
+            // 자식의 고정 오프셋과 동적 패널 좌표를 보존한 채 전체를 안전 영역 안에 맞춘다.
+            content.anchorMin = content.anchorMax = area.center;
+            content.pivot = new Vector2(.5f, .5f);
+            float widthScale = canvasSize.x * area.width / reference.x;
+            float availableHeight = canvasSize.y * area.height;
+            bool expandHeight = referenceLayoutMode == ReferenceLayoutMode.ExpandHeight && availableHeight / widthScale > reference.y;
+            content.sizeDelta = expandHeight ? new Vector2(reference.x, availableHeight / widthScale) : reference;
+            content.anchoredPosition = Vector2.zero;
+            float scale = expandHeight ? widthScale : Mathf.Min(widthScale, availableHeight / reference.y);
+            content.localScale = new Vector3(scale, scale, 1);
+        }
+        else SetAnchors(area);
     }
 
     public static Rect NormalizeSafeArea(Rect safeArea, Rect viewport)
@@ -70,6 +104,7 @@ public sealed class CanvasSafeArea : MonoBehaviour
 
     private void SetAnchors(Rect area)
     {
+        content.localScale = Vector3.one;
         content.anchorMin = area.min;
         content.anchorMax = area.max;
         content.offsetMin = Vector2.zero;

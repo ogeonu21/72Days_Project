@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df6feea42cb0624ea6aa2809344cecc, type: 3}
+  m_Name: E_DEMO_CIV_ENTRY
+  m_EditorClassIdentifier: 
+  kind: 2
+  title: "\uC0DD\uC218 \uC0C1\uC790\uB97C \uC9C0\uD0A4\uB294 \uBBFC\uAC04\uC778"
+  exitNode: {fileID: 11400000, guid: 85c84856fd4f0804c9b7d0c13e563f9e, type: 2}
+  options:
+  - id: ASK
+    text: "\uD544\uC694\uD55C \uC591\uB9CC \uB098\uB20C \uC218 \uC788\uB294\uC9C0
+      \uBB3B\uB294\uB2E4"
+    resultText: "\uADF8\uB294 \uB05D\uB0B4 \uC0C1\uC790\uB97C \uB0B4\uC8FC\uC9C0
+      \uC54A\uC558\uB2E4. \uB354 \uB2E4\uAC00\uAC00\uC9C0 \uC54A\uACA0\uB2E4\uACE0
+      \uB9D0\uD558\uACE0 \uBB3C\uB7EC\uB0AC\uB2E4. \uC5BB\uC740 \uBB3C\uC740 \uC5C6\uC5C8\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items: []
+    nextNode: {fileID: 11400000, guid: 85c84856fd4f0804c9b7d0c13e563f9e, type: 2}
+  - id: LEAVE
+    text: "\uADF8 \uAC00\uC871\uC758 \uBB3C\uC744 \uB450\uACE0 \uB5A0\uB09C\uB2E4"
+    resultText: "\uCE7C\uC744 \uB4E0 \uC190\uC744 \uC790\uADF9\uD558\uC9C0 \uC54A\uACE0
+      \uB4A4\uB85C \uBB3C\uB7EC\uB0AC\uB2E4. \uBAA9\uB9C8\uB984\uC740 \uADF8\uB300\uB85C\uC600\uC9C0\uB9CC
+      \uC774 \uC0AC\uB78C\uC758 \uBB3C\uC744 \uBE7C\uC557\uC9C0 \uC54A\uC558\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items: []
+    nextNode: {fileID: 11400000, guid: 85c84856fd4f0804c9b7d0c13e563f9e, type: 2}
+  - id: KILL_FOR_WATER
+    text: "\uC0B4\uC544\uB0A8\uAE30 \uC704\uD574 \uADF8\uB97C \uC8FD\uC5EC\uC11C\uB77C\uB3C4
+      \uBB3C\uC744 \uBE7C\uC557\uB294\uB2E4"
+    resultText: "\uC0DD\uC874\uC744 \uC704\uD574 \uBBFC\uAC04\uC778\uC5D0\uAC8C \uC0B4\uD574
+      \uC758\uB3C4\uAC00 \uC788\uB294 \uACF5\uACA9\uC744 \uC120\uD0DD\uD588\uB2E4.
+      \uC131\uD5A5 -4\uB294 \uC774 \uACF5\uACA9 \uC758\uB3C4\uC758 \uC2E4\uD589\uC5D0
+      \uB300\uD55C \uAC12\uC774\uBA70, \uC804\uD22C \uC2B9\uB9AC\uB098 \uBBFC\uAC04\uC778
+      \uC0AC\uB9DD\uC758 \uC644\uB8CC \uD310\uC815\uC774 \uC544\uB2C8\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 3
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: -4
+      items: []
+    nextNode: {fileID: 11400000, guid: 951507684ef215344b552b8b6833341d, type: 2}

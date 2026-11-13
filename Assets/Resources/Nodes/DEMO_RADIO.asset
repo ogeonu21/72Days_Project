@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: DEMO_RADIO
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: DEMO_RADIO
+  nodeMessage: "\uD559\uAD50 \uB2F4\uC7A5 \uC544\uB798\uC5D0\uC11C \uC790\uC6D0\uBD09\uC0AC\uC790\uAC00
+    \uB0A1\uC740 \uBB34\uC804\uAE30\uB97C \uD754\uB4E4\uACE0 \uC788\uC5C8\uB2E4.
+    \u201C\uC5EC\uAE30 \uAE38\uC774 \uB9C9\uD614\uB2E4\uACE0 \uC54C\uB824\uC57C \uD558\uB294\uB370,
+    \uBC30\uD130\uB9AC\uAC00 \uAC04\uB2F9\uAC04\uB2F9\uD574\uC694.\u201D \uADF8\uB294
+    \uB2F4\uC7A5 \uD2C8\uC758 \uBE44\uC0C1 \uC804\uC6D0\uD568\uC744 \uAC00\uB9AC\uCF30\uB2E4.
+    \uB0B4 \uD734\uB300\uC804\uD654\uC5D0\uB3C4 \uC544\uC9C1 \uC5F0\uACB0\uB418\uC9C0
+    \uC54A\uC740 \uBC88\uD638 \uB450 \uAC1C\uAC00 \uB0A8\uC544 \uC788\uC5C8\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: 5c9b49c3de2063b47b8457e31df1cc68, type: 2}

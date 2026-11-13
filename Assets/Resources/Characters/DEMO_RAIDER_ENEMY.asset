@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
+  m_Name: DEMO_RAIDER_ENEMY
+  m_EditorClassIdentifier: 
+  type: "\uC545"
+  id: DEMO_RAIDER_ENEMY
+  displayName: "\uB178\uC219\uC790 \uCD9C\uC2E0 \uC1E0\uB9C9\uB300 \uC57D\uD0C8\uC790"
+  baseStats:
+    str: 3
+    dex: 2
+    con: 3
+  tuningStats:
+    attackBonus: 1
+    hpBonus: 2
+    dodgeBonus: 0
+    rangeBonus: 0
+  dropItem: {fileID: 0}
+  itemDropRate: 0
+  dropGold: 0

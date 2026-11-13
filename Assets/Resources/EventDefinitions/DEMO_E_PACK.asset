@@ -1,0 +1,139 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df6feea42cb0624ea6aa2809344cecc, type: 3}
+  m_Name: DEMO_E_PACK
+  m_EditorClassIdentifier: 
+  kind: 2
+  title: "\uD604\uAD00 \uC55E\uC758 \uC138 \uBB3C\uAC74"
+  exitNode: {fileID: 11400000, guid: 60cec056dbf945d43b803f4db98cb395, type: 2}
+  options:
+  - id: KNIFE
+    text: "\uC2DD\uCE7C \uCC59\uAE30\uAE30"
+    resultText: "\uC2DD\uCE7C \uD558\uB098\uB97C \uAC00\uBC29\uC5D0 \uB123\uC5C8\uB2E4.
+      \uBB34\uAC8C\uB97C \uD655\uC778\uD558\uACE0 \uC9C0\uD37C\uB97C \uB2EB\uC558\uB2E4.
+      \uC7A5\uBE44\uB294 \uC790\uB3D9\uC73C\uB85C \uC7A5\uCC29\uB418\uC9C0 \uC54A\uB294\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items:
+      - item: {fileID: 11400000, guid: 189ce2b31318ecf49b9ed619f771630d, type: 2}
+        quantity: 1
+        probability: 1
+    nextNode: {fileID: 11400000, guid: 60cec056dbf945d43b803f4db98cb395, type: 2}
+  - id: BAT
+    text: "\uC57C\uAD6C\uBC29\uB9DD\uC774 \uCC59\uAE30\uAE30"
+    resultText: "\uC57C\uAD6C\uBC29\uB9DD\uC774 \uD558\uB098\uB97C \uAC00\uBC29\uC5D0
+      \uB123\uC5C8\uB2E4. \uBB34\uAC8C\uB97C \uD655\uC778\uD558\uACE0 \uC9C0\uD37C\uB97C
+      \uB2EB\uC558\uB2E4. \uC7A5\uBE44\uB294 \uC790\uB3D9\uC73C\uB85C \uC7A5\uCC29\uB418\uC9C0
+      \uC54A\uB294\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items:
+      - item: {fileID: 11400000, guid: 37c3922dffc2bbe48ba4079e755a29d1, type: 2}
+        quantity: 1
+        probability: 1
+    nextNode: {fileID: 11400000, guid: 60cec056dbf945d43b803f4db98cb395, type: 2}
+  - id: KIT
+    text: "\uAD6C\uAE09\uC0C1\uC790 \uCC59\uAE30\uAE30"
+    resultText: "\uC751\uAE09\uCC98\uCE58 \uBB36\uC74C \uD558\uB098\uB97C \uAC00\uBC29\uC5D0
+      \uB123\uC5C8\uB2E4. \uD544\uC694\uD560 \uB54C \uC778\uBCA4\uD1A0\uB9AC\uC5D0\uC11C
+      \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uC18C\uBAA8\uD488\uC774\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items:
+      - item: {fileID: 11400000, guid: ef89fe8ea5c16ac46831772145a895b8, type: 2}
+        quantity: 1
+        probability: 1
+    nextNode: {fileID: 11400000, guid: 60cec056dbf945d43b803f4db98cb395, type: 2}

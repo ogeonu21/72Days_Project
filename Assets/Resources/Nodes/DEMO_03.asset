@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_03
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_03
+  nodeMessage: "\uC804\uC7C1 10\uBD84 \uC804. \uD61C\uC778\uC5D0\uAC8C\uC11C \uC804\uD654\uAC00
+    \uC654\uB2E4. \u201C\uC624\uB298 \uBC24\uC740 \uC880 \uC870\uC6A9\uD558\uB124.
+    \uB0B4\uC77C \uB3CC\uC544\uAC00\uAE30 \uC804\uC5D0 \uC5BC\uAD74 \uBCFC \uC218
+    \uC788\uC5B4?\u201D \uB098\uB294 \uAD1C\uD788 \uC6C3\uC73C\uBA70 \uC77C\uCC0D
+    \uC77C\uC5B4\uB098\uACA0\uB2E4\uACE0 \uD588\uB2E4. \uADF8\uB140\uB294 \uC11C\uCABD
+    \uC9D1 \uADFC\uCC98 \uD3B8\uC758\uC810\uC5D0 \uB4E4\uB800\uB2E4\uAC00 \uB3CC\uC544\uAC00\uB294
+    \uAE38\uC774\uB77C\uACE0 \uD588\uB2E4. \uD1B5\uD654\uB97C \uB05D\uB0B4\uACE0\uB3C4
+    \uADC0\uC5D0 \uBAA9\uC18C\uB9AC\uAC00 \uB0A8\uC558\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: c392128aab821c14f8b991afe468ecc5, type: 2}

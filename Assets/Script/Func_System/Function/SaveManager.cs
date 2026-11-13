@@ -59,6 +59,12 @@ public class SaveManager : SingleTon<SaveManager>
             return false;
         }
 
+        if (RuntimeStoryCatalog.Active != null && !RuntimeStoryCatalog.Compatible(data.storyVersion, RuntimeStoryCatalog.Version))
+        {
+            error = "스토리 데이터 버전이 달라 기존 저장 데이터를 사용할 수 없습니다. 새 게임을 시작해 주세요.";
+            return false;
+        }
+
         currentNode = LoadNode(data.currentNodeId);
         if (currentNode == null)
         {
@@ -100,6 +106,7 @@ public class SaveManager : SingleTon<SaveManager>
         SaveGameData data = new SaveGameData
         {
             currentNodeId = node.name,
+            storyVersion = RuntimeStoryCatalog.Version,
             eventProgress = GameManager.Instance != null ? GameManager.Instance.eventProgress : new EventProgress(),
             player = PlayerSaveData.FromPlayerData(player.GetCurrentData())
         };
@@ -158,7 +165,7 @@ public class SaveManager : SingleTon<SaveManager>
 
     private static Node LoadNode(string nodeId)
     {
-        return string.IsNullOrWhiteSpace(nodeId) ? null : Resources.Load<Node>($"Nodes/{nodeId}");
+        return string.IsNullOrWhiteSpace(nodeId) ? null : RuntimeStoryCatalog.Resolve(nodeId);
     }
 
     private static BaseItem LoadItem(string itemId)

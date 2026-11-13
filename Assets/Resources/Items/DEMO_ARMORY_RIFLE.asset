@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00184cacf2a96804e9fcfd4d0bdf9157, type: 3}
+  m_Name: DEMO_ARMORY_RIFLE
+  m_EditorClassIdentifier: 
+  itemID: DEMO_ARMORY_RIFLE
+  itemName: "\uD68C\uC218\uC6A9 \uAD70\uC6A9 \uC18C\uCD1D"
+  itemDescription: "\uC784\uC2DC \uBB34\uAE30\uACE0 \uACBD\uBE44\uBCD1\uC5D0\uAC8C\uC11C
+    \uC2B9\uB9AC \uC2DC \uD68C\uC218\uD558\uB294 \uAC15\uB825 \uBB34\uAE30. \uC790\uB3D9
+    \uC7A5\uCC29\uB418\uC9C0 \uC54A\uB294\uB2E4."
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/38_sword.png
+  isConsumable: 0
+  itemValue: 0
+  itemCategory: 0
+  durability: 60
+  attackBonus: 8
+  range: 3

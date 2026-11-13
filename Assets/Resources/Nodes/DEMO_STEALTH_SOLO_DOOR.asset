@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: DEMO_STEALTH_SOLO_DOOR
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: DEMO_STEALTH_SOLO_DOOR
+  nodeMessage: "\uBE44\uC0C1\uBB38 \uB108\uBA38\uC5D0\uC11C \uBB34\uC804\uAE30\uAC00
+    \uC6B8\uB838\uB2E4. \uB418\uB3CC\uC544\uAC08 \uACC4\uB2E8\uC5D0\uB294 \uBB34\uB108\uC9C4
+    \uBC30\uAD00\uC774 \uAC00\uB85C\uB204\uC6E0\uB2E4. \uBB38\uC744 \uC5F4 \uBC29\uBC95\uC740
+    \uB2EC\uB77C\uB3C4 \uC774 \uD1B5\uB85C\uB97C \uBE60\uC838\uB098\uAC00\uB824\uBA74
+    \uBB38 \uC55E\uC758 \uC801\uACFC \uB9C8\uC8FC\uD574\uC57C \uD588\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: 80cc07c1f376bf44fb945428f244a400, type: 2}
