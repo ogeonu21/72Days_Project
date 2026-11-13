@@ -131,4 +131,40 @@ public static class MobileUiValidation
         }
         finally { UnityEngine.Object.DestroyImmediate(root); }
     }
+
+    public static string RunPortraitExpansionChecks()
+    {
+        if (EditorApplication.isPlaying) throw new InvalidOperationException("Edit Mode에서 실행하세요.");
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var root = new GameObject("PortraitExpansionValidation", typeof(RectTransform), typeof(Canvas), typeof(CanvasSafeArea));
+        root.hideFlags = HideFlags.HideAndDontSave; root.SetActive(false);
+        root.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+        var content = new GameObject("Content", typeof(RectTransform)).GetComponent<RectTransform>(); content.SetParent(root.transform, false);
+        var hud = new GameObject("HUD", typeof(RectTransform)).GetComponent<RectTransform>(); hud.SetParent(content, false);
+        hud.anchorMin = new Vector2(0, 1); hud.anchorMax = Vector2.one; hud.sizeDelta = new Vector2(0, 480); hud.anchoredPosition = new Vector2(0, -240);
+        var body = new GameObject("Body", typeof(RectTransform)).GetComponent<RectTransform>(); body.SetParent(content, false);
+        body.anchorMin = Vector2.zero; body.anchorMax = Vector2.one; body.offsetMin = Vector2.zero; body.offsetMax = new Vector2(0, -480);
+        var safe = root.GetComponent<CanvasSafeArea>();
+        typeof(CanvasSafeArea).GetField("content", flags).SetValue(safe, content);
+        typeof(CanvasSafeArea).GetField("fitReferenceResolution", flags).SetValue(safe, true);
+        var mode = typeof(CanvasSafeArea).GetField("referenceLayoutMode", flags); mode.SetValue(safe, Enum.ToObject(mode.FieldType, 1));
+        var layout = typeof(CanvasSafeArea).GetMethod("SetLayout", flags);
+        int passed = 0;
+        Action<bool, string> check = (ok, label) => { if (!ok) throw new InvalidOperationException(label); passed++; };
+        try
+        {
+            foreach (var size in new[] { new Vector2(360, 640), new Vector2(1080, 1920), new Vector2(1080, 2340), new Vector2(1080, 2400), new Vector2(1080, 2520) })
+            foreach (var area in new[] { new Rect(0, 0, 1, 1), new Rect(0, .05f, 1, .85f) })
+            {
+                ((RectTransform)root.transform).sizeDelta = size;
+                layout.Invoke(safe, new object[] { area, size, new Vector2(1080, 1920) });
+                check(Mathf.Abs(content.rect.width - 1080) < .01f, "참조 가로 폭 유지");
+                check(Mathf.Abs(content.rect.height * content.localScale.y - size.y * area.height) < .01f, "안전 영역 전체 높이 사용");
+                check(Mathf.Abs(hud.rect.height - 480) < .01f && Mathf.Abs(hud.offsetMax.y) < .01f, "상태 영역 높이·상단 고정");
+                check(Mathf.Abs(body.rect.height - (content.rect.height - 480)) < .01f, "여유 높이를 본문 영역에 전달");
+            }
+            return $"Portrait Expansion: {passed} checks passed (합성 세로 화면·inset, Edit Mode)";
+        }
+        finally { UnityEngine.Object.DestroyImmediate(root); }
+    }
 }

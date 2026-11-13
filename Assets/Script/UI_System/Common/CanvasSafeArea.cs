@@ -5,7 +5,10 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class CanvasSafeArea : MonoBehaviour
 {
+    private enum ReferenceLayoutMode { Fit, ExpandHeight }
     [SerializeField] private bool fitReferenceResolution;
+    [Tooltip("Fit은 참조 영역 전체를 맞추고, ExpandHeight는 긴 세로 화면의 여유 높이를 자식 레이아웃에 전달합니다.")]
+    [SerializeField] private ReferenceLayoutMode referenceLayoutMode;
     private Canvas canvas;
     private UnityEngine.UI.CanvasScaler scaler;
     private RectTransform content;
@@ -13,6 +16,7 @@ public sealed class CanvasSafeArea : MonoBehaviour
     private Rect lastViewport;
     private Vector2 lastCanvasSize, lastReference;
     private bool lastFit;
+    private ReferenceLayoutMode lastMode;
 
     private void Awake()
     {
@@ -59,12 +63,13 @@ public sealed class CanvasSafeArea : MonoBehaviour
         Vector2 canvasSize = ((RectTransform)transform).rect.size;
         Vector2 reference = scaler != null ? scaler.referenceResolution : Vector2.zero;
         if (!force && safeArea == lastSafeArea && viewport == lastViewport && canvasSize == lastCanvasSize &&
-            reference == lastReference && fitReferenceResolution == lastFit) return;
+            reference == lastReference && fitReferenceResolution == lastFit && referenceLayoutMode == lastMode) return;
         lastSafeArea = safeArea;
         lastViewport = viewport;
         lastCanvasSize = canvasSize;
         lastReference = reference;
         lastFit = fitReferenceResolution;
+        lastMode = referenceLayoutMode;
         SetLayout(NormalizeSafeArea(safeArea, viewport), canvasSize, reference);
     }
 
@@ -75,9 +80,12 @@ public sealed class CanvasSafeArea : MonoBehaviour
             // 자식의 고정 오프셋과 동적 패널 좌표를 보존한 채 전체를 안전 영역 안에 맞춘다.
             content.anchorMin = content.anchorMax = area.center;
             content.pivot = new Vector2(.5f, .5f);
-            content.sizeDelta = reference;
+            float widthScale = canvasSize.x * area.width / reference.x;
+            float availableHeight = canvasSize.y * area.height;
+            bool expandHeight = referenceLayoutMode == ReferenceLayoutMode.ExpandHeight && availableHeight / widthScale > reference.y;
+            content.sizeDelta = expandHeight ? new Vector2(reference.x, availableHeight / widthScale) : reference;
             content.anchoredPosition = Vector2.zero;
-            float scale = Mathf.Min(canvasSize.x * area.width / reference.x, canvasSize.y * area.height / reference.y);
+            float scale = expandHeight ? widthScale : Mathf.Min(widthScale, availableHeight / reference.y);
             content.localScale = new Vector3(scale, scale, 1);
         }
         else SetAnchors(area);

@@ -29,8 +29,16 @@ public static class LoadingSceneInstaller
         scaler.screenMatchMode=UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
         var font=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Fonts/DungGeunMo SDF.asset");
         if(font==null) throw new InvalidOperationException("로딩 한글 폰트 누락");
-        var bg=Image("Background",canvas.transform,new Vector2(1080,1920),Vector2.zero);
-        bg.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Loading/background.png");
+        // 배경은 안전 영역 밖까지 채우고, 중앙 원본 구도를 보존한 확장부만 화면비에 따라 자른다.
+        var backgroundCanvas=new GameObject("LoadingBackgroundCanvas",typeof(RectTransform),typeof(Canvas));
+        backgroundCanvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;
+        backgroundCanvas.GetComponent<Canvas>().sortingOrder=-100;
+        var bg=Image("Background",backgroundCanvas.transform,new Vector2(1080,2520),Vector2.zero);
+        bg.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Loading/background-extended-1080x2520.png");
+        bg.preserveAspect=true;
+        var backgroundFit=bg.gameObject.AddComponent<UnityEngine.UI.AspectRatioFitter>();
+        backgroundFit.aspectMode=UnityEngine.UI.AspectRatioFitter.AspectMode.EnvelopeParent;
+        backgroundFit.aspectRatio=1080f/2520f;
         var phone=Image("Phone",canvas.transform,new Vector2(384,384),new Vector2(72,38));
         var status=Label("LoadingText",canvas.transform,"로딩중",font,63,new Vector2(950,120),new Vector2(0,-837));
         var dialog=Image("Dialog",canvas.transform,new Vector2(980,780),Vector2.zero); dialog.color=new Color(.025f,.03f,.05f,.97f); dialog.raycastTarget=true;
