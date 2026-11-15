@@ -135,7 +135,7 @@ public static class TypewriterEffect
         return result.ToString();
     }
     // 코루틴 자체를 반환하여 호출하는 쪽에서 제어하도록 함
-    public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.05f)
+    public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.03f)
     {
         if (targetTextComponent == null)
         {
