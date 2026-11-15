@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
+  m_Name: DEMO_NK_SOLO_ENEMY
+  m_EditorClassIdentifier: 
+  type: "\uC545"
+  id: DEMO_NK_SOLO_ENEMY
+  displayName: "\uCD9C\uAD6C\uB97C \uC9C0\uD0A4\uB294 \uAC15\uB825 \uBD81\uD55C\uAD70"
+  baseStats:
+    str: 6
+    dex: 5
+    con: 6
+  tuningStats:
+    attackBonus: 4
+    hpBonus: 12
+    dodgeBonus: 0
+    rangeBonus: 2
+  dropItem: {fileID: 11400000, guid: 8d233c352e9c33040807822cd9704f89, type: 2}
+  itemDropRate: 1
+  dropGold: 0

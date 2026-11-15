@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e7c05682c0ebd47bca9c89a5ae76a8, type: 3}
+  m_Name: DEMO_STEALTH_DISGUISE
+  m_EditorClassIdentifier: 
+  nodeType: 3
+  nodeName: DEMO_STEALTH_DISGUISE
+  nodeMessage: "\uAE68\uC9C4 \uAC00\uAC8C \uC720\uB9AC\uC5D0\uB294 \uAD70\uBCF5 \uCC28\uB9BC\uC758
+    \uB0B4\uAC00 \uADF8\uB300\uB85C \uBE44\uCCE4\uB2E4. \uC801\uC774 \uAC00\uAE4C\uC774\uC11C
+    \uBCF4\uAE30 \uC804\uC5D0 \uB208\uC5D0 \uB744\uB294 \uD45C\uC2DD\uC744 \uAC00\uB9B4
+    \uD544\uC694\uAC00 \uC788\uC5C8\uB2E4. \uC9C4\uC5F4\uB300 \uC544\uB798\uC5D0\uB294
+    \uBA3C\uC9C0\uD22C\uC131\uC774 \uC791\uC5C5\uBCF5\uC774 \uC788\uC5C8\uACE0, \uC18C\uB9E4\uB97C
+    \uBB36\uC744 \uB048\uC740 \uB2E8\uB2E8\uD788 \uC5C9\uCF1C \uC788\uC5C8\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  definition: {fileID: 11400000, guid: e4eb1524faa6a1142be2c69b9234b877, type: 2}

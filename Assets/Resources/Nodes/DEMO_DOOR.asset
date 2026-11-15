@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_DOOR
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_DOOR
+  nodeMessage: "\uBE44\uC0C1\uBB38 \uB4A4 \uD1B5\uB85C\uC5D0\uB294 \uB098 \uD63C\uC790\uC600\uB2E4.
+    \uCC9C\uC7A5\uC758 \uBC30\uAD00\uC744 \uB530\uB77C \uAC77\uB2E4\uAC00 \uBC1C\uC744
+    \uBA48\uCDC4\uB2E4. \uBA40\uB9AC\uC11C \uBB34\uC804\uAE30 \uC7A1\uC74C\uACFC
+    \uAD70\uD654 \uC18C\uB9AC\uAC00 \uBC88\uAC08\uC544 \uB4E4\uB838\uB2E4. \uBB38
+    \uBC16\uC73C\uB85C \uB098\uAC00\uB824\uBA74 \uBD88\uBE5B\uC774 \uB2FF\uC9C0 \uC54A\uB294
+    \uAD6C\uAC04\uC744 \uACE8\uB77C\uC57C \uD588\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: 4e7115859404bc34383cd2050f5027f5, type: 2}

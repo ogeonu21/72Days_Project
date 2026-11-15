@@ -1,0 +1,129 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df6feea42cb0624ea6aa2809344cecc, type: 3}
+  m_Name: DEMO_E_RADIO
+  m_EditorClassIdentifier: 
+  kind: 2
+  title: "\uBC30\uD130\uB9AC\uAC00 \uB0A8\uC740 \uBB34\uC804\uAE30"
+  exitNode: {fileID: 11400000, guid: a3b05eea6ae978449b0a315afd3e616d, type: 2}
+  options:
+  - id: HELP
+    text: "\uC804\uC6D0\uD568\uC744 \uC5F4\uC5B4 \uACF5\uB3D9 \uB300\uD53C \uBC29\uC1A1\uC744
+      \uB3D5\uB294\uB2E4"
+    resultText: "\uC790\uC6D0\uBD09\uC0AC\uC790\uC640 \uD568\uAED8 \uBB34\uAC70\uC6B4
+      \uB36E\uAC1C\uB97C \uC5F4\uC5C8\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 2
+      items: []
+    nextNode: {fileID: 11400000, guid: ae53c086a9dc6274dbb5063245d81e19, type: 2}
+  - id: WAIT
+    text: "\uC218\uC2E0\uB418\uB294 \uB300\uD53C \uC815\uBCF4\uB9CC \uB4E3\uACE0
+      \uC774\uB3D9\uD55C\uB2E4"
+    resultText: "\uBB34\uC804\uAE30\uC758 \uB9C8\uC9C0\uB9C9 \uC548\uB0B4\uB97C \uC606\uC5D0\uC11C
+      \uC870\uC6A9\uD788 \uB4E4\uC5C8\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: 0
+      items: []
+    nextNode: {fileID: 11400000, guid: 3f6027176a7dccf4dbf0ea586c7bb850, type: 2}
+  - id: SELF
+    text: "\uBB34\uC804\uAE30\uB97C \uBD99\uC7A1\uACE0 \uB0B4 \uC5F0\uB77D\uC744
+      \uBA3C\uC800 \uC2DC\uB3C4\uD55C\uB2E4"
+    resultText: "\uC1A1\uC2E0 \uBC84\uD2BC\uC744 \uB20C\uB7EC \uBD80\uB300\uC640
+      \uD61C\uC778\uC758 \uC774\uB984\uC744 \uAE09\uD788 \uBD88\uB800\uB2E4."
+    successProbability: 1
+    failureText: 
+    goldCost: 0
+    goldLoss: 0
+    repeatable: 0
+    requiredQuest: 
+    requiredQuestState: 0
+    requiredItem: {fileID: 0}
+    requiredQuantity: 0
+    requiredGold: 0
+    requiredStats:
+      str: 0
+      dex: 0
+      con: 0
+    tendencyCondition: 0
+    tendencyMin: 0
+    tendencyMax: 0
+    action: 0
+    questId: 
+    reward:
+      dropItem: {fileID: 0}
+      itemDropRate: 0
+      dropGold: 0
+      hpHeal: 0
+      exp: 0
+      statIncrease:
+        str: 0
+        dex: 0
+        con: 0
+      tendencyChange: -2
+      items: []
+    nextNode: {fileID: 11400000, guid: cee4b848f96ddd146a620dd55210eb43, type: 2}

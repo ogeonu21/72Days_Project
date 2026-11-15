@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7a43d0e487ed54e8427f341b11fc4c, type: 3}
+  m_Name: DEMO_NK_GROUP_ENEMY
+  m_EditorClassIdentifier: 
+  type: "\uC545"
+  id: DEMO_NK_GROUP_ENEMY
+  displayName: "\uC2DC\uBBFC\uB4E4\uC774 \uACAC\uC81C\uD558\uB294 \uBD81\uD55C\uAD70"
+  baseStats:
+    str: 3
+    dex: 2
+    con: 3
+  tuningStats:
+    attackBonus: 1
+    hpBonus: 3
+    dodgeBonus: 0
+    rangeBonus: 1
+  dropItem: {fileID: 0}
+  itemDropRate: 0
+  dropGold: 0

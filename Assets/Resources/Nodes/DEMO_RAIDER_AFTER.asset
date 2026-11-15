@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_RAIDER_AFTER
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_RAIDER_AFTER
+  nodeMessage: "\uAC00\uBC29\uB048\uC744 \uC6C0\uCF1C\uC950\uACE0 \uC9C0\uD558\uBCF4\uB3C4
+    \uC785\uAD6C\uB97C \uBC97\uC5B4\uB0AC\uB2E4. \uAE38\uC744 \uB9C9\uB358 \uC0AC\uB78C\uC758
+    \uBAA8\uC2B5\uC744 \uB2E4\uC2DC \uD655\uC778\uD560 \uC218 \uC5C6\uC5C8\uB2E4.
+    \uC190\uC5D0 \uB0A8\uC740 \uB5A8\uB9BC\uC774 \uAC00\uB77C\uC549\uAE30 \uC804\uC5D0
+    \uB2E4\uC74C \uBAA8\uD241\uC774\uB97C \uB3CC\uC558\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: dca7e6a769ed4ed43aba84b500dad9eb, type: 2}

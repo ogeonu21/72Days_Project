@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc2902dc78088be41b481181cfa60bd1, type: 3}
+  m_Name: F08
+  m_EditorClassIdentifier: 
+  nodeType: 4
+  nodeName: F08
+  nodeMessage: "\uC804\uC7C1\uC774 \uACA9\uD654\uB41C\uB2E4. \uB2F9\uC2E0\uC740 \uC0B4\uAE30\uC704\uD558\uC5EC
+    \uBD84\uD22C\uD558\uC600\uC9C0\uB9CC \uC774 \uAC70\uB300\uD55C \uD3ED\uB825 \uC18D\uC5D0\uC11C
+    \uB2F9\uC2E0\uC740 \uADF8\uC800 \uD55C \uBA85\uC758 \uC778\uAC04\uC77C \uBFD0\uC774\uC5C8\uB2E4.\n\uC5B4\uCA4C\uBA74
+    \uB2F9\uC2E0\uC740 \uC601\uC6C5\uC774 \uB418\uC5C8\uC744\uC9C0\uB3C4 \uBAA8\uB978\uB2E4.\n\uC5B4\uCA4C\uBA74
+    \uB2F9\uC2E0\uC740 \uC545\uC778\uC774 \uB418\uC5C8\uC744\uC9C0\uB3C4 \uBAA8\uB978\uB2E4.\n\uD558\uC9C0\uB9CC
+    \uD604\uC7AC\uC758 \uB2F9\uC2E0\uC740 \uADF8\uC800 \uC804\uC7C1\uC758 \uD53C\uD574\uC790\uC5D0
+    \uBD88\uACFC\uD558\uB2E4.\n\uC5F0\uC778\uB3C4, \uBCF5\uADC0\uB3C4 \uC774\uB8E8\uC9C0
+    \uBABB\uD55C \uD55C \uBA85\uC758 \uC2DC\uBBFC.\n\uC804\uC7C1\uC740 \uB05D\uB098\uC9C0
+    \uC54A\uC558\uB2E4.\n\uC544\uC9C1 \uB2F9\uC2E0\uC758 \uC0B6\uC740 \uB04A\uAE30\uC9C0
+    \uC54A\uC558\uC9C0\uB9CC, \uC5B8\uC81C \uADF8 \uB05D\uC774 \uC62C\uC9C0 \uBAA8\uB978\uB2E4.\n\uAC74\uD22C\uB97C
+    \uBE48\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  endingName: "\uC804\uC7C1\uC758 \uD53C\uD574\uC790"

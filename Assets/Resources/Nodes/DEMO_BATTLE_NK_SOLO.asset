@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc481ad19478d446b7e936332d10d21, type: 3}
+  m_Name: DEMO_BATTLE_NK_SOLO
+  m_EditorClassIdentifier: 
+  nodeType: 2
+  nodeName: DEMO_BATTLE_NK_SOLO
+  nodeMessage: "\uCD9C\uAD6C\uB97C \uC9C0\uD0A4\uB358 \uBCD1\uC0AC\uAC00 \uBE60\uB974\uAC8C
+    \uAC70\uB9AC\uB97C \uC881\uD614\uB2E4. \uBC29\uD0C4 \uC7A5\uAD6C\uC640 \uAE34
+    \uC0AC\uAC70\uB9AC \uB54C\uBB38\uC5D0 \uC815\uBA74\uC73C\uB85C \uC11C \uC788\uAE30\uB294
+    \uC5B4\uB824\uC6E0\uB2E4. \uD63C\uC790 \uC0B4\uC544 \uB098\uAC08 \uAE38\uC744
+    \uB9CC\uB4E4\uAE30 \uC704\uD574 \uB9DE\uC120\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  combatEnemyID: DEMO_NK_SOLO_ENEMY
+  successNode: {fileID: 11400000, guid: b0ae48ab704e09a4e925198c9267ffe8, type: 2}
+  failureNode: {fileID: 11400000, guid: 70a5829a0f0e78b45b0844abf747c5d8, type: 2}
+  enemyData: {fileID: 11400000, guid: ad2b479db3470d341908637cbc1fe7bf, type: 2}

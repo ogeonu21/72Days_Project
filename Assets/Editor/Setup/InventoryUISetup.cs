@@ -146,7 +146,7 @@ public static class InventoryUISetup
             if (gridSlots.Length < 20) throw new InvalidOperationException("인벤토리 슬롯이 20개보다 적습니다.");
             ui.slots = gridSlots.Take(20).ToArray();
             for (int i = 0; i < gridSlots.Length; i++) gridSlots[i].gameObject.SetActive(i < 20);
-            ui.emptyText = Text(panel, "EmptyHint", "아이템을 획득하면 이곳에 보관됩니다.", .06f, .005f, .94f, .045f, 26, new Color(.65f, .7f, .76f));
+            ui.emptyText = Text(panel, "EmptyHint", "아이템을 획득하면 이곳에 보관됩니다.", .06f, .025f, .94f, .065f, 26, new Color(.65f, .7f, .76f));
             ui.emptyText.alignment = TextAlignmentOptions.Center;
             BuildDetails(ui, panel);
             panel.gameObject.SetActive(false);

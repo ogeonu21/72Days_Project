@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_WATER_1
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_WATER_1
+  nodeMessage: "\uBAA9\uC744 \uCD95\uC778 \uBB3C\uC740 \uAE08\uC138 \uBBF8\uC9C0\uADFC\uD574\uC84C\uB2E4.
+    \uB4A4\uCABD\uC5D0\uC11C \uB9C8\uC9C0\uB9C9 \uCEF5\uC774 \uBE44\uC5C8\uB2E4\uB294
+    \uB9D0\uC774 \uB4E4\uB838\uB2E4. \uB354 \uB2EC\uB77C\uAC70\uB098 \uB0B4 \uBAAB\uC744
+    \uB3CC\uB824\uC8FC\uACA0\uB2E4\uB294 \uB9D0 \uC5C6\uC774, \uB098\uB294 \uC8FC\uC5B4\uC9C4
+    \uB9CC\uD07C\uC758 \uD798\uC73C\uB85C \uC624\uB974\uB9C9\uC744 \uC62C\uB790\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: f0300f3717c2e6541963d1ea28de3e1d, type: 2}

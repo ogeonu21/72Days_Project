@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_SUBWAY
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_SUBWAY
+  nodeMessage: "\uC5ED \uACC4\uB2E8\uC740 \uB300\uD53C\uD558\uB294 \uC2DC\uBBFC\uC73C\uB85C
+    \uAC00\uB4DD\uD588\uB2E4. \uB204\uAD70\uAC00 \uC544\uC774\uB97C \uC548\uACE0
+    \uB09C\uAC04\uC5D0 \uAE30\uB300\uC5C8\uACE0, \uC548\uB0B4 \uBC29\uC1A1\uC740
+    \uC7A1\uC74C\uB9CC \uBC18\uBCF5\uD588\uB2E4. \uB098\uB294 \uC0AC\uB78C\uB4E4\uC758
+    \uBCF4\uD3ED\uC5D0 \uB9DE\uCDB0 \uB0B4\uB824\uAC14\uB2E4. \uC9C0\uC0C1\uC5D0\uC11C
+    \uB4E4\uB9AC\uB358 \uD3ED\uC74C\uC774 \uC9C0\uD558 \uBCBD\uC744 \uB454\uD558\uAC8C
+    \uB54C\uB838\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: e3795c956b8ae5847b8400dc5f39f430, type: 2}

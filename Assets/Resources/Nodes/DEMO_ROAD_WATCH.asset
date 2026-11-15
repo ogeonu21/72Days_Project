@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e91d13959bdb10428adb829024476dd, type: 3}
+  m_Name: DEMO_ROAD_WATCH
+  m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeName: DEMO_ROAD_WATCH
+  nodeMessage: "\uCC28\uB7C9 \uB4A4\uC5D0 \uBAB8\uC744 \uB0AE\uCD94\uACE0 \uCD1D\uC131\uC774
+    \uBA40\uC5B4\uC9C0\uAE30\uB97C \uAE30\uB2E4\uB838\uB2E4. \uC7A5\uAC11\uCC28\uAC00
+    \uAD50\uCC28\uB85C\uB97C \uC9C0\uB098\uAC04 \uB4A4\uC5D0\uB3C4 \uC2E0\uD638\uB4F1\uC740
+    \uC0C9\uC744 \uBC14\uAFB8\uC5C8\uB2E4. \uAC74\uB108\uD3B8 \uACE8\uBAA9\uC73C\uB85C
+    \uB2EC\uB9AC\uC790 \uBD81\uCABD \uB3C4\uB85C\uC5D0 \uAC80\uBB38 \uBD88\uBE5B\uC774
+    \uBCF4\uC600\uB2E4. \uBD80\uB300\uB85C \uAC00\uB824\uBA74 \uC815\uCC30\uBCD1\uC774
+    \uC9C0\uD0A4\uB294 \uAD6C\uC5ED\uBD80\uD130 \uC9C0\uB098\uC57C \uD588\uB2E4."
+  surviveDate: 1
+  worldLocation: 0
+  nextNode: {fileID: 11400000, guid: 806ff5fc2d7be9a49bdc08ba392874b4, type: 2}

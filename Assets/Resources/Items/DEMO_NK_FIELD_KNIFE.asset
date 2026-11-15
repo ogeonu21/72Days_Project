@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00184cacf2a96804e9fcfd4d0bdf9157, type: 3}
+  m_Name: DEMO_NK_FIELD_KNIFE
+  m_EditorClassIdentifier: 
+  itemID: DEMO_NK_FIELD_KNIFE
+  itemName: "\uBD81\uD55C\uAD70 \uC804\uD22C \uB2E8\uAC80"
+  itemDescription: "\uAC15\uB825 \uBD81\uD55C\uAD70\uC744 \uC4F0\uB7EC\uB728\uB838\uC744
+    \uB54C \uD68C\uC218\uD558\uB294 \uB2E8\uAC80. \uC790\uB3D9 \uC7A5\uCC29\uB418\uC9C0
+    \uC54A\uB294\uB2E4."
+  itemIcon: Assets/ClassicPixelRPGUI/Artwok/Icons/38_sword.png
+  isConsumable: 0
+  itemValue: 0
+  itemCategory: 0
+  durability: 40
+  attackBonus: 5
+  range: 1
