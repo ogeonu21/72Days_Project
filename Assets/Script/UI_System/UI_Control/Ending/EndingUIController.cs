@@ -10,6 +10,7 @@ public class EndingUIController : UIController, IUpdatableUI
     protected override void OnEnable()
     {
         base.OnEnable();
+        if (sharedView != null) dialogueText = sharedView.dialogueText;
         NodeText = dialogueText;
     }
 
@@ -21,7 +22,7 @@ public class EndingUIController : UIController, IUpdatableUI
     
     public void UpdateUI(Node node)
     {
-        StartCoroutine(UpdateEndingUI(node as EndingNode));
+        StartNodePresentation(UpdateEndingUI(node as EndingNode));
     }
 
     public IEnumerator UpdateEndingUI(EndingNode node)

@@ -17,10 +17,12 @@ public class CombatUIRouter : ChoiceUIRouter
     private Vector2 originalAnchorMin, originalAnchorMax, originalOffsetMin, originalOffsetMax;
     private float originalFontSize;
     private bool hasOriginalTextLayout;
+    protected override RectTransform SharedAttackArea => transform as RectTransform;
     protected override Transform ChoicePanelParent => transform.parent != null ? transform.parent : transform;
 
     protected override void LayoutPanel(RectTransform rect)
     {
+        if (SharedView != null) return;
         if (!rect.gameObject.activeSelf) return;
         var parentRect = ChoicePanelParent as RectTransform;
         var attackRect = transform as RectTransform;
@@ -60,6 +62,7 @@ public class CombatUIRouter : ChoiceUIRouter
 
     private void LateUpdate()
     {
+        if (SharedView != null) return;
         if (activePanel == null || !activePanel.activeSelf) return;
         var parent = ChoicePanelParent as RectTransform;
         if (parent != null && (layoutParentSize != parent.rect.size ||
@@ -80,7 +83,7 @@ public class CombatUIRouter : ChoiceUIRouter
 
     private void RestoreTextLayout()
     {
-        if (!hasOriginalTextLayout || dialogueText == null) return;
+        if (SharedView != null || !hasOriginalTextLayout || dialogueText == null) return;
         var rect = dialogueText.rectTransform;
         rect.anchorMin = originalAnchorMin;
         rect.anchorMax = originalAnchorMax;
@@ -97,7 +100,7 @@ public class CombatUIRouter : ChoiceUIRouter
         RestoreTextLayout();
         if (dialogueText != bodyText) hasOriginalTextLayout = false;
         dialogueText = bodyText;
-        if (dialogueText != null)
+        if (dialogueText != null && SharedView == null)
         {
             if (!hasOriginalTextLayout)
             {

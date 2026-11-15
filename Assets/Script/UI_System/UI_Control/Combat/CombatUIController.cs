@@ -47,6 +47,7 @@ public class CombatUIController : UIController, IUpdatableUI
     protected override void OnEnable()
     {
         base.OnEnable();
+        if (sharedView != null) combatText = sharedView.dialogueText;
         NodeText = combatText;
         combatManager = CombatManager.Instance;
         if (combatManager != null)
@@ -236,6 +237,7 @@ public class CombatUIController : UIController, IUpdatableUI
         {
             choiceRouter = attackButtons.GetComponent<CombatUIRouter>() ?? attackButtons.AddComponent<CombatUIRouter>();
             if (bodyButtons == null) bodyButtons = attackButtons.GetComponentsInChildren<Button>(true);
+            if (sharedView != null) choiceTemplate = sharedView.choiceTemplate;
             if (choiceTemplate == null)
             {
                 // 인체 부위 버튼이 아니라 기존 이벤트 선택지의 모양을 재사용한다.

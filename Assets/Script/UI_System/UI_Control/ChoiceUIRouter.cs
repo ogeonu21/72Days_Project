@@ -12,6 +12,11 @@ public abstract class ChoiceUIRouter : MonoBehaviour
     protected Button template;
     protected TMP_FontAsset font;
     private int contentVersion;
+    protected SharedNodeView SharedView
+    {
+        get { var controller = GetComponentInParent<UIController>(); return controller != null ? controller.sharedView : null; }
+    }
+    protected virtual RectTransform SharedAttackArea => null;
     protected virtual Vector2 PanelAnchorMin => new Vector2(.05f, .04f);
     protected virtual Vector2 PanelAnchorMax => new Vector2(.95f, .43f);
     protected virtual Transform ChoicePanelParent => transform;
@@ -26,6 +31,12 @@ public abstract class ChoiceUIRouter : MonoBehaviour
     protected bool OpenChoices(string key, Button buttonTemplate, TMP_FontAsset textFont)
     {
         HideChoices();
+        if (SharedView != null)
+        {
+            bool opened = SharedView.OpenChoices(this, SharedAttackArea);
+            activePanel = opened ? SharedView.choiceArea.gameObject : null;
+            return opened;
+        }
         template = buttonTemplate;
         font = textFont;
         if (template == null || template.GetComponentInChildren<TMP_Text>(true) == null)
@@ -61,11 +72,13 @@ public abstract class ChoiceUIRouter : MonoBehaviour
     protected virtual void HideChoices()
     {
         contentVersion++;
+        if (SharedView != null) SharedView.HideChoices(this);
         foreach (var panel in panels.Values) if (panel != null) panel.SetActive(false);
     }
 
     protected Transform NewContent()
     {
+        if (SharedView != null) return SharedView.NewContent(this);
         contentVersion++;
         for (int i = activePanel.transform.childCount - 1; i >= 0; i--)
         {
@@ -100,15 +113,22 @@ public abstract class ChoiceUIRouter : MonoBehaviour
 
     protected Button AddChoice(Transform parent, string label, Action action, bool available = true)
     {
+        if (SharedView != null) return SharedView.AddChoice(this, label, action, available);
+        int version = contentVersion;
+        return CreateButton(template, font, parent, label, () =>
+        {
+            if (version == contentVersion && isActiveAndEnabled) action?.Invoke();
+        }, available);
+    }
+
+    internal static Button CreateButton(Button template, TMP_FontAsset font, Transform parent, string label, Action action, bool available)
+    {
         var button = Instantiate(template, parent);
         button.name = "ChoiceAction";
         button.onClick = new Button.ButtonClickedEvent();
-        int version = contentVersion;
         button.onClick.AddListener(() =>
         {
-            // 삭제 대기 중인 이전 목록이나 숨겨진 화면의 입력은 무시한다.
-            if (version == contentVersion && isActiveAndEnabled && button != null && button.isActiveAndEnabled && button.interactable)
-                action?.Invoke();
+            if (button != null && button.isActiveAndEnabled && button.interactable) action?.Invoke();
         });
         button.gameObject.SetActive(true);
         var layout = button.GetComponent<LayoutElement>() ?? button.gameObject.AddComponent<LayoutElement>();
