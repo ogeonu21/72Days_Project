@@ -154,7 +154,7 @@ public sealed class EventUIRouter : ChoiceUIRouter
         if (!string.IsNullOrWhiteSpace(narrative))
         {
             dialogue.gameObject.SetActive(true);
-            yield return TypewriterEffect.TypeTextCoroutine(dialogue, narrative);
+            yield return controller.PresentNodeText(narrative);
             // 공통 대기 함수가 기존 터치 해제와 새 입력을 구분한다.
             yield return WaitForClick.WaitClick();
         }

@@ -14,15 +14,17 @@ public class EventUIController : UIController, IUpdatableUI
     protected override void OnEnable()
     {
         base.OnEnable();
+        if (sharedView != null) dialogueText = sharedView.dialogueText;
         NodeText = dialogueText;
+        if (sharedView != null) choiceButtons = new[] { sharedView.choiceTemplate };
         choiceListPresenter = choiceListPresenter ?? new ChoiceListPresenter(choiceButtons);
-        choiceListPresenter.Clear();
+        if (sharedView == null) choiceListPresenter.Clear();
     }
     protected override void OnDisable()
     {
         base.OnDisable();
         NodeText = null;
-        choiceListPresenter?.Clear();
+        if (sharedView == null) choiceListPresenter?.Clear();
         if (eventRouter != null) eventRouter.Hide();
     }
 
@@ -34,7 +36,7 @@ public class EventUIController : UIController, IUpdatableUI
 
     public IEnumerator UpdateEventNode(EventNode node)
     {
-        choiceListPresenter.Clear();
+        if (sharedView == null) choiceListPresenter.Clear();
         if (eventRouter != null) eventRouter.Hide();
         if (node == null) yield break;
         yield return TypeNodeText(node.nodeMessage);
