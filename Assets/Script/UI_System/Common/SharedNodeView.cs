@@ -3,9 +3,10 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>본문 출력과 공통 선택지의 수명·배치를 소유한다. 진행 규칙은 모드에 남긴다.</summary>
-public sealed class SharedNodeView : MonoBehaviour
+public sealed class SharedNodeView : MonoBehaviour, IPointerDownHandler, IPointerClickHandler
 {
     public TMP_Text dialogueText;
     public ScrollRect dialogueScroll;
@@ -18,6 +19,9 @@ public sealed class SharedNodeView : MonoBehaviour
     private Coroutine typing;
     private int textVersion, choiceVersion;
     private bool typingActive;
+    private TypewriterEffect.SkipState activeSkipState;
+    private int pressedPageVersion;
+    private int pressedPointerId;
     private RectTransform attackArea;
     private Vector2 textMin, textMax, textOffsetMin, textOffsetMax;
     private Vector2 choicesMin, choicesMax, choicesOffsetMin, choicesOffsetMax;
@@ -73,7 +77,9 @@ public sealed class SharedNodeView : MonoBehaviour
         CancelText();
         int version = textVersion;
         typingActive = true;
-        typing = StartCoroutine(TypeText(text, speed, version));
+        activeSkipState = new TypewriterEffect.SkipState();
+        UpdateDialogueRaycast();
+        typing = StartCoroutine(TypeText(text, speed, version, activeSkipState));
         while (version == textVersion && typingActive) yield return null;
     }
 
@@ -82,18 +88,26 @@ public sealed class SharedNodeView : MonoBehaviour
         if (mode != null) yield return PresentText(mode, text);
     }
 
-    private IEnumerator TypeText(string text, float speed, int version)
+    private IEnumerator TypeText(string text, float speed, int version, TypewriterEffect.SkipState skipState)
     {
-        yield return TypewriterEffect.TypeTextCoroutine(dialogueText, text ?? string.Empty, speed);
-        if (version == textVersion) { typingActive = false; typing = null; }
+        yield return TypewriterEffect.TypeTextCoroutine(dialogueText, text ?? string.Empty, speed, skipState);
+        if (version == textVersion) ClearTypingState();
     }
 
     private void CancelText()
     {
         textVersion++;
         if (typing != null) StopCoroutine(typing);
+        ClearTypingState();
+    }
+
+    private void ClearTypingState()
+    {
         typing = null;
         typingActive = false;
+        activeSkipState = null;
+        pressedPageVersion = 0;
+        UpdateDialogueRaycast();
     }
 
     public bool OpenChoices(MonoBehaviour owner, RectTransform combatAttackArea = null)
@@ -279,8 +293,7 @@ public sealed class SharedNodeView : MonoBehaviour
         content.pivot = contentPivot;
         content.anchorMin = contentMin; content.anchorMax = contentMax;
         content.offsetMin = contentOffsetMin; content.offsetMax = contentOffsetMax;
-        var image = dialogueScroll.GetComponent<UnityEngine.UI.Image>();
-        if (image != null) image.raycastTarget = false;
+        UpdateDialogueRaycast();
     }
 
     private void UpdateDialogueScroll(bool showingChoices)
@@ -302,7 +315,44 @@ public sealed class SharedNodeView : MonoBehaviour
         dialogueScroll.viewport = viewport;
         dialogueScroll.enabled = true;
         dialogueScroll.verticalNormalizedPosition = 1;
-        var image = dialogueScroll.GetComponent<UnityEngine.UI.Image>();
-        if (image != null) image.raycastTarget = true;
+        UpdateDialogueRaycast();
+    }
+
+    private void UpdateDialogueRaycast()
+    {
+        if (dialogueScroll == null) return;
+        var image = dialogueScroll.GetComponent<Image>();
+        if (image != null) image.raycastTarget = typingActive || dialogueScroll.enabled;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
+        pressedPointerId = eventData.pointerId;
+        pressedPageVersion = 0;
+        var state = activeSkipState;
+        if (state == null || !state.IsTyping || state.SkipRequested || !IsOverDialogue(eventData)) return;
+
+        // 기존 노드 진행 입력으로 같은 프레임에 열리는 페이지까지 완성하지 않는다.
+        if (Time.frameCount == state.PageStartedFrame) return;
+
+        pressedPageVersion = state.PageVersion;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Left || eventData.pointerId != pressedPointerId) return;
+
+        int pageVersion = pressedPageVersion;
+        pressedPageVersion = 0;
+        if (pageVersion != 0 && IsOverDialogue(eventData)) activeSkipState?.RequestSkip(pageVersion);
+    }
+
+    private bool IsOverDialogue(PointerEventData eventData)
+    {
+        var hit = eventData.pointerCurrentRaycast.gameObject;
+        if (dialogueScroll == null || hit == null) return false;
+        return hit.transform == dialogueScroll.transform || hit.transform.IsChildOf(dialogueScroll.transform);
     }
 }

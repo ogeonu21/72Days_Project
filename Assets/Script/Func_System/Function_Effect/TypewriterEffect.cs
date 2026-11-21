@@ -9,6 +9,28 @@ using TMPro;
 public static class TypewriterEffect
 {
     public const float PagePauseSeconds = 0.7f;
+    public sealed class SkipState
+    {
+        public int PageVersion { get; private set; }
+        public int PageStartedFrame { get; private set; }
+        public bool IsTyping { get; private set; }
+        public bool SkipRequested { get; private set; }
+
+        internal void BeginPage()
+        {
+            PageVersion++;
+            PageStartedFrame = Time.frameCount;
+            SkipRequested = false;
+            IsTyping = true;
+        }
+
+        internal void EndPage() => IsTyping = false;
+
+        internal void RequestSkip(int pageVersion)
+        {
+            if (IsTyping && PageVersion == pageVersion) SkipRequested = true;
+        }
+    }
 
     public static string FormatSentences(string text)
     {
@@ -135,7 +157,8 @@ public static class TypewriterEffect
         return result.ToString();
     }
     // 코루틴 자체를 반환하여 호출하는 쪽에서 제어하도록 함
-    public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.03f)
+    public static IEnumerator TypeTextCoroutine(TMP_Text targetTextComponent, string textToType, float typingSpeed = 0.03f,
+        SkipState skipState = null)
     {
         if (targetTextComponent == null)
         {
@@ -155,9 +178,12 @@ public static class TypewriterEffect
                 targetTextComponent.text=string.Empty;
                 var prefix=new StringBuilder();
                 string pageText=pages[page];
+                skipState?.BeginPage();
+                double nextCharacterAt = Time.timeAsDouble;
                 for(int index=0;index<pageText.Length;)
                 {
                     if(targetTextComponent==null || (Application.isPlaying && !targetTextComponent.gameObject.activeInHierarchy)) yield break;
+                    if (skipState != null && skipState.SkipRequested) break;
                     if(targetTextComponent.richText && pageText[index]=='<')
                     {
                         int end=pageText.IndexOf('>',index);
@@ -172,12 +198,31 @@ public static class TypewriterEffect
                         for(int i=tags.Count-1;i>=0;i--) visible+="</"+tags[i].Key+">";
                     }
                     targetTextComponent.text=visible;
-                    yield return new WaitForSeconds(delay);
+                    if (skipState == null)
+                    {
+                        yield return new WaitForSeconds(delay);
+                    }
+                    else if (delay == 0)
+                    {
+                        yield return null;
+                    }
+                    else
+                    {
+                        nextCharacterAt += delay;
+                        while (!skipState.SkipRequested && Time.timeAsDouble < nextCharacterAt)
+                            yield return null;
+                    }
                 }
+                if (targetTextComponent == null || (Application.isPlaying && !targetTextComponent.gameObject.activeInHierarchy)) yield break;
                 targetTextComponent.text=pageText;
+                skipState?.EndPage();
                 if(page+1<pages.Count) yield return new WaitForSeconds(PagePauseSeconds);
             }
         }
-        finally { if(targetTextComponent!=null) targetTextComponent.maxVisibleCharacters=oldVisible; }
+        finally
+        {
+            skipState?.EndPage();
+            if (targetTextComponent != null) targetTextComponent.maxVisibleCharacters = oldVisible;
+        }
     }
 }
